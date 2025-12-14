@@ -2,7 +2,6 @@
 
 import Link from "next/link";
 import {
-  Heart,
   Mail,
   Phone,
   MapPin,

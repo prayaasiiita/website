@@ -111,7 +111,7 @@ type TooltipItem = {
   dataKey?: string | number
   value?: number | string
   color?: string
-  payload?: { [key: string]: any; fill?: string }
+  payload?: (Record<string, unknown> & { fill?: string }) | undefined
 }
 
 type ChartTooltipContentProps = Omit<
@@ -126,6 +126,14 @@ type ChartTooltipContentProps = Omit<
     labelKey?: string
     label?: React.ReactNode
     payload?: TooltipItem[]
+    labelFormatter?: (value: React.ReactNode, payload: TooltipItem[]) => React.ReactNode
+    formatter?: (
+      value: number | string,
+      name: string | number,
+      item: TooltipItem,
+      index: number,
+      payload: TooltipItem["payload"]
+    ) => React.ReactNode
   }
 
 function ChartTooltipContent({
@@ -161,7 +169,7 @@ function ChartTooltipContent({
     if (labelFormatter) {
       return (
         <div className={cn("font-medium", labelClassName)}>
-          {labelFormatter(value, payload as any)}
+          {labelFormatter(value, payload)}
         </div>
       )
     }
@@ -213,11 +221,11 @@ function ChartTooltipContent({
               >
                 {formatter && item?.value !== undefined && item.name ? (
                   formatter(
-                    item.value as any,
-                    item.name as any,
-                    item as any,
+                    item.value,
+                    item.name,
+                    item,
                     index,
-                    item.payload as any
+                    item.payload
                   )
                 ) : (
                   <>

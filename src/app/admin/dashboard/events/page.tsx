@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import Image from "next/image";
 import { Plus, Edit, Trash2, Calendar } from "lucide-react";
 
 interface Event {
@@ -133,10 +134,12 @@ export default function EventsManagement() {
               className="bg-white rounded-2xl overflow-hidden border border-gray-200 hover:shadow-lg transition-all"
             >
               <div className="relative h-48">
-                <img
+                <Image
                   src={event.image}
                   alt={event.title}
-                  className="w-full h-full object-cover"
+                  fill
+                  sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                  className="object-cover"
                 />
                 <span
                   className={`absolute top-4 right-4 px-3 py-1 rounded-full text-xs font-semibold ${

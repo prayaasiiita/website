@@ -9,7 +9,6 @@ import {
   Lightbulb,
   HandHeart,
   CheckCircle,
-  ArrowRight,
   Users,
   Heart,
   Clock,

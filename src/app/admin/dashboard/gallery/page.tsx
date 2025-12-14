@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import Image from "next/image";
 import { Plus, Edit, Trash2 } from "lucide-react";
 
 interface GalleryImage {
@@ -129,10 +130,12 @@ export default function GalleryManagement() {
               className="bg-white rounded-2xl overflow-hidden border border-gray-200 hover:shadow-lg transition-all"
             >
               <div className="relative h-48">
-                <img
+                <Image
                   src={img.image}
                   alt={img.alt}
-                  className="w-full h-full object-cover"
+                  fill
+                  sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
+                  className="object-cover"
                 />
               </div>
               <div className="p-4">

@@ -16,10 +16,12 @@ interface Volunteer {
   createdAt: string;
 }
 
+type VolunteerStatusFilter = "all" | "pending" | "approved" | "rejected";
+
 export default function VolunteersManagement() {
   const [volunteers, setVolunteers] = useState<Volunteer[]>([]);
   const [loading, setLoading] = useState(true);
-  const [filter, setFilter] = useState<"all" | "pending" | "approved" | "rejected">("all");
+  const [filter, setFilter] = useState<VolunteerStatusFilter>("all");
 
   useEffect(() => {
     fetchVolunteers();
@@ -80,10 +82,10 @@ export default function VolunteersManagement() {
       </div>
 
       <div className="flex gap-2 mb-6">
-        {["all", "pending", "approved", "rejected"].map((f) => (
+        {(["all", "pending", "approved", "rejected"] as VolunteerStatusFilter[]).map((f) => (
           <button
             key={f}
-            onClick={() => setFilter(f as any)}
+            onClick={() => setFilter(f)}
             className={`px-4 py-2 rounded-lg font-medium capitalize transition-all ${
               filter === f
                 ? "bg-purple-600 text-white"

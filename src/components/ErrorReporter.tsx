@@ -68,7 +68,9 @@ export default function ErrorReporter({ error, reset }: ReporterProps) {
     return () => {
       window.removeEventListener("error", onError);
       window.removeEventListener("unhandledrejection", onReject);
-      pollRef.current && clearInterval(pollRef.current);
+      if (pollRef.current) {
+        clearInterval(pollRef.current);
+      }
     };
   }, []);
 
@@ -93,6 +95,10 @@ export default function ErrorReporter({ error, reset }: ReporterProps) {
 
   /* ─ ordinary pages render nothing ─ */
   if (!error) return null;
+
+  const handleReset = () => {
+    reset?.();
+  };
 
   /* ─ global-error UI ─ */
   return (
@@ -127,6 +133,15 @@ export default function ErrorReporter({ error, reset }: ReporterProps) {
                   )}
                 </pre>
               </details>
+            )}
+            {reset && (
+              <button
+                type="button"
+                onClick={handleReset}
+                className="inline-flex items-center justify-center rounded-md bg-primary px-4 py-2 text-sm font-semibold text-primary-foreground shadow hover:brightness-110 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
+              >
+                Try again
+              </button>
             )}
           </div>
         </div>

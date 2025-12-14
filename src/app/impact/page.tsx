@@ -13,7 +13,6 @@ import {
   TrendingUp,
   Award,
   Target,
-  ArrowRight,
 } from "lucide-react";
 
 function Counter({ end, suffix = "", duration = 2000 }: { end: number; suffix?: string; duration?: number }) {

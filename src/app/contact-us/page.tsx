@@ -14,7 +14,6 @@ import {
   Linkedin,
   Youtube,
   ArrowRight,
-  MessageCircle,
 } from "lucide-react";
 import Link from "next/link";
 

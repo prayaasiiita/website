@@ -84,7 +84,7 @@ export default function TermsPage() {
                     <section>
                         <h2 className="text-2xl font-semibold text-(--ngo-dark) mb-3">9. Disclaimers</h2>
                         <p>
-                            The site is provided "as is" without warranties of any kind, express or implied. We do not guarantee that
+                            The site is provided &quot;as is&quot; without warranties of any kind, express or implied. We do not guarantee that
                             the site will be uninterrupted, secure, or error-free.
                         </p>
                     </section>
