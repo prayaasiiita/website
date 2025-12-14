@@ -54,7 +54,7 @@ function HeroSection() {
     <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
       <div className="absolute inset-0">
         <Image
-          src="https://images.unsplash.com/photo-1488521787991-ed7bbaae773c?w=1920&q=80"
+          src="/p2.jpg"
           alt="Children studying"
           fill
           className="object-cover"
@@ -117,6 +117,25 @@ function HeroSection() {
 }
 
 function AboutSection() {
+  const images = [
+    { src: "/p1.jpg", alt: "Children learning" },
+    { src: "/p2.jpg", alt: "Students studying" },
+  ];
+
+  const [activeIndex, setActiveIndex] = useState(0);
+
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setActiveIndex((prev) => (prev + 1) % images.length);
+    }, 5000);
+
+    return () => clearInterval(timer);
+  }, [images.length]);
+
+  const handleDotClick = (index: number) => {
+    setActiveIndex(index);
+  };
+
   return (
     <section className="py-24 bg-white">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -175,14 +194,41 @@ function AboutSection() {
             transition={{ duration: 0.8 }}
             className="relative"
           >
-            <div className="relative z-10 rounded-2xl overflow-hidden shadow-2xl">
-              <Image
-                src="https://images.unsplash.com/photo-1497633762265-9d179a990aa6?w=800&q=80"
-                alt="Children learning"
-                width={600}
-                height={500}
-                className="w-full h-auto"
-              />
+            <div className="relative z-10 rounded-2xl overflow-hidden shadow-2xl transition-transform duration-300 hover:scale-105">
+              <motion.div
+                className="flex"
+                animate={{ x: `-${activeIndex * 100}%` }}
+                transition={{ duration: 0.6, ease: "easeInOut" }}
+              >
+                {images.map((image, index) => (
+                  <div key={image.src} className="min-w-full">
+                    <Image
+                      src={image.src}
+                      alt={image.alt}
+                      width={600}
+                      height={500}
+                      className="w-full h-auto"
+                      priority={index === 0}
+                      loading={index === 0 ? "eager" : "lazy"}
+                    />
+                  </div>
+                ))}
+              </motion.div>
+              <div className="absolute inset-x-0 bottom-4 flex items-center justify-center gap-2">
+                {images.map((image, index) => (
+                  <button
+                    key={image.src}
+                    type="button"
+                    aria-label={`Show slide ${index + 1}`}
+                    onClick={() => handleDotClick(index)}
+                    className={`h-2.5 rounded-full transition-all duration-300 ${
+                      activeIndex === index
+                        ? "w-8 bg-(--ngo-orange)"
+                        : "w-3 bg-white/70 hover:bg-white"
+                    }`}
+                  />
+                ))}
+              </div>
             </div>
             <div className="absolute -bottom-6 -left-6 w-72 h-72 bg-(--ngo-orange)/10 rounded-2xl -z-10" />
             <div className="absolute -top-6 -right-6 w-48 h-48 bg-(--ngo-green)/10 rounded-2xl -z-10" />
