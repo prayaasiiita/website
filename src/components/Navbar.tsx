@@ -84,6 +84,7 @@ export function Navbar() {
             className={`lg:hidden p-2 rounded-lg ${
               scrolled ? "text-(--ngo-dark)" : "text-white"
             }`}
+            aria-label="Toggle navigation menu"
           >
             {isOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
           </button>

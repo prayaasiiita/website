@@ -20,6 +20,7 @@ import {
   ChevronRight,
   Phone,
 } from "lucide-react";
+import PhotoGridSection from "../components/PhotoGridSection";
 
 function Counter({ end, suffix = "", duration = 2000 }: { end: number; suffix?: string; duration?: number }) {
   const [count, setCount] = useState(0);
@@ -70,7 +71,7 @@ function HeroSection() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8 }}
         >
-          <span className="inline-block px-4 py-2 bg-white/20 backdrop-blur-sm rounded-full text-white text-sm font-medium mb-6">
+          <span className="inline-block px-4 py-2 bg-white/20 backdrop-blur-sm rounded-full text-white text-sm font-medium mb-6 mt-2 shadow-lg">
             A Students Initiative at IIIT Allahabad
           </span>
         </motion.div>
@@ -134,7 +135,7 @@ function AboutSection() {
   };
 
   return (
-    <section className="py-24 bg-white">
+    <section className="p-12 bg-white">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="grid lg:grid-cols-2 gap-16 items-center">
           <motion.div
@@ -218,11 +219,10 @@ function AboutSection() {
                     type="button"
                     aria-label={`Show slide ${index + 1}`}
                     onClick={() => handleDotClick(index)}
-                    className={`h-2.5 rounded-full transition-all duration-300 ${
-                      activeIndex === index
-                        ? "w-8 bg-(--ngo-orange)"
-                        : "w-3 bg-white/70 hover:bg-white"
-                    }`}
+                    className={`h-2.5 rounded-full transition-all duration-300 ${activeIndex === index
+                      ? "w-8 bg-(--ngo-orange)"
+                      : "w-3 bg-white/70 hover:bg-white"
+                      }`}
                   />
                 ))}
               </div>
@@ -269,7 +269,7 @@ function ProgramsSection() {
   ];
 
   return (
-    <section className="py-24 section-gradient">
+    <section className="p-12 section-gradient">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <motion.div
           initial={{ opacity: 0, y: 30 }}
@@ -342,7 +342,7 @@ function ImpactSection() {
   ];
 
   return (
-    <section className="py-24 bg-(--ngo-dark) relative overflow-hidden">
+    <section className="p-12 bg-(--ngo-dark) relative overflow-hidden">
       <div className="absolute inset-0 opacity-10">
         <div className="absolute top-0 left-0 w-96 h-96 bg-(--ngo-orange) rounded-full blur-3xl -translate-x-1/2 -translate-y-1/2" />
         <div className="absolute bottom-0 right-0 w-96 h-96 bg-(--ngo-green) rounded-full blur-3xl translate-x-1/2 translate-y-1/2" />
@@ -425,15 +425,25 @@ function TestimonialsSection() {
       role: "Parent",
       image: "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=200&q=80",
     },
+    {
+      quote:
+        "Prayaas empowered our community. With their guidance, my son returned to school and is now preparing for competitive exams with renewed confidence.",
+      name: "Ramesh Yadav",
+      role: "Parent",
+      image: "https://images.unsplash.com/photo-1524504388940-b1c1722653e1?w=200&q=80",
+    },
   ];
+  const [hovered, setHovered] = useState<number | null>(null);
 
-  const [current, setCurrent] = useState(0);
-
-  const next = () => setCurrent((prev) => (prev + 1) % testimonials.length);
-  const prev = () => setCurrent((prev) => (prev - 1 + testimonials.length) % testimonials.length);
+  const columnTemplate =
+    hovered === null
+      ? "repeat(4, minmax(0, 1fr))"
+      : testimonials
+        .map((_, i) => (hovered === i ? "1.6fr" : "0.8fr"))
+        .join(" ");
 
   return (
-    <section className="py-24 bg-white">
+    <section className="py-12 bg-white">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <motion.div
           initial={{ opacity: 0, y: 30 }}
@@ -443,7 +453,7 @@ function TestimonialsSection() {
           className="text-center mb-16"
         >
           <span className="text-(--ngo-orange) font-semibold uppercase tracking-wider text-sm">
-            Testimonials
+            Real Stories
           </span>
           <h2
             className="text-4xl md:text-5xl font-bold text-(--ngo-dark) mt-2 mb-4"
@@ -452,54 +462,69 @@ function TestimonialsSection() {
             Stories of Hope
           </h2>
           <p className="text-(--ngo-gray) text-lg max-w-2xl mx-auto">
-            Hear from the people whose lives have been touched by Prayaas
+            Hover over the stories to see the impact our community creates
           </p>
         </motion.div>
-        <div className="relative max-w-4xl mx-auto">
-          <motion.div
-            key={current}
-            initial={{ opacity: 0, x: 50 }}
-            animate={{ opacity: 1, x: 0 }}
-            exit={{ opacity: 0, x: -50 }}
-            transition={{ duration: 0.5 }}
-            className="bg-(--ngo-cream) rounded-3xl p-8 md:p-12"
-          >
-            <Quote className="w-12 h-12 text-(--ngo-orange) mb-6" />
-            <p className="text-xl md:text-2xl text-(--ngo-dark) leading-relaxed mb-8 italic">
-              &ldquo;{testimonials[current].quote}&rdquo;
-            </p>
-            <div className="flex items-center gap-4">
-              <Image
-                src={testimonials[current].image}
-                alt={testimonials[current].name}
-                width={60}
-                height={60}
-                className="w-15 h-15 rounded-full object-cover"
-              />
-              <div>
-                <h4 className="font-bold text-(--ngo-dark)">
-                  {testimonials[current].name}
-                </h4>
-                <p className="text-(--ngo-gray) text-sm">
-                  {testimonials[current].role}
-                </p>
+        <div
+          className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5 transition-all duration-300"
+          style={{ gridTemplateColumns: columnTemplate }}
+        >
+          {testimonials.map((item, index) => (
+            <motion.div
+              key={item.name}
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.6, delay: index * 0.08, ease: "easeOut" }}
+              animate={{
+                scale: hovered === null ? 1 : hovered === index ? 1.05 : 0.92,
+                zIndex: hovered === index ? 10 : 0,
+              }}
+              className="relative h-80 transition-transform duration-500 ease-out isolation-isolate"
+              onMouseEnter={() => setHovered(index)}
+              onMouseLeave={() => setHovered(null)}
+            >
+              <div className="absolute inset-0 rounded-2xl overflow-hidden shadow-lg">
+                <Image
+                  src={item.image}
+                  alt={item.name}
+                  fill
+                  sizes="(max-width: 1024px) 100vw, 25vw"
+                  className="object-cover"
+                />
               </div>
-            </div>
-          </motion.div>
-          <div className="flex justify-center gap-4 mt-8">
-            <button
-              onClick={prev}
-              className="w-12 h-12 rounded-full bg-white border-2 border-(--ngo-orange) flex items-center justify-center hover:bg-(--ngo-orange) hover:text-white text-(--ngo-orange) transition-colors"
-            >
-              <ChevronLeft className="w-5 h-5" />
-            </button>
-            <button
-              onClick={next}
-              className="w-12 h-12 rounded-full bg-(--ngo-orange) text-white flex items-center justify-center hover:bg-(--ngo-orange-dark) transition-colors"
-            >
-              <ChevronRight className="w-5 h-5" />
-            </button>
-          </div>
+              <motion.div
+                className="absolute inset-0 rounded-2xl bg-black/70 pointer-events-none"
+                style={{ transformOrigin: "center center" }}
+                initial={{ scaleX: 0, opacity: 0 }}
+                animate={{
+                  scaleX: 1,
+                  opacity: hovered === index ? 1 : 0,
+                }}
+                transition={{ duration: 0.55, ease: "easeInOut" }}
+              />
+              <motion.div
+                className="absolute inset-0 p-6 md:p-7 flex flex-col justify-end gap-3 text-white"
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: hovered === index ? 1 : 0, y: hovered === index ? 0 : 10 }}
+                transition={{ duration: 0.5, ease: "easeInOut" }}
+              >
+                <div className="flex items-center gap-3">
+                  <div className="w-12 h-12 rounded-full overflow-hidden border-2 border-white/60 shadow-md">
+                    <Image src={item.image} alt={item.name} width={48} height={48} className="w-full h-full object-cover" />
+                  </div>
+                  <div>
+                    <h4 className="font-semibold text-lg">{item.name}</h4>
+                    <p className="text-xs uppercase tracking-wide text-white/80">{item.role}</p>
+                  </div>
+                </div>
+                <Quote className="w-8 h-8 text-(--ngo-orange)" />
+                <p className="text-sm md:text-base leading-relaxed">
+                  “{item.quote}”
+                </p>
+              </motion.div>
+            </motion.div>
+          ))}
         </div>
       </div>
     </section>
@@ -508,23 +533,84 @@ function TestimonialsSection() {
 
 function GallerySection() {
   const images = [
-    { src: "https://images.unsplash.com/photo-1503676260728-1c00da094a0b?w=600&q=80", alt: "Students in classroom" },
-    { src: "https://images.unsplash.com/photo-1529390079861-591f72bea6c0?w=600&q=80", alt: "Children playing" },
-    { src: "https://images.unsplash.com/photo-1544717305-2782549b5136?w=600&q=80", alt: "Art class" },
-    { src: "https://images.unsplash.com/photo-1509062522246-3755977927d7?w=600&q=80", alt: "Teaching moment" },
-    { src: "https://images.unsplash.com/photo-1577896851231-70ef18881754?w=600&q=80", alt: "Group activity" },
-    { src: "https://images.unsplash.com/photo-1516627145497-ae6968895b74?w=600&q=80", alt: "Learning together" },
+    { src: "/gallery/1.jpeg", alt: "1", aspect: "aspect-[3/2]" },
+    { src: "/gallery/2.jpeg", alt: "2", aspect: "aspect-[3/2]" },
+    { src: "/gallery/3.jpeg", alt: "3", aspect: "aspect-[2/3]" },
+    { src: "/gallery/4.jpeg", alt: "4", aspect: "aspect-[3/2]" },
+    { src: "/gallery/5.jpeg", alt: "5", aspect: "aspect-[2/3]" },
+    { src: "/gallery/6.jpeg", alt: "6", aspect: "aspect-[3/2]" },
+    { src: "/gallery/7.jpeg", alt: "7", aspect: "aspect-[3/2]" },
+    { src: "/gallery/8.jpeg", alt: "8", aspect: "aspect-[3/2]" },
+    { src: "/gallery/9.jpeg", alt: "9", aspect: "aspect-[3/2]" },
+    { src: "/gallery/10.jpeg", alt: "10", aspect: "aspect-[3/2]" },
+    { src: "/gallery/11.jpeg", alt: "11", aspect: "aspect-[3/2]" },
+    { src: "/gallery/12.jpeg", alt: "12", aspect: "aspect-[3/2]" },
+    { src: "/gallery/13.jpeg", alt: "13", aspect: "aspect-[3/2]" },
+    { src: "/gallery/14.jpeg", alt: "14", aspect: "aspect-[3/2]" },
+    { src: "/gallery/15.jpeg", alt: "15", aspect: "aspect-[3/2]" },
+    { src: "/gallery/16.jpeg", alt: "16", aspect: "aspect-[3/2]" },
+    { src: "/gallery/17.jpeg", alt: "17", aspect: "aspect-[3/2]" },
+    { src: "/gallery/18.jpeg", alt: "18", aspect: "aspect-[3/2]" },
+    { src: "/gallery/19.jpeg", alt: "19", aspect: "aspect-[3/2]" },
+    { src: "/gallery/20.jpeg", alt: "20", aspect: "aspect-[3/2]" },
+    { src: "/gallery/21.jpeg", alt: "21", aspect: "aspect-[3/2]" },
+    { src: "/gallery/22.jpeg", alt: "22", aspect: "aspect-[3/2]" },
+    { src: "/gallery/23.jpeg", alt: "23", aspect: "aspect-[2/3]" },
+    { src: "/gallery/24.jpeg", alt: "24", aspect: "aspect-[3/2]" },
+    { src: "/gallery/25.jpeg", alt: "25", aspect: "aspect-[3/2]" },
+    { src: "/gallery/26.jpeg", alt: "26", aspect: "aspect-[3/2]" },
+    { src: "/gallery/27.jpeg", alt: "27", aspect: "aspect-[3/2]" },
+    { src: "/gallery/28.jpeg", alt: "28", aspect: "aspect-[3/2]" },
+    { src: "/gallery/29.jpeg", alt: "29", aspect: "aspect-[3/2]" },
+    { src: "/gallery/30.jpeg", alt: "30", aspect: "aspect-[3/2]" },
+    { src: "/gallery/31.jpeg", alt: "31", aspect: "aspect-[3/2]" },
+    { src: "/gallery/32.jpeg", alt: "32", aspect: "aspect-[3/2]" },
+    { src: "/gallery/33.jpeg", alt: "33", aspect: "aspect-[3/2]" },
+    { src: "/gallery/34.jpeg", alt: "34", aspect: "aspect-[3/2]" },
+    { src: "/gallery/35.jpeg", alt: "35", aspect: "aspect-[3/2]" },
+    { src: "/gallery/36.jpeg", alt: "36", aspect: "aspect-[2/3]" },
+    { src: "/gallery/37.jpeg", alt: "37", aspect: "aspect-[3/2]" },
+    { src: "/gallery/38.jpeg", alt: "38", aspect: "aspect-[3/2]" },
+    { src: "/gallery/39.jpeg", alt: "39", aspect: "aspect-[3/2]" },
+    { src: "/gallery/40.jpeg", alt: "40", aspect: "aspect-[3/2]" },
+    { src: "/gallery/41.jpeg", alt: "41", aspect: "aspect-[3/2]" },
+    { src: "/gallery/42.jpeg", alt: "42", aspect: "aspect-[3/2]" },
+    { src: "/gallery/43.jpeg", alt: "43", aspect: "aspect-[3/2]" },
+    { src: "/gallery/44.jpeg", alt: "44", aspect: "aspect-[3/2]" },
+    { src: "/gallery/45.jpeg", alt: "45", aspect: "aspect-[3/2]" },
+    { src: "/gallery/46.jpeg", alt: "46", aspect: "aspect-[3/2]" },
+    { src: "/gallery/47.jpeg", alt: "47", aspect: "aspect-[2/3]" },
+    { src: "/gallery/48.jpeg", alt: "48", aspect: "aspect-[3/2]" },
+    { src: "/gallery/49.jpeg", alt: "49", aspect: "aspect-[3/2]" },
+    { src: "/gallery/50.jpeg", alt: "50", aspect: "aspect-[3/2]" },
+    { src: "/gallery/51.jpeg", alt: "51", aspect: "aspect-[3/2]" },
+    { src: "/gallery/52.jpeg", alt: "52", aspect: "aspect-[3/2]" },
+    { src: "/gallery/53.jpeg", alt: "53", aspect: "aspect-[3/2]" },
+    { src: "/gallery/54.jpeg", alt: "54", aspect: "aspect-[3/2]" },
+    { src: "/gallery/55.jpeg", alt: "55", aspect: "aspect-[3/2]" },
+    { src: "/gallery/56.jpeg", alt: "56", aspect: "aspect-[3/2]" },
+    { src: "/gallery/57.jpeg", alt: "57", aspect: "aspect-[3/2]" },
+    { src: "/gallery/58.jpeg", alt: "58", aspect: "aspect-[3/2]" },
+    { src: "/gallery/59.jpeg", alt: "59", aspect: "aspect-[3/2]" },
+    { src: "/gallery/60.jpeg", alt: "60", aspect: "aspect-[3/2]" },
+    { src: "/gallery/61.jpeg", alt: "61", aspect: "aspect-[3/2]" },
+    { src: "/gallery/62.jpeg", alt: "62", aspect: "aspect-[3/2]" },
+    { src: "/gallery/63.jpeg", alt: "63", aspect: "aspect-[3/2]" },
+    { src: "/gallery/64.jpeg", alt: "64", aspect: "aspect-[3/2]" },
+    { src: "/gallery/65.jpeg", alt: "65", aspect: "aspect-[3/2]" },
+    { src: "/gallery/66.jpeg", alt: "66", aspect: "aspect-[3/2]" },
+    { src: "/gallery/67.jpeg", alt: "67", aspect: "aspect-[3/2]" }
   ];
 
   return (
-    <section className="py-24 section-gradient">
+    <section className="p-12 section-gradient">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <motion.div
           initial={{ opacity: 0, y: 30 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.8 }}
-          className="text-center mb-16"
+          className="text-center mb-6"
         >
           <span className="text-(--ngo-orange) font-semibold uppercase tracking-wider text-sm">
             Gallery
@@ -539,38 +625,15 @@ function GallerySection() {
             Glimpses of our journey in transforming lives
           </p>
         </motion.div>
-        <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
-          {images.map((image, index) => (
-            <motion.div
-              key={index}
-              initial={{ opacity: 0, scale: 0.9 }}
-              whileInView={{ opacity: 1, scale: 1 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.5, delay: index * 0.1 }}
-              className={`relative overflow-hidden rounded-2xl ${index === 0 || index === 5 ? "md:col-span-2 md:row-span-2" : ""
-                }`}
-            >
-              <Image
-                src={image.src}
-                alt={image.alt}
-                width={600}
-                height={400}
-                className="w-full h-full object-cover hover:scale-110 transition-transform duration-500"
-              />
-              <div className="absolute inset-0 bg-linear-to-t from-black/50 to-transparent opacity-0 hover:opacity-100 transition-opacity duration-300 flex items-end p-4">
-                <span className="text-white font-medium">{image.alt}</span>
-              </div>
-            </motion.div>
-          ))}
-        </div>
-        <div className="text-center mt-12">
-          <Link
-            href="/gallery"
-            className="inline-flex items-center gap-2 text-(--ngo-orange) font-semibold hover:gap-3 transition-all text-lg"
-          >
-            View Full Gallery <ArrowRight className="w-5 h-5" />
-          </Link>
-        </div>
+      </div>
+      <PhotoGridSection imagesArray={images} />
+      <div className="text-center mt-4">
+        <Link
+          href="/gallery"
+          className="inline-flex items-center gap-2 text-(--ngo-orange) font-semibold hover:gap-3 transition-all text-lg"
+        >
+          View Full Gallery <ArrowRight className="w-5 h-5" />
+        </Link>
       </div>
     </section>
   );
@@ -608,7 +671,7 @@ function GetInvolvedSection() {
   ];
 
   return (
-    <section className="py-24 bg-white">
+    <section className="p-12 bg-white">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <motion.div
           initial={{ opacity: 0, y: 30 }}
@@ -679,7 +742,7 @@ function GetInvolvedSection() {
 
 function ContactSection() {
   return (
-    <section className="py-24 bg-(--ngo-cream)">
+    <section className="p-12 bg-(--ngo-cream)">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="grid lg:grid-cols-2 gap-16">
           <motion.div
@@ -795,7 +858,7 @@ function ContactSection() {
 
 function CTASection() {
   return (
-    <section className="py-24 relative overflow-hidden">
+    <section className="p-12 relative overflow-hidden">
       <div className="absolute inset-0">
         <Image
           src="https://images.unsplash.com/photo-1529390079861-591f72bea6c0?w=1920&q=80"
