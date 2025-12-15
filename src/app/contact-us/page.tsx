@@ -16,13 +16,14 @@ import {
   ArrowRight,
 } from "lucide-react";
 import Link from "next/link";
+import SpotlightCard from "@/src/components/ui/spotlightCard";
 
 function PageHero() {
   return (
     <section className="relative py-32 overflow-hidden">
       <div className="absolute inset-0">
         <Image
-          src="https://images.unsplash.com/photo-1516321497487-e288fb19713f?w=1920&q=80"
+          src="/college.jfif"
           alt="Contact"
           fill
           className="object-cover"
@@ -61,21 +62,21 @@ function ContactInfoSection() {
       icon: MapPin,
       title: "Our Location",
       details: ["IIIT Allahabad", "Jhalwa, Prayagraj", "Uttar Pradesh 211015, India"],
-      color: "var(--ngo-orange)",
+      color: "#e85a4f",
       url: "/contact-us#location"
     },
     {
       icon: Mail,
       title: "Email Us",
       details: ["prayaas@iiita.ac.in"],
-      color: "var(--ngo-green)",
-      url:"mailto:prayaas@iiita.ac.in"
+      color: "#2d6a4f",
+      url: "mailto:prayaas@iiita.ac.in"
     },
     {
       icon: Phone,
       title: "Call Us",
       details: ["+91 98765 43210"],
-      color: "var(--ngo-yellow)",
+      color: "#eec643",
     },
     {
       icon: Clock,
@@ -86,9 +87,9 @@ function ContactInfoSection() {
   ];
 
   return (
-    <section className="py-24 bg-white">
+    <section className="py-12 bg-white">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-8 mb-16">
+        <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-8">
           {contactInfo.map((info, index) => (
 
             <motion.div
@@ -97,8 +98,9 @@ function ContactInfoSection() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.5, delay: index * 0.1 }}
-              className="text-center p-6 bg-(--ngo-cream) rounded-2xl"
+              className="h-full"
             >
+              <SpotlightCard className="h-full text-center p-6 rounded-2xl bg-white border-transparent text-(--ngo-dark) shadow-lg card-hover" spotlightColor="rgba(255, 138, 76, 0.2)">
               <Link href={`${info.url || "/contact-us"}`}>
                 <div
                   className="w-14 h-14 rounded-full mx-auto mb-4 flex items-center justify-center"
@@ -120,8 +122,8 @@ function ContactInfoSection() {
                   ))}
                 </div>
               </Link>
+              </SpotlightCard>
             </motion.div>
-
           ))}
         </div>
       </div>
@@ -131,7 +133,7 @@ function ContactInfoSection() {
 
 function ContactFormSection() {
   return (
-    <section className="py-24 section-gradient">
+    <section className="py-12 section-gradient">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="grid lg:grid-cols-2 gap-16">
           <motion.div
@@ -255,7 +257,7 @@ function ContactFormSection() {
               </div>
               <button
                 type="submit"
-                className="w-full btn-primary flex items-center justify-center gap-2"
+                className="w-full btn-primary flex items-center justify-center gap-2 cursor-pointer"
               >
                 Send Message <ArrowRight className="w-5 h-5" />
               </button>
@@ -269,7 +271,7 @@ function ContactFormSection() {
 
 function MapSection() {
   return (
-    <section id="location" className="py-24 bg-white">
+    <section id="location" className="py-12 bg-white">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <motion.div
           initial={{ opacity: 0, y: 30 }}
@@ -388,7 +390,7 @@ export default function ContactPage() {
       <ContactInfoSection />
       <ContactFormSection />
       <MapSection />
-      <FAQSection />
+      {/* <FAQSection /> */}
     </>
   );
 }

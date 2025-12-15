@@ -12,14 +12,21 @@ import {
   BookOpen,
   Award,
   ArrowRight,
+  Rainbow,
+  Sun,
+  Music4,
+  Clock5,
+  Handshake,
 } from "lucide-react";
+import SpotlightCard from "@/src/components/SpotlightCard";
+import { useEffect, useState } from "react";
 
 function PageHero() {
   return (
     <section className="relative py-32 overflow-hidden">
       <div className="absolute inset-0">
         <Image
-          src="https://images.unsplash.com/photo-1427504494785-3a9ca7044f45?w=1920&q=80"
+          src="/a5.jpg"
           alt="Students"
           fill
           className="object-cover"
@@ -53,6 +60,27 @@ function PageHero() {
 }
 
 function StorySection() {
+
+  const images = [
+    { src: "/a1.jpeg", alt: "Children learning" },
+    { src: "/a2.jpg", alt: "Students studying" },
+    { src: "/a3.jpeg", alt: "Students studying" },
+    { src: "/a4.jpg", alt: "Students studying" },
+  ];
+
+  const [activeIndex, setActiveIndex] = useState(0);
+
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setActiveIndex((prev) => (prev + 1) % images.length);
+    }, 5000);
+
+    return () => clearInterval(timer);
+  }, [images.length]);
+
+  const handleDotClick = (index: number) => {
+    setActiveIndex(index);
+  };
   return (
     <section className="py-24 bg-white">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -98,14 +126,40 @@ function StorySection() {
             transition={{ duration: 0.8 }}
             className="relative"
           >
-            <div className="relative z-10 rounded-2xl overflow-hidden shadow-2xl">
-              <Image
-                src="https://images.unsplash.com/photo-1544717305-2782549b5136?w=800&q=80"
-                alt="Teaching session"
-                width={600}
-                height={500}
-                className="w-full h-auto"
-              />
+            <div className="relative z-10 rounded-2xl overflow-hidden shadow-2xl transition-transform duration-300 hover:scale-105">
+              <motion.div
+                className="flex"
+                animate={{ x: `-${activeIndex * 100}%` }}
+                transition={{ duration: 0.6, ease: "easeInOut" }}
+              >
+                {images.map((image, index) => (
+                  <div key={image.src} className="relative min-w-full aspect-6/5">
+                    <Image
+                      src={image.src}
+                      alt={image.alt}
+                      fill
+                      sizes="(max-width: 1024px) 100vw, 50vw"
+                      className="object-cover"
+                      priority={index === 0}
+                      loading={index === 0 ? "eager" : "lazy"}
+                    />
+                  </div>
+                ))}
+              </motion.div>
+              <div className="absolute inset-x-0 bottom-4 flex items-center justify-center gap-2">
+                {images.map((image, index) => (
+                  <button
+                    key={image.src}
+                    type="button"
+                    aria-label={`Show slide ${index + 1}`}
+                    onClick={() => handleDotClick(index)}
+                    className={`h-2.5 rounded-full transition-all duration-300 ${activeIndex === index
+                        ? "w-8 bg-(--ngo-orange)"
+                        : "w-3 bg-white/70 hover:bg-white"
+                      }`}
+                  />
+                ))}
+              </div>
             </div>
             <div className="absolute -bottom-6 -left-6 w-72 h-72 bg-(--ngo-orange)/10 rounded-2xl -z-10" />
             <div className="absolute -top-6 -right-6 w-48 h-48 bg-(--ngo-green)/10 rounded-2xl -z-10" />
@@ -126,46 +180,56 @@ function MissionVisionSection() {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.8 }}
-            className="bg-white rounded-3xl p-10 shadow-xl"
+            className="h-full"
           >
-            <div className="w-16 h-16 rounded-2xl bg-(--ngo-orange)/20 flex items-center justify-center mb-6">
-              <Target className="w-8 h-8 text-(--ngo-orange)" />
-            </div>
-            <h3
-              className="text-3xl font-bold text-(--ngo-dark) mb-4"
-              style={{ fontFamily: "'Playfair Display', serif" }}
+            <SpotlightCard
+              className="h-full bg-white text-(--ngo-dark) border-transparent rounded-3xl p-10 shadow-xl card-hover"
+              spotlightColor="rgba(234, 179, 8, 0.22)"
             >
-              Our Mission
-            </h3>
-            <p className="text-(--ngo-gray) text-lg leading-relaxed">
-              To empower underprivileged children through quality education,
-              life skills training, and holistic development programs, enabling
-              them to break the cycle of poverty and build a brighter future
-              for themselves and their communities.
-            </p>
+              <div className="w-16 h-16 rounded-2xl bg-(--ngo-orange)/20 flex items-center justify-center mb-6">
+                <Target className="w-8 h-8 text-(--ngo-orange)" />
+              </div>
+              <h3
+                className="text-3xl font-bold text-(--ngo-dark) mb-4"
+                style={{ fontFamily: "'Playfair Display', serif" }}
+              >
+                Our Mission
+              </h3>
+              <p className="text-(--ngo-gray) text-lg leading-relaxed">
+                To empower underprivileged children through quality education,
+                life skills training, and holistic development programs, enabling
+                them to break the cycle of poverty and build a brighter future
+                for themselves and their communities.
+              </p>
+            </SpotlightCard>
           </motion.div>
           <motion.div
             initial={{ opacity: 0, y: 30 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.8, delay: 0.2 }}
-            className="bg-white rounded-3xl p-10 shadow-xl"
+            className="h-full"
           >
-            <div className="w-16 h-16 rounded-2xl bg-(--ngo-green)/20 flex items-center justify-center mb-6">
-              <Eye className="w-8 h-8 text-(--ngo-green)" />
-            </div>
-            <h3
-              className="text-3xl font-bold text-(--ngo-dark) mb-4"
-              style={{ fontFamily: "'Playfair Display', serif" }}
+            <SpotlightCard
+              className="h-full bg-white text-(--ngo-dark) border-transparent rounded-3xl p-10 shadow-xl card-hover"
+              spotlightColor="rgba(234, 179, 8, 0.22)"
             >
-              Our Vision
-            </h3>
-            <p className="text-(--ngo-gray) text-lg leading-relaxed">
-              A world where every child, regardless of their background, has
-              access to quality education and the opportunity to realize their
-              full potential. We envision communities where education is a
-              bridge to opportunity, not a barrier.
-            </p>
+              <div className="w-16 h-16 rounded-2xl bg-(--ngo-green)/20 flex items-center justify-center mb-6">
+                <Eye className="w-8 h-8 text-(--ngo-green)" />
+              </div>
+              <h3
+                className="text-3xl font-bold text-(--ngo-dark) mb-4"
+                style={{ fontFamily: "'Playfair Display', serif" }}
+              >
+                Our Vision
+              </h3>
+              <p className="text-(--ngo-gray) text-lg leading-relaxed">
+                A world where every child, regardless of their background, has
+                access to quality education and the opportunity to realize their
+                full potential. We envision communities where education is a
+                bridge to opportunity, not a barrier.
+              </p>
+            </SpotlightCard>
           </motion.div>
         </div>
       </div>
@@ -176,45 +240,52 @@ function MissionVisionSection() {
 function ValuesSection() {
   const values = [
     {
-      icon: Heart,
-      title: "Compassion",
+      icon: Handshake,
+      title: "Responsibility",
       description:
-        "We approach every child with empathy, understanding their unique challenges and needs.",
-      color: "var(--ngo-orange)",
+        "Every individual must realise that responsibility is the very fundamental basis of the functioning of the system",
+      color: "#e85a4f",
     },
     {
       icon: BookOpen,
-      title: "Education First",
+      title: "Discipline",
       description:
-        "We believe education is the most powerful tool for transforming lives and communities.",
-      color: "var(--ngo-green)",
-    },
-    {
-      icon: Users,
-      title: "Community",
-      description:
-        "We work together as a family, supporting each other in our mission to create change.",
-      color: "var(--ngo-yellow)",
+        "The main focus of teaching besides learning must be in discipline.",
+      color: "#2d6a4f",
     },
     {
       icon: Sparkles,
-      title: "Excellence",
+      title: "Creativity",
       description:
-        "We strive for excellence in everything we do, setting high standards for ourselves.",
+        "Besides learning, it is absolutely necessary to instill the sparks of creativity in the students.",
+      color: "#eec643",
+    },
+    {
+      icon: Clock5,
+      title: "Punctuality",
+      description:
+        "Punctuality in all aspects is the basis of smooth functioning of the organization.",
       color: "#8b5cf6",
     },
     {
-      icon: Award,
-      title: "Integrity",
+      icon: Music4,
+      title: "Joy",
       description:
-        "We operate with transparency and honesty, building trust with all stakeholders.",
+        "It is necessary to always enjoy & have fun with what one is doing and to not consider it burden.",
       color: "#ec4899",
     },
     {
-      icon: Target,
-      title: "Impact",
+      icon: Sun,
+      title: "Happiness",
       description:
-        "We measure our success by the positive change we create in children's lives.",
+        "Happiness & Living in the moment must be the very nature of one and all.",
+      color: "#fbbf24",
+    },
+    {
+      icon: Target,
+      title: "Priorities",
+      description:
+        "Priorities must be set straight first Studies then Prayaas.",
       color: "#14b8a6",
     },
   ];
@@ -236,13 +307,16 @@ function ValuesSection() {
             className="text-4xl md:text-5xl font-bold text-(--ngo-dark) mt-2 mb-4"
             style={{ fontFamily: "'Playfair Display', serif" }}
           >
-            Our Core Values
+            Our Principles
           </h2>
           <p className="text-(--ngo-gray) text-lg max-w-2xl mx-auto">
-            These principles guide everything we do at Prayaas
+            These 7 principles guide everything we do at Prayaas
           </p>
         </motion.div>
-        <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-8">
+        <div
+          className="grid gap-8 justify-center"
+          style={{ gridTemplateColumns: "repeat(auto-fit, minmax(260px, 1fr))" }}
+        >
           {values.map((value, index) => (
             <motion.div
               key={value.title}
@@ -250,23 +324,28 @@ function ValuesSection() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.5, delay: index * 0.1 }}
-              className="bg-(--ngo-cream) rounded-2xl p-8 card-hover"
+              className="h-full"
             >
-              <div
-                className="w-14 h-14 rounded-2xl mb-6 flex items-center justify-center"
-                style={{ backgroundColor: `${value.color}20` }}
+              <SpotlightCard
+                className="h-full bg-white border-transparent text-(--ngo-dark) shadow-lg card-hover"
+                spotlightColor="rgba(234, 179, 8, 0.22)"
               >
-                <value.icon className="w-7 h-7" style={{ color: value.color }} />
-              </div>
-              <h3
-                className="text-xl font-bold text-(--ngo-dark) mb-3"
-                style={{ fontFamily: "'Playfair Display', serif" }}
-              >
-                {value.title}
-              </h3>
-              <p className="text-(--ngo-gray) leading-relaxed">
-                {value.description}
-              </p>
+                <div
+                  className="w-14 h-14 rounded-2xl mb-6 flex items-center justify-center"
+                  style={{ backgroundColor: `${value.color}20` }}
+                >
+                  <value.icon className="w-7 h-7" style={{ color: value.color }} />
+                </div>
+                <h3
+                  className="text-xl font-bold text-(--ngo-dark) mb-3"
+                  style={{ fontFamily: "'Playfair Display', serif" }}
+                >
+                  {value.title}
+                </h3>
+                <p className="text-(--ngo-gray) leading-relaxed">
+                  {value.description}
+                </p>
+              </SpotlightCard>
             </motion.div>
           ))}
         </div>
@@ -280,22 +359,22 @@ function TeamSection() {
     {
       name: "Dr. Prateek Kumar",
       role: "Faculty Advisor",
-      image: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=300&q=80",
+      image: "",
     },
     {
       name: "Ananya Singh",
       role: "President",
-      image: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=300&q=80",
+      image: "",
     },
     {
       name: "Rahul Verma",
       role: "Vice President",
-      image: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=300&q=80",
+      image: "",
     },
     {
       name: "Priya Patel",
       role: "Education Head",
-      image: "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=300&q=80",
+      image: "",
     },
   ];
 

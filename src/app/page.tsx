@@ -4,6 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { motion, useInView } from "framer-motion";
+import SpotlightCard from "@/src/components/ui/spotlightCard";
 import {
   Heart,
   Users,
@@ -17,6 +18,7 @@ import {
   MapPin,
   ChevronLeft,
   ChevronRight,
+  Phone,
 } from "lucide-react";
 
 function Counter({ end, suffix = "", duration = 2000 }: { end: number; suffix?: string; duration?: number }) {
@@ -178,9 +180,9 @@ function AboutSection() {
                     className="w-14 h-14 rounded-full mx-auto mb-3 flex items-center justify-center"
                     style={{ backgroundColor: `${item.color}20` }}
                   >
-                    <item.icon className="w-7 h-7" style={{ color: item.color }} />
+                    <item.icon className="w-9 h-9" style={{ color: item.color }} />
                   </div>
-                  <span className="font-semibold text-(--ngo-dark)">
+                  <span className="font-bold text-(--ngo-dark)">
                     {item.label}
                   </span>
                 </div>
@@ -303,29 +305,31 @@ function ProgramsSection() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.5, delay: index * 0.1 }}
-              className="bg-white rounded-2xl p-8 shadow-lg card-hover"
+              className="h-full"
             >
-              <div
-                className="w-16 h-16 rounded-2xl mb-6 flex items-center justify-center"
-                style={{ backgroundColor: `${program.color}15` }}
+              <SpotlightCard
+                className="h-full bg-white border-transparent text-(--ngo-dark) shadow-lg card-hover"
+                spotlightColor="rgba(255, 138, 76, 0.2)"
               >
-                <program.icon className="w-8 h-8" style={{ color: program.color }} />
-              </div>
-              <h3
-                className="text-xl font-bold text-(--ngo-dark) mb-3"
-                style={{ fontFamily: "'Playfair Display', serif" }}
-              >
-                {program.title}
-              </h3>
-              <p className="text-(--ngo-gray) leading-relaxed">
-                {program.description}
-              </p>
-              <Link
-                href={`/programs#${program.title.toLowerCase().replace(/ /g, "-")}`}
-                className="inline-flex items-center gap-2 mt-4 text-(--ngo-orange) font-semibold hover:gap-3 transition-all"
-              >
-                Learn More <ArrowRight className="w-4 h-4" />
-              </Link>
+                <div className="w-16 h-16 rounded-2xl mb-6 flex items-center justify-center" style={{ backgroundColor: `${program.color}15` }}>
+                  <program.icon className="w-10 h-10" style={{ color: program.color }} />
+                </div>
+                <h3
+                  className="text-xl font-bold text-(--ngo-dark) mb-3"
+                  style={{ fontFamily: "'Playfair Display', serif" }}
+                >
+                  {program.title}
+                </h3>
+                <p className="text-(--ngo-gray) leading-relaxed">
+                  {program.description}
+                </p>
+                <Link
+                  href={`/programs#${program.title.toLowerCase().replace(/ /g, "-")}`}
+                  className="inline-flex items-center gap-2 mt-4 text-(--ngo-orange) font-semibold hover:gap-3 transition-all"
+                >
+                  Learn More <ArrowRight className="w-4 h-4" />
+                </Link>
+              </SpotlightCard>
             </motion.div>
           ))}
         </div>
@@ -336,10 +340,10 @@ function ProgramsSection() {
 
 function ImpactSection() {
   const stats = [
-    { value: 500, suffix: "+", label: "Children Educated", icon: BookOpen },
-    { value: 150, suffix: "+", label: "Active Volunteers", icon: Users },
-    { value: 50, suffix: "+", label: "Events Conducted", icon: Calendar },
-    { value: 10, suffix: "+", label: "Years of Impact", icon: Heart },
+    { value: 5000, suffix: "+", label: "Children Educated", icon: BookOpen },
+    { value: 30, suffix: "+", label: "Active Volunteers", icon: Users },
+    { value: 100, suffix: "+", label: "Events Conducted", icon: Calendar },
+    { value: 21, suffix: "+", label: "Years of Impact", icon: Heart },
   ];
 
   return (
@@ -378,18 +382,23 @@ function ImpactSection() {
               whileInView={{ opacity: 1, scale: 1 }}
               viewport={{ once: true }}
               transition={{ duration: 0.5, delay: index * 0.1 }}
-              className="text-center p-8 rounded-2xl bg-white/5 backdrop-blur-sm border border-white/10"
+              className="h-full"
             >
-              <div className="w-16 h-16 rounded-full bg-(--ngo-orange)/20 flex items-center justify-center mx-auto mb-4">
-                <stat.icon className="w-8 h-8 text-(--ngo-orange)" />
-              </div>
-              <div
-                className="text-5xl font-bold text-white mb-2"
-                style={{ fontFamily: "'Playfair Display', serif" }}
+              <SpotlightCard
+                className="h-full text-center p-8 rounded-2xl bg-white/5 backdrop-blur-sm border border-white/10"
+                spotlightColor="rgba(255, 255, 255, 0.25)"
               >
-                <Counter end={stat.value} suffix={stat.suffix} />
-              </div>
-              <p className="text-gray-400 font-medium">{stat.label}</p>
+                <div className="w-16 h-16 rounded-full bg-(--ngo-orange)/20 flex items-center justify-center mx-auto mb-4">
+                  <stat.icon className="w-8 h-8 text-(--ngo-orange)" />
+                </div>
+                <div
+                  className="text-5xl font-bold text-white mb-2"
+                  style={{ fontFamily: "'Playfair Display', serif" }}
+                >
+                  <Counter end={stat.value} suffix={stat.suffix} />
+                </div>
+                <p className="text-gray-400 font-medium">{stat.label}</p>
+              </SpotlightCard>
             </motion.div>
           ))}
         </div>
@@ -827,6 +836,10 @@ function CTASection() {
               <Users className="w-5 h-5" />
               Join as Volunteer
             </Link>
+            <Link href="/get-involved#volunteer" className="btn-outline flex items-center justify-center gap-2">
+              <Phone className="w-5 h-5" />
+              Contact Us
+            </Link>
           </div>
         </motion.div>
       </div>
@@ -844,7 +857,7 @@ export default function Home() {
       <TestimonialsSection />
       <GallerySection />
       <GetInvolvedSection />
-      <ContactSection />
+      {/* <ContactSection /> */}
       <CTASection />
     </>
   );
