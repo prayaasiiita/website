@@ -64,8 +64,9 @@ function HeroSection() {
           priority
         />
         <div className="hero-gradient absolute inset-0" />
+        <div className="absolute inset-0 bg-linear-to-b from-black/60 via-black/25 to-black/10" />
       </div>
-      <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+      <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center pt-24 sm:pt-32">
         <motion.div
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
@@ -79,7 +80,7 @@ function HeroSection() {
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, delay: 0.2 }}
-          className="text-4xl sm:text-5xl md:text-7xl font-bold text-white mb-6 leading-tight"
+          className="text-4xl sm:text-5xl md:text-7xl font-bold text-white mb-6 leading-tight drop-shadow-[0_6px_18px_rgba(0,0,0,0.45)]"
           style={{ fontFamily: "'Playfair Display', serif" }}
         >
           Empowering Lives,
@@ -100,11 +101,11 @@ function HeroSection() {
           transition={{ duration: 0.8, delay: 0.6 }}
           className="flex flex-col sm:flex-row gap-4 justify-center"
         >
-          <Link href="/get-involved#donate" className="btn-primary flex items-center justify-center gap-2">
+          <Link href="/get-involved#donate" className="btn-primary flex items-center justify-center gap-2 w-full sm:w-auto">
             <Heart className="w-5 h-5" />
             Donate Now
           </Link>
-          <Link href="/contact-us" className="btn-outline flex items-center justify-center gap-2">
+          <Link href="/contact-us" className="btn-outline flex items-center justify-center gap-2 w-full sm:w-auto">
             <Users className="w-5 h-5" />
             Contact Us
           </Link>
@@ -135,7 +136,7 @@ function AboutSection() {
   };
 
   return (
-    <section className="p-12 bg-white">
+    <section className="bg-white py-12 sm:py-16">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="grid lg:grid-cols-2 gap-16 items-center">
           <motion.div
@@ -165,7 +166,7 @@ function AboutSection() {
               life skills training, and recreational activities that nurture their
               overall development.
             </p>
-            <div className="grid grid-cols-3 gap-6">
+            <div className="grid grid-cols-2 sm:grid-cols-3 gap-4 sm:gap-6">
               {[
                 { icon: Heart, label: "Compassion", color: "var(--ngo-orange)" },
                 { icon: BookOpen, label: "Education", color: "var(--ngo-green)" },
@@ -269,7 +270,7 @@ function ProgramsSection() {
   ];
 
   return (
-    <section className="p-12 section-gradient">
+    <section className="section-gradient py-12 sm:py-16">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <motion.div
           initial={{ opacity: 0, y: 30 }}
@@ -292,7 +293,7 @@ function ProgramsSection() {
             child&apos;s development
           </p>
         </motion.div>
-        <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 sm:gap-8">
           {programs.map((program, index) => (
             <motion.div
               key={program.title}
@@ -342,7 +343,7 @@ function ImpactSection() {
   ];
 
   return (
-    <section className="p-12 bg-(--ngo-dark) relative overflow-hidden">
+    <section className="bg-(--ngo-dark) relative overflow-hidden py-12 sm:py-16">
       <div className="absolute inset-0 opacity-10">
         <div className="absolute top-0 left-0 w-96 h-96 bg-(--ngo-orange) rounded-full blur-3xl -translate-x-1/2 -translate-y-1/2" />
         <div className="absolute bottom-0 right-0 w-96 h-96 bg-(--ngo-green) rounded-full blur-3xl translate-x-1/2 translate-y-1/2" />
@@ -369,7 +370,7 @@ function ImpactSection() {
             towards a brighter future
           </p>
         </motion.div>
-        <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-8">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 sm:gap-8">
           {stats.map((stat, index) => (
             <motion.div
               key={stat.label}
@@ -434,13 +435,30 @@ function TestimonialsSection() {
     },
   ];
   const [hovered, setHovered] = useState<number | null>(null);
+  const [columnCount, setColumnCount] = useState(4);
+
+  useEffect(() => {
+    const getColumns = () => {
+      if (typeof window === "undefined") return 4;
+      const width = window.innerWidth;
+      if (width < 640) return 1;
+      if (width < 1024) return 2;
+      return 4;
+    };
+
+    const handleResize = () => setColumnCount(getColumns());
+
+    handleResize();
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
+
+  const hoverEnabled = columnCount === 4;
 
   const columnTemplate =
-    hovered === null
-      ? "repeat(4, minmax(0, 1fr))"
-      : testimonials
-        .map((_, i) => (hovered === i ? "1.6fr" : "0.8fr"))
-        .join(" ");
+    hoverEnabled && hovered !== null
+      ? testimonials.map((_, i) => (hovered === i ? "1.6fr" : "0.8fr")).join(" ")
+      : `repeat(${columnCount}, minmax(0, 1fr))`;
 
   return (
     <section className="py-12 bg-white">
@@ -462,7 +480,7 @@ function TestimonialsSection() {
             Stories of Hope
           </h2>
           <p className="text-(--ngo-gray) text-lg max-w-2xl mx-auto">
-            Hover over the stories to see the impact our community creates
+            Hover over the stories on desktop; tap to read on mobile
           </p>
         </motion.div>
         <div
@@ -477,12 +495,13 @@ function TestimonialsSection() {
               viewport={{ once: true }}
               transition={{ duration: 0.6, delay: index * 0.08, ease: "easeOut" }}
               animate={{
-                scale: hovered === null ? 1 : hovered === index ? 1.05 : 0.92,
-                zIndex: hovered === index ? 10 : 0,
+                scale: hoverEnabled ? (hovered === null ? 1 : hovered === index ? 1.05 : 0.92) : 1,
+                zIndex: hoverEnabled && hovered === index ? 10 : 0,
               }}
               className="relative h-80 transition-transform duration-500 ease-out isolation-isolate"
-              onMouseEnter={() => setHovered(index)}
-              onMouseLeave={() => setHovered(null)}
+              onMouseEnter={() => hoverEnabled && setHovered(index)}
+              onMouseLeave={() => hoverEnabled && setHovered(null)}
+              onClick={() => !hoverEnabled && setHovered(hovered === index ? null : index)}
             >
               <div className="absolute inset-0 rounded-2xl overflow-hidden shadow-lg">
                 <Image
@@ -499,14 +518,14 @@ function TestimonialsSection() {
                 initial={{ scaleX: 0, opacity: 0 }}
                 animate={{
                   scaleX: 1,
-                  opacity: hovered === index ? 1 : 0,
+                  opacity: hoverEnabled ? (hovered === index ? 1 : 0) : 1,
                 }}
                 transition={{ duration: 0.55, ease: "easeInOut" }}
               />
               <motion.div
                 className="absolute inset-0 p-6 md:p-7 flex flex-col justify-end gap-3 text-white"
                 initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: hovered === index ? 1 : 0, y: hovered === index ? 0 : 10 }}
+                animate={{ opacity: hoverEnabled ? (hovered === index ? 1 : 0) : 1, y: hoverEnabled ? (hovered === index ? 0 : 10) : 0 }}
                 transition={{ duration: 0.5, ease: "easeInOut" }}
               >
                 <div className="flex items-center gap-3">
@@ -603,7 +622,7 @@ function GallerySection() {
   ];
 
   return (
-    <section className="p-12 section-gradient">
+    <section className="section-gradient py-12 sm:py-16">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <motion.div
           initial={{ opacity: 0, y: 30 }}
@@ -627,7 +646,7 @@ function GallerySection() {
         </motion.div>
       </div>
       <PhotoGridSection imagesArray={images} />
-      <div className="text-center mt-4">
+      <div className="text-center mt-6 sm:mt-10">
         <Link
           href="/gallery"
           className="inline-flex items-center gap-2 text-(--ngo-orange) font-semibold hover:gap-3 transition-all text-lg"
@@ -671,7 +690,7 @@ function GetInvolvedSection() {
   ];
 
   return (
-    <section className="p-12 bg-white">
+    <section className="bg-white py-12 sm:py-16">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <motion.div
           initial={{ opacity: 0, y: 30 }}
@@ -694,7 +713,7 @@ function GetInvolvedSection() {
             create a brighter future
           </p>
         </motion.div>
-        <div className="grid md:grid-cols-3 gap-8">
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 sm:gap-8">
           {ways.map((way, index) => (
             <motion.div
               key={way.title}
@@ -742,7 +761,7 @@ function GetInvolvedSection() {
 
 function ContactSection() {
   return (
-    <section className="p-12 bg-(--ngo-cream)">
+    <section className="bg-(--ngo-cream) py-12 sm:py-16">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="grid lg:grid-cols-2 gap-16">
           <motion.div
@@ -858,7 +877,7 @@ function ContactSection() {
 
 function CTASection() {
   return (
-    <section className="p-12 relative overflow-hidden">
+    <section className="relative overflow-hidden py-12 sm:py-16">
       <div className="absolute inset-0">
         <Image
           src="https://images.unsplash.com/photo-1529390079861-591f72bea6c0?w=1920&q=80"
@@ -867,6 +886,7 @@ function CTASection() {
           className="object-cover"
         />
         <div className="hero-gradient absolute inset-0" />
+        <div className="absolute inset-0 bg-linear-to-b from-black/70 via-black/45 to-black/30" />
       </div>
       <div className="relative z-10 max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
         <motion.div
@@ -886,15 +906,15 @@ function CTASection() {
             Prayaas today and be part of this beautiful journey of transformation.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Link href="/get-involved#donate" className="btn-primary flex items-center justify-center gap-2">
+            <Link href="/get-involved#donate" className="btn-primary flex items-center justify-center gap-2 w-full sm:w-auto">
               <Heart className="w-5 h-5" />
               Donate Now
             </Link>
-            <Link href="/get-involved#volunteer" className="btn-outline flex items-center justify-center gap-2">
+            <Link href="/get-involved#volunteer" className="btn-outline flex items-center justify-center gap-2 w-full sm:w-auto">
               <Users className="w-5 h-5" />
               Join as Volunteer
             </Link>
-            <Link href="/get-involved#volunteer" className="btn-outline flex items-center justify-center gap-2">
+            <Link href="/get-involved#volunteer" className="btn-outline flex items-center justify-center gap-2 w-full sm:w-auto">
               <Phone className="w-5 h-5" />
               Contact Us
             </Link>
@@ -914,7 +934,7 @@ export default function Home() {
       <ImpactSection />
       <TestimonialsSection />
       <GallerySection />
-      <GetInvolvedSection />
+      {/* <GetInvolvedSection /> */}
       {/* <ContactSection /> */}
       <CTASection />
     </>
