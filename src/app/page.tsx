@@ -91,7 +91,7 @@ function HeroSection() {
           transition={{ duration: 0.8, delay: 0.4 }}
           className="text-lg sm:text-xl text-white/90 max-w-3xl mx-auto mb-10"
         >
-          Prayaas is an EARNEST attempt to bring SUNSHINE in wearisome lives. It is a VOLUNTEER movement initiated by student fraternity of IIIT-Allahabad to AMELIORATE the LIFE of not so privileged kids.
+          Prayaas is an earnest attempt to bring sunshine in wearisome lives. It is a volunteer movement initiated by student fraternity of IIIT Allahabad to ameliorate the life of not so privileged kids.
         </motion.p>
         <motion.div
           initial={{ opacity: 0, y: 30 }}
@@ -108,11 +108,6 @@ function HeroSection() {
             Contact Us
           </Link>
         </motion.div>
-      </div>
-      <div className="absolute bottom-10 left-1/2 -translate-x-1/2 animate-bounce">
-        <div className="w-8 h-12 border-2 border-white rounded-full flex justify-center pt-2">
-          <div className="w-1.5 h-3 bg-white rounded-full animate-pulse" />
-        </div>
       </div>
     </section>
   );
