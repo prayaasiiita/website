@@ -17,6 +17,8 @@ import {
   Music4,
   Clock5,
   Handshake,
+  Mail,
+  Linkedin,
 } from "lucide-react";
 import SpotlightCard from "@/src/components/SpotlightCard";
 import { useEffect, useState } from "react";
@@ -154,8 +156,8 @@ function StorySection() {
                     aria-label={`Show slide ${index + 1}`}
                     onClick={() => handleDotClick(index)}
                     className={`h-2.5 rounded-full transition-all duration-300 ${activeIndex === index
-                        ? "w-8 bg-(--ngo-orange)"
-                        : "w-3 bg-white/70 hover:bg-white"
+                      ? "w-8 bg-(--ngo-orange)"
+                      : "w-3 bg-white/70 hover:bg-white"
                       }`}
                   />
                 ))}
@@ -354,33 +356,275 @@ function ValuesSection() {
   );
 }
 
+// Team Member Card Component
+interface TeamMember {
+  name: string;
+  role: string;
+  rollNo?: string;
+  image: string;
+  email: string;
+  linkedin: string;
+}
+
+function TeamMemberCard({
+  member,
+  index,
+  size = "small",
+}: {
+  member: TeamMember;
+  index: number;
+  size?: "large" | "medium" | "small";
+}) {
+  const sizeClasses = {
+    large: {
+      card: "p-5 max-w-md",
+      image: "w-24 h-24 md:w-28 md:h-28",
+      name: "text-lg",
+      role: "text-sm",
+      icons: "w-4 h-4",
+    },
+    medium: {
+      card: "p-5 max-w-sm",
+      image: "w-24 h-24 md:w-28 md:h-28",
+      name: "text-lg",
+      role: "text-sm",
+      icons: "w-4 h-4",
+    },
+    small: {
+      card: "p-5",
+      image: "w-24 h-24 md:w-28 md:h-28",
+      name: "text-lg",
+      role: "text-sm",
+      icons: "w-4 h-4",
+    },
+  };
+
+  const classes = sizeClasses[size];
+
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 30 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true }}
+      transition={{ duration: 0.5, delay: index * 0.1 }}
+      whileHover={{ scale: 1.03 }}
+      className={`bg-white rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 ${classes.card}`}
+    >
+      <div className="flex flex-col items-center text-center">
+        <div
+          className={`relative ${classes.image} mb-4 rounded-full overflow-hidden ring-4 ring-(--ngo-orange)/20`}
+        >
+          {member.image ? (
+            <Image
+              src={member.image}
+              alt={`Photo of ${member.name}`}
+              fill
+              className="object-cover"
+            />
+          ) : (
+            <div className="w-full h-full bg-gradient-to-br from-(--ngo-orange)/20 to-(--ngo-green)/20 flex items-center justify-center">
+              <Users className="w-1/2 h-1/2 text-(--ngo-gray)/50" />
+            </div>
+          )}
+        </div>
+        <h3
+          className={`font-bold text-(--ngo-dark) ${classes.name}`}
+          style={{ fontFamily: "'Playfair Display', serif" }}
+        >
+          {member.name}
+        </h3>
+        <p className={`text-(--ngo-orange) font-medium ${classes.role}`}>
+          {member.role}
+        </p>
+        {member.rollNo && (
+          <p className="text-(--ngo-gray) text-xs mt-1">{member.rollNo}</p>
+        )}
+        <div className="flex gap-3 mt-4">
+          <a
+            href={`mailto:${member.email}`}
+            aria-label={`Send email to ${member.name}`}
+            className="p-2 rounded-full bg-(--ngo-orange)/10 hover:bg-(--ngo-orange)/20 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-(--ngo-orange)"
+          >
+            <Mail className={`${classes.icons} text-(--ngo-orange)`} />
+          </a>
+          <a
+            href={member.linkedin}
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label={`Visit ${member.name}'s LinkedIn profile`}
+            className="p-2 rounded-full bg-(--ngo-green)/10 hover:bg-(--ngo-green)/20 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-(--ngo-green)"
+          >
+            <Linkedin className={`${classes.icons} text-(--ngo-green)`} />
+          </a>
+        </div>
+      </div>
+    </motion.div>
+  );
+}
+
+// Student Team Group Component
+function StudentTeamGroup({
+  title,
+  members,
+  startIndex,
+}: {
+  title: string;
+  members: TeamMember[];
+  startIndex: number;
+}) {
+  return (
+    <div className="mb-12 last:mb-0">
+      <motion.h4
+        initial={{ opacity: 0, y: 20 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true }}
+        transition={{ duration: 0.5 }}
+        className="text-xl font-semibold text-(--ngo-dark) text-center mb-6"
+        style={{ fontFamily: "'Playfair Display', serif" }}
+      >
+        {title}
+      </motion.h4>
+      <div className="flex flex-wrap justify-center gap-6">
+        {members.map((member, index) => (
+          <TeamMemberCard
+            key={member.name}
+            member={member}
+            index={startIndex + index}
+            size="small"
+          />
+        ))}
+      </div>
+    </div>
+  );
+}
+
 function TeamSection() {
-  const team = [
+  // Director
+  const director: TeamMember = {
+    name: "Prof. Mukesh Kumar",
+    role: "Director, IIIT Allahabad",
+    image: "",
+    email: "director@iiita.ac.in",
+    linkedin: "https://www.linkedin.com/",
+  };
+
+  // Faculty Coordinator
+  const facultyCoordinator: TeamMember = {
+    name: "Dr. Prateek Kumar",
+    role: "Faculty Coordinator",
+    image: "",
+    email: "prateek@iiita.ac.in",
+    linkedin: "https://www.linkedin.com/",
+  };
+
+  // Student Team grouped by roles
+  const coordinators: TeamMember[] = [
     {
-      name: "Dr. Prateek Kumar",
-      role: "Faculty Advisor",
+      name: "Kavya Mitruka",
+      role: "Coordinator",
+      rollNo: "IIT2023199",
       image: "",
+      email: "iit2023199@iiita.ac.in",
+      linkedin: "https://www.linkedin.com/",
     },
     {
-      name: "Ananya Singh",
-      role: "President",
+      name: "Faizan Ali",
+      role: "Coordinator",
+      rollNo: "IIT2023192",
       image: "",
+      email: "iit2023192@iiita.ac.in",
+      linkedin: "https://www.linkedin.com/",
     },
     {
-      name: "Rahul Verma",
-      role: "Vice President",
+      name: "Raman Gautam",
+      role: "Coordinator",
+      rollNo: "IIT2023252",
       image: "",
+      email: "iit2023252@iiita.ac.in",
+      linkedin: "https://www.linkedin.com/",
+    },
+  ];
+
+  const treasurers: TeamMember[] = [
+    {
+      name: "Isha",
+      role: "Treasurer",
+      rollNo: "IIT2023202",
+      image: "",
+      email: "iit2023202@iiita.ac.in",
+      linkedin: "https://www.linkedin.com/",
     },
     {
-      name: "Priya Patel",
-      role: "Education Head",
+      name: "Shranay Malhotra",
+      role: "Treasurer",
+      rollNo: "IIT2023093",
       image: "",
+      email: "iit2023093@iiita.ac.in",
+      linkedin: "https://www.linkedin.com/",
+    },
+  ];
+
+  const speaker: TeamMember[] = [
+    {
+      name: "Gaurav Kesherwani",
+      role: "Speaker",
+      rollNo: "IEC2023011",
+      image: "",
+      email: "iec2023011@iiita.ac.in",
+      linkedin: "https://www.linkedin.com/",
+    },
+  ];
+
+  const teachingHeads: TeamMember[] = [
+    {
+      name: "Satyam Naman",
+      role: "Teaching Head",
+      rollNo: "IIT2023250",
+      image: "",
+      email: "iit2023250@iiita.ac.in",
+      linkedin: "https://www.linkedin.com/",
+    },
+    {
+      name: "Suman Kumari",
+      role: "Teaching Head",
+      rollNo: "IIT2023187",
+      image: "",
+      email: "iit2023187@iiita.ac.in",
+      linkedin: "https://www.linkedin.com/",
+    },
+  ];
+
+  const mediaTeam: TeamMember[] = [
+    {
+      name: "Aashutosh Sahu",
+      role: "Media Team",
+      rollNo: "IEC2023011",
+      image: "",
+      email: "iec2023011@iiita.ac.in",
+      linkedin: "https://www.linkedin.com/",
+    },
+    {
+      name: "Mohit Rathwa",
+      role: "Media Team",
+      rollNo: "IEC2023098",
+      image: "",
+      email: "iec2023098@iiita.ac.in",
+      linkedin: "https://www.linkedin.com/",
+    },
+    {
+      name: "Sahil Kumar",
+      role: "Media Team",
+      rollNo: "IEC2023056",
+      image: "",
+      email: "iec2023056@iiita.ac.in",
+      linkedin: "https://www.linkedin.com/",
     },
   ];
 
   return (
     <section className="py-24 section-gradient">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        {/* Section Header */}
         <motion.div
           initial={{ opacity: 0, y: 30 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -401,33 +645,61 @@ function TeamSection() {
             Dedicated individuals working together to make a difference
           </p>
         </motion.div>
-        <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-8">
-          {team.map((member, index) => (
-            <motion.div
-              key={member.name}
-              initial={{ opacity: 0, y: 30 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.5, delay: index * 0.1 }}
-              className="text-center"
-            >
-              <div className="relative w-48 h-48 mx-auto mb-6 rounded-full overflow-hidden">
-                <Image
-                  src={member.image}
-                  alt={member.name}
-                  fill
-                  className="object-cover"
-                />
-              </div>
-              <h3
-                className="text-xl font-bold text-(--ngo-dark)"
-                style={{ fontFamily: "'Playfair Display', serif" }}
-              >
-                {member.name}
-              </h3>
-              <p className="text-(--ngo-orange) font-medium">{member.role}</p>
-            </motion.div>
-          ))}
+
+        {/* Director - Largest Card, Centered */}
+        <div className="flex justify-center mb-16">
+          <TeamMemberCard member={director} index={0} size="large" />
+        </div>
+
+        {/* Faculty Coordinator - Medium Card, Centered */}
+        <div className="flex justify-center mb-20">
+          <TeamMemberCard member={facultyCoordinator} index={1} size="medium" />
+        </div>
+
+        {/* Student Leadership Team */}
+        <motion.div
+          initial={{ opacity: 0, y: 30 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.8 }}
+          className="text-center mb-12"
+        >
+          <h3
+            className="text-2xl md:text-3xl font-bold text-(--ngo-dark)"
+            style={{ fontFamily: "'Playfair Display', serif" }}
+          >
+            Student Leadership Team
+          </h3>
+          <div className="w-24 h-1 bg-(--ngo-orange) mx-auto mt-4 rounded-full" />
+        </motion.div>
+
+        {/* Student Groups */}
+        <div className="space-y-12">
+          <StudentTeamGroup
+            title="Coordinators"
+            members={coordinators}
+            startIndex={2}
+          />
+          <StudentTeamGroup
+            title="Treasurers"
+            members={treasurers}
+            startIndex={5}
+          />
+          <StudentTeamGroup
+            title="Speaker"
+            members={speaker}
+            startIndex={7}
+          />
+          <StudentTeamGroup
+            title="Teaching Heads"
+            members={teachingHeads}
+            startIndex={8}
+          />
+          <StudentTeamGroup
+            title="Media Team"
+            members={mediaTeam}
+            startIndex={10}
+          />
         </div>
       </div>
     </section>

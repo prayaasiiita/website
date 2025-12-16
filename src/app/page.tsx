@@ -911,10 +911,6 @@ function CTASection() {
               Donate Now
             </Link>
             <Link href="/get-involved#volunteer" className="btn-outline flex items-center justify-center gap-2 w-full sm:w-auto">
-              <Users className="w-5 h-5" />
-              Join as Volunteer
-            </Link>
-            <Link href="/get-involved#volunteer" className="btn-outline flex items-center justify-center gap-2 w-full sm:w-auto">
               <Phone className="w-5 h-5" />
               Contact Us
             </Link>
