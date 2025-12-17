@@ -4,15 +4,12 @@ import Image from "next/image";
 import Link from "next/link";
 import { motion } from "framer-motion";
 import {
-  Heart,
   Users,
   Target,
   Eye,
   Sparkles,
   BookOpen,
-  Award,
   ArrowRight,
-  Rainbow,
   Sun,
   Music4,
   Clock5,

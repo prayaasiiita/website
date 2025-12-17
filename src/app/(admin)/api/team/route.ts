@@ -2,6 +2,17 @@ import { NextRequest, NextResponse } from 'next/server';
 import dbConnect from '@/src/lib/mongodb';
 import TeamGroup from '@/src/models/TeamGroup';
 import { verifyToken } from '@/src/lib/auth';
+import { revalidatePublicTags, TAGS } from '@/src/lib/revalidate-paths';
+import {
+  TEAM_API_SMAXAGE_SECONDS,
+  TEAM_API_STALE_SECONDS,
+} from '@/src/lib/cache-config';
+
+export const revalidate = TEAM_API_SMAXAGE_SECONDS;
+
+const cacheHeaders = {
+  'Cache-Control': `public, s-maxage=${TEAM_API_SMAXAGE_SECONDS}, stale-while-revalidate=${TEAM_API_STALE_SECONDS}`,
+};
 
 // Helper to verify admin authentication
 function verifyAdmin(request: NextRequest) {
@@ -45,7 +56,10 @@ export async function GET(request: NextRequest) {
       return groupObj;
     });
 
-    return NextResponse.json({ groups: processedGroups }, { status: 200 });
+    return NextResponse.json(
+      { groups: processedGroups },
+      { status: 200, headers: cacheHeaders }
+    );
   } catch (error) {
     console.error('Error fetching team groups:', error);
     return NextResponse.json(
@@ -107,6 +121,7 @@ export async function POST(request: NextRequest) {
       isVisible: isVisible !== undefined ? isVisible : true,
     });
 
+    revalidatePublicTags([TAGS.TEAM, TAGS.PUBLIC]);
     return NextResponse.json(
       { message: 'Team group created successfully', group: newGroup },
       { status: 201 }

@@ -1,6 +1,24 @@
 "use client";
 
+import Image from "next/image";
 import { useEffect, useState, useCallback, useRef } from "react";
+import {
+    DndContext,
+    closestCenter,
+    KeyboardSensor,
+    PointerSensor,
+    useSensor,
+    useSensors,
+    DragEndEvent,
+} from "@dnd-kit/core";
+import {
+    arrayMove,
+    SortableContext,
+    sortableKeyboardCoordinates,
+    useSortable,
+    verticalListSortingStrategy,
+} from "@dnd-kit/sortable";
+import { CSS } from "@dnd-kit/utilities";
 import {
     Plus,
     Pencil,
@@ -71,6 +89,274 @@ interface TeamGroup {
     isVisible: boolean;
 }
 
+// Sortable Group Item Component
+function SortableGroupItem({
+    group,
+    expanded,
+    onToggle,
+    onEdit,
+    onDelete,
+    onToggleVisibility,
+    onAddMember,
+    onEditMember,
+    onDeleteMember,
+    onToggleMemberVisibility,
+    onMemberDragEnd,
+    sensors,
+}: {
+    group: TeamGroup;
+    expanded: boolean;
+    onToggle: () => void;
+    onEdit: () => void;
+    onDelete: () => void;
+    onToggleVisibility: () => void;
+    onAddMember: () => void;
+    onEditMember: (member: TeamMember) => void;
+    onDeleteMember: (memberId: string) => void;
+    onToggleMemberVisibility: (member: TeamMember) => void;
+    onMemberDragEnd: (event: DragEndEvent) => void;
+    sensors: ReturnType<typeof useSensors>;
+}) {
+    const {
+        attributes,
+        listeners,
+        setNodeRef,
+        transform,
+        transition,
+        isDragging,
+    } = useSortable({ id: group._id });
+
+    const style = {
+        transform: CSS.Transform.toString(transform),
+        transition,
+        opacity: isDragging ? 0.5 : 1,
+    };
+
+    return (
+        <div
+            ref={setNodeRef}
+            style={style}
+            className={`bg-white rounded-lg border ${group.isVisible ? "border-gray-200" : "border-gray-300 bg-gray-50"
+                } overflow-hidden`}
+        >
+            {/* Group Header */}
+            <div className="flex items-center gap-4 p-4 hover:bg-gray-50">
+                <div
+                    {...attributes}
+                    {...listeners}
+                    className="cursor-grab active:cursor-grabbing touch-none"
+                >
+                    <GripVertical className="w-5 h-5 text-gray-400" />
+                </div>
+                <div className="flex-1 cursor-pointer" onClick={onToggle}>
+                    <div className="flex items-center gap-2">
+                        <h3 className="font-semibold text-[--ngo-dark]">
+                            {group.name}
+                        </h3>
+                        <span
+                            className={`text-xs px-2 py-0.5 rounded-full ${group.type === "leadership"
+                                    ? "bg-purple-100 text-purple-700"
+                                    : group.type === "faculty"
+                                        ? "bg-blue-100 text-blue-700"
+                                        : "bg-green-100 text-green-700"
+                                }`}
+                        >
+                            {group.type}
+                        </span>
+                        {!group.isVisible && (
+                            <span className="text-xs px-2 py-0.5 rounded-full bg-gray-200 text-gray-600">
+                                Hidden
+                            </span>
+                        )}
+                    </div>
+                    <p className="text-sm text-gray-500">
+                        {group.members.length} member
+                        {group.members.length !== 1 ? "s" : ""}
+                    </p>
+                </div>
+                <div className="flex items-center gap-2">
+                    <Button
+                        variant="ghost"
+                        size="sm"
+                        onClick={onToggleVisibility}
+                        title={group.isVisible ? "Hide group" : "Show group"}
+                    >
+                        {group.isVisible ? (
+                            <Eye className="w-4 h-4" />
+                        ) : (
+                            <EyeOff className="w-4 h-4" />
+                        )}
+                    </Button>
+                    <Button variant="ghost" size="sm" onClick={onEdit}>
+                        <Pencil className="w-4 h-4" />
+                    </Button>
+                    <Button
+                        variant="ghost"
+                        size="sm"
+                        onClick={onDelete}
+                        className="text-red-500 hover:text-red-700 hover:bg-red-50"
+                    >
+                        <Trash2 className="w-4 h-4" />
+                    </Button>
+                    <button onClick={onToggle} className="p-1">
+                        {expanded ? (
+                            <ChevronUp className="w-5 h-5 text-gray-400" />
+                        ) : (
+                            <ChevronDown className="w-5 h-5 text-gray-400" />
+                        )}
+                    </button>
+                </div>
+            </div>
+
+            {/* Members List */}
+            {expanded && (
+                <div className="border-t border-gray-200 bg-gray-50 p-4">
+                    <div className="flex items-center justify-between mb-4">
+                        <h4 className="font-medium text-gray-700">Members</h4>
+                        <Button size="sm" onClick={onAddMember} className="gap-1">
+                            <Plus className="w-3 h-3" />
+                            Add Member
+                        </Button>
+                    </div>
+
+                    {group.members.length === 0 ? (
+                        <p className="text-center py-8 text-gray-500">
+                            No members in this group yet.
+                        </p>
+                    ) : (
+                        <DndContext
+                            sensors={sensors}
+                            collisionDetection={closestCenter}
+                            onDragEnd={onMemberDragEnd}
+                        >
+                            <SortableContext
+                                items={group.members.map((m) => m._id)}
+                                strategy={verticalListSortingStrategy}
+                            >
+                                <div className="grid gap-3">
+                                    {group.members.map((member) => (
+                                        <SortableMemberItem
+                                            key={member._id}
+                                            member={member}
+                                            onEdit={() => onEditMember(member)}
+                                            onDelete={() => onDeleteMember(member._id)}
+                                            onToggleVisibility={() =>
+                                                onToggleMemberVisibility(member)
+                                            }
+                                        />
+                                    ))}
+                                </div>
+                            </SortableContext>
+                        </DndContext>
+                    )}
+                </div>
+            )}
+        </div>
+    );
+}
+
+// Sortable Member Item Component
+function SortableMemberItem({
+    member,
+    onEdit,
+    onDelete,
+    onToggleVisibility,
+}: {
+    member: TeamMember;
+    onEdit: () => void;
+    onDelete: () => void;
+    onToggleVisibility: () => void;
+}) {
+    const {
+        attributes,
+        listeners,
+        setNodeRef,
+        transform,
+        transition,
+        isDragging,
+    } = useSortable({ id: member._id });
+
+    const style = {
+        transform: CSS.Transform.toString(transform),
+        transition,
+        opacity: isDragging ? 0.5 : 1,
+    };
+
+    return (
+        <div
+            ref={setNodeRef}
+            style={style}
+            className={`flex items-center gap-4 p-3 rounded-lg ${member.isVisible
+                    ? "bg-white border border-gray-200"
+                    : "bg-gray-100 border border-gray-300"
+                }`}
+        >
+            <div
+                {...attributes}
+                {...listeners}
+                className="cursor-grab active:cursor-grabbing touch-none"
+            >
+                <GripVertical className="w-4 h-4 text-gray-400" />
+            </div>
+            <div className="relative w-10 h-10 rounded-full bg-linear-to-br from-[--ngo-orange]/20 to-[--ngo-green]/20 flex items-center justify-center overflow-hidden">
+                {member.image ? (
+                    <Image
+                        src={member.image}
+                        alt={member.name}
+                        fill
+                        sizes="40px"
+                        className="object-cover"
+                        unoptimized
+                    />
+                ) : (
+                    <Users className="w-5 h-5 text-gray-400" />
+                )}
+            </div>
+            <div className="flex-1 min-w-0">
+                <div className="flex items-center gap-2">
+                    <p className="font-medium text-[--ngo-dark] truncate">
+                        {member.name}
+                    </p>
+                    {!member.isVisible && (
+                        <span className="text-xs px-1.5 py-0.5 rounded bg-gray-200 text-gray-600">
+                            Hidden
+                        </span>
+                    )}
+                </div>
+                <p className="text-sm text-gray-500 truncate">
+                    {member.role}
+                    {member.rollNo && ` • ${member.rollNo}`}
+                </p>
+            </div>
+            <div className="flex items-center gap-1">
+                <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={onToggleVisibility}
+                    title={member.isVisible ? "Hide" : "Show"}
+                >
+                    {member.isVisible ? (
+                        <Eye className="w-4 h-4" />
+                    ) : (
+                        <EyeOff className="w-4 h-4" />
+                    )}
+                </Button>
+                <Button variant="ghost" size="sm" onClick={onEdit}>
+                    <Pencil className="w-4 h-4" />
+                </Button>
+                <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={onDelete}
+                    className="text-red-500 hover:text-red-700 hover:bg-red-50"
+                >
+                    <Trash2 className="w-4 h-4" />
+                </Button>
+            </div>
+        </div>
+    );
+}
+
 export default function TeamManagementPage() {
     const [groups, setGroups] = useState<TeamGroup[]>([]);
     const [loading, setLoading] = useState(true);
@@ -116,6 +402,14 @@ export default function TeamManagementPage() {
 
     // Expanded groups state
     const [expandedGroups, setExpandedGroups] = useState<Set<string>>(new Set());
+
+    // Drag and drop sensors
+    const sensors = useSensors(
+        useSensor(PointerSensor),
+        useSensor(KeyboardSensor, {
+            coordinateGetter: sortableKeyboardCoordinates,
+        })
+    );
 
     const fetchGroups = useCallback(async () => {
         try {
@@ -344,6 +638,76 @@ export default function TeamManagementPage() {
         }
     };
 
+    // Drag and drop handlers
+    const handleGroupDragEnd = async (event: DragEndEvent) => {
+        const { active, over } = event;
+        if (!over || active.id === over.id) return;
+
+        const oldIndex = groups.findIndex((g) => g._id === active.id);
+        const newIndex = groups.findIndex((g) => g._id === over.id);
+
+        const newGroups = arrayMove(groups, oldIndex, newIndex);
+        setGroups(newGroups);
+
+        // Send reorder to API
+        try {
+            const groupOrders = newGroups.map((g, idx) => ({
+                groupId: g._id,
+                order: idx,
+            }));
+
+            const res = await fetch("/api/team/reorder", {
+                method: "PUT",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ groupOrders }),
+            });
+
+            if (!res.ok) throw new Error("Failed to reorder groups");
+        } catch (err) {
+            setError(err instanceof Error ? err.message : "Failed to reorder groups");
+            await fetchGroups(); // Revert on failure
+        }
+    };
+
+    const handleMemberDragEnd = async (groupId: string, event: DragEndEvent) => {
+        const { active, over } = event;
+        if (!over || active.id === over.id) return;
+
+        const group = groups.find((g) => g._id === groupId);
+        if (!group) return;
+
+        const oldIndex = group.members.findIndex((m) => m._id === active.id);
+        const newIndex = group.members.findIndex((m) => m._id === over.id);
+
+        const newMembers = arrayMove(group.members, oldIndex, newIndex);
+
+        // Optimistic update
+        setGroups((prev) =>
+            prev.map((g) =>
+                g._id === groupId ? { ...g, members: newMembers } : g
+            )
+        );
+
+        // Send reorder to API
+        try {
+            const memberOrders = newMembers.map((m, idx) => ({
+                memberId: m._id,
+                order: idx,
+            }));
+
+            const res = await fetch(`/api/team/${groupId}/members`, {
+                method: "PUT",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ memberOrders }),
+            });
+
+            if (!res.ok) throw new Error("Failed to reorder members");
+        } catch (err) {
+            setError(err instanceof Error ? err.message : "Failed to reorder members");
+            await fetchGroups(); // Revert on failure
+        }
+    };
+
     // Image upload handler
     const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
         const file = e.target.files?.[0];
@@ -425,7 +789,7 @@ export default function TeamManagementPage() {
             {/* Error Alert */}
             {error && (
                 <div className="bg-red-50 border border-red-200 rounded-lg p-4 flex items-start gap-3">
-                    <AlertCircle className="w-5 h-5 text-red-500 flex-shrink-0 mt-0.5" />
+                    <AlertCircle className="w-5 h-5 text-red-500 shrink-0 mt-0.5" />
                     <div className="flex-1">
                         <p className="text-red-800">{error}</p>
                     </div>
@@ -450,190 +814,40 @@ export default function TeamManagementPage() {
                         </Button>
                     </div>
                 ) : (
-                    groups.map((group) => (
-                        <div
-                            key={group._id}
-                            className={`bg-white rounded-lg border ${group.isVisible ? "border-gray-200" : "border-gray-300 bg-gray-50"
-                                } overflow-hidden`}
+                    <DndContext
+                        sensors={sensors}
+                        collisionDetection={closestCenter}
+                        onDragEnd={handleGroupDragEnd}
+                    >
+                        <SortableContext
+                            items={groups.map((g) => g._id)}
+                            strategy={verticalListSortingStrategy}
                         >
-                            {/* Group Header */}
-                            <div
-                                className="flex items-center gap-4 p-4 cursor-pointer hover:bg-gray-50"
-                                onClick={() => toggleGroup(group._id)}
-                            >
-                                <GripVertical className="w-5 h-5 text-gray-400 cursor-grab" />
-                                <div className="flex-1">
-                                    <div className="flex items-center gap-2">
-                                        <h3 className="font-semibold text-[--ngo-dark]">
-                                            {group.name}
-                                        </h3>
-                                        <span
-                                            className={`text-xs px-2 py-0.5 rounded-full ${group.type === "leadership"
-                                                    ? "bg-purple-100 text-purple-700"
-                                                    : group.type === "faculty"
-                                                        ? "bg-blue-100 text-blue-700"
-                                                        : "bg-green-100 text-green-700"
-                                                }`}
-                                        >
-                                            {group.type}
-                                        </span>
-                                        {!group.isVisible && (
-                                            <span className="text-xs px-2 py-0.5 rounded-full bg-gray-200 text-gray-600">
-                                                Hidden
-                                            </span>
-                                        )}
-                                    </div>
-                                    <p className="text-sm text-gray-500">
-                                        {group.members.length} member
-                                        {group.members.length !== 1 ? "s" : ""}
-                                    </p>
-                                </div>
-                                <div className="flex items-center gap-2">
-                                    <Button
-                                        variant="ghost"
-                                        size="sm"
-                                        onClick={(e) => {
-                                            e.stopPropagation();
-                                            toggleGroupVisibility(group);
-                                        }}
-                                        title={group.isVisible ? "Hide group" : "Show group"}
-                                    >
-                                        {group.isVisible ? (
-                                            <Eye className="w-4 h-4" />
-                                        ) : (
-                                            <EyeOff className="w-4 h-4" />
-                                        )}
-                                    </Button>
-                                    <Button
-                                        variant="ghost"
-                                        size="sm"
-                                        onClick={(e) => {
-                                            e.stopPropagation();
-                                            openGroupModal(group);
-                                        }}
-                                    >
-                                        <Pencil className="w-4 h-4" />
-                                    </Button>
-                                    <Button
-                                        variant="ghost"
-                                        size="sm"
-                                        onClick={(e) => {
-                                            e.stopPropagation();
-                                            setDeleteGroupId(group._id);
-                                        }}
-                                        className="text-red-500 hover:text-red-700 hover:bg-red-50"
-                                    >
-                                        <Trash2 className="w-4 h-4" />
-                                    </Button>
-                                    {expandedGroups.has(group._id) ? (
-                                        <ChevronUp className="w-5 h-5 text-gray-400" />
-                                    ) : (
-                                        <ChevronDown className="w-5 h-5 text-gray-400" />
-                                    )}
-                                </div>
-                            </div>
-
-                            {/* Members List */}
-                            {expandedGroups.has(group._id) && (
-                                <div className="border-t border-gray-200 bg-gray-50 p-4">
-                                    <div className="flex items-center justify-between mb-4">
-                                        <h4 className="font-medium text-gray-700">Members</h4>
-                                        <Button
-                                            size="sm"
-                                            onClick={() => openMemberModal(group._id)}
-                                            className="gap-1"
-                                        >
-                                            <Plus className="w-3 h-3" />
-                                            Add Member
-                                        </Button>
-                                    </div>
-
-                                    {group.members.length === 0 ? (
-                                        <p className="text-center py-8 text-gray-500">
-                                            No members in this group yet.
-                                        </p>
-                                    ) : (
-                                        <div className="grid gap-3">
-                                            {group.members.map((member) => (
-                                                <div
-                                                    key={member._id}
-                                                    className={`flex items-center gap-4 p-3 rounded-lg ${member.isVisible
-                                                            ? "bg-white border border-gray-200"
-                                                            : "bg-gray-100 border border-gray-300"
-                                                        }`}
-                                                >
-                                                    <GripVertical className="w-4 h-4 text-gray-400 cursor-grab" />
-                                                    <div className="w-10 h-10 rounded-full bg-gradient-to-br from-[--ngo-orange]/20 to-[--ngo-green]/20 flex items-center justify-center overflow-hidden">
-                                                        {member.image ? (
-                                                            <img
-                                                                src={member.image}
-                                                                alt={member.name}
-                                                                className="w-full h-full object-cover"
-                                                            />
-                                                        ) : (
-                                                            <Users className="w-5 h-5 text-gray-400" />
-                                                        )}
-                                                    </div>
-                                                    <div className="flex-1 min-w-0">
-                                                        <div className="flex items-center gap-2">
-                                                            <p className="font-medium text-[--ngo-dark] truncate">
-                                                                {member.name}
-                                                            </p>
-                                                            {!member.isVisible && (
-                                                                <span className="text-xs px-1.5 py-0.5 rounded bg-gray-200 text-gray-600">
-                                                                    Hidden
-                                                                </span>
-                                                            )}
-                                                        </div>
-                                                        <p className="text-sm text-gray-500 truncate">
-                                                            {member.role}
-                                                            {member.rollNo && ` • ${member.rollNo}`}
-                                                        </p>
-                                                    </div>
-                                                    <div className="flex items-center gap-1">
-                                                        <Button
-                                                            variant="ghost"
-                                                            size="sm"
-                                                            onClick={() =>
-                                                                toggleMemberVisibility(group._id, member)
-                                                            }
-                                                            title={member.isVisible ? "Hide" : "Show"}
-                                                        >
-                                                            {member.isVisible ? (
-                                                                <Eye className="w-4 h-4" />
-                                                            ) : (
-                                                                <EyeOff className="w-4 h-4" />
-                                                            )}
-                                                        </Button>
-                                                        <Button
-                                                            variant="ghost"
-                                                            size="sm"
-                                                            onClick={() => openMemberModal(group._id, member)}
-                                                        >
-                                                            <Pencil className="w-4 h-4" />
-                                                        </Button>
-                                                        <Button
-                                                            variant="ghost"
-                                                            size="sm"
-                                                            onClick={() =>
-                                                                setDeleteMember({
-                                                                    groupId: group._id,
-                                                                    memberId: member._id,
-                                                                })
-                                                            }
-                                                            className="text-red-500 hover:text-red-700 hover:bg-red-50"
-                                                        >
-                                                            <Trash2 className="w-4 h-4" />
-                                                        </Button>
-                                                    </div>
-                                                </div>
-                                            ))}
-                                        </div>
-                                    )}
-                                </div>
-                            )}
-                        </div>
-                    ))
+                            {groups.map((group) => (
+                                <SortableGroupItem
+                                    key={group._id}
+                                    group={group}
+                                    expanded={expandedGroups.has(group._id)}
+                                    onToggle={() => toggleGroup(group._id)}
+                                    onEdit={() => openGroupModal(group)}
+                                    onDelete={() => setDeleteGroupId(group._id)}
+                                    onToggleVisibility={() => toggleGroupVisibility(group)}
+                                    onAddMember={() => openMemberModal(group._id)}
+                                    onEditMember={(member) => openMemberModal(group._id, member)}
+                                    onDeleteMember={(memberId) =>
+                                        setDeleteMember({ groupId: group._id, memberId })
+                                    }
+                                    onToggleMemberVisibility={(member) =>
+                                        toggleMemberVisibility(group._id, member)
+                                    }
+                                    onMemberDragEnd={(event) =>
+                                        handleMemberDragEnd(group._id, event)
+                                    }
+                                    sensors={sensors}
+                                />
+                            ))}
+                        </SortableContext>
+                    </DndContext>
                 )}
             </div>
 
@@ -804,14 +1018,16 @@ export default function TeamManagementPage() {
                                 <div className="relative w-24 h-24 rounded-full overflow-hidden bg-gray-100 flex items-center justify-center border-2 border-dashed border-gray-300">
                                     {memberForm.image ? (
                                         <>
-                                            <img
+                                            <Image
                                                 src={memberForm.image}
                                                 alt="Preview"
-                                                className="w-full h-full object-cover"
-                                                onError={(e) => {
-                                                    (e.target as HTMLImageElement).src = "";
-                                                    (e.target as HTMLImageElement).style.display = "none";
-                                                }}
+                                                fill
+                                                sizes="96px"
+                                                className="object-cover"
+                                                unoptimized
+                                                onError={() =>
+                                                    setMemberForm((prev) => ({ ...prev, image: "" }))
+                                                }
                                             />
                                             <button
                                                 type="button"
