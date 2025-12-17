@@ -2,13 +2,15 @@ import { NextRequest, NextResponse } from 'next/server';
 import { verifyToken } from '@/src/lib/auth';
 
 export async function GET(request: NextRequest) {
+  const noStoreHeaders = { 'Cache-Control': 'no-store' };
+
   try {
     const token = request.cookies.get('admin_token')?.value;
 
     if (!token) {
       return NextResponse.json(
         { error: 'Not authenticated' },
-        { status: 401 }
+        { status: 401, headers: noStoreHeaders }
       );
     }
 
@@ -17,7 +19,7 @@ export async function GET(request: NextRequest) {
     if (!payload) {
       return NextResponse.json(
         { error: 'Invalid token' },
-        { status: 401 }
+        { status: 401, headers: noStoreHeaders }
       );
     }
 
@@ -30,13 +32,13 @@ export async function GET(request: NextRequest) {
           email: payload.email,
         },
       },
-      { status: 200 }
+      { status: 200, headers: noStoreHeaders }
     );
   } catch (error) {
     console.error('Verify error:', error);
     return NextResponse.json(
       { error: 'Internal server error' },
-      { status: 500 }
+      { status: 500, headers: noStoreHeaders }
     );
   }
 }

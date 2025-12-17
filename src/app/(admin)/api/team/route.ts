@@ -8,8 +8,6 @@ import {
   TEAM_API_STALE_SECONDS,
 } from '@/src/lib/cache-config';
 
-export const revalidate = TEAM_API_SMAXAGE_SECONDS;
-
 const cacheHeaders = {
   'Cache-Control': `public, s-maxage=${TEAM_API_SMAXAGE_SECONDS}, stale-while-revalidate=${TEAM_API_STALE_SECONDS}`,
 };

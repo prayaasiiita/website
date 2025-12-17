@@ -4,13 +4,15 @@ import Admin from '@/src/models/Admin';
 import { comparePassword, generateToken } from '@/src/lib/auth';
 
 export async function POST(request: NextRequest) {
+  const noStoreHeaders = { 'Cache-Control': 'no-store' };
+
   try {
     const { username, password } = await request.json();
 
     if (!username || !password) {
       return NextResponse.json(
         { error: 'Username and password are required' },
-        { status: 400 }
+        { status: 400, headers: noStoreHeaders }
       );
     }
 
@@ -21,7 +23,7 @@ export async function POST(request: NextRequest) {
     if (!admin) {
       return NextResponse.json(
         { error: 'Invalid credentials' },
-        { status: 401 }
+        { status: 401, headers: noStoreHeaders }
       );
     }
 
@@ -30,7 +32,7 @@ export async function POST(request: NextRequest) {
     if (!isPasswordValid) {
       return NextResponse.json(
         { error: 'Invalid credentials' },
-        { status: 401 }
+        { status: 401, headers: noStoreHeaders }
       );
     }
 
@@ -49,7 +51,7 @@ export async function POST(request: NextRequest) {
           email: admin.email,
         },
       },
-      { status: 200 }
+      { status: 200, headers: noStoreHeaders }
     );
 
     response.cookies.set('admin_token', token, {
@@ -64,7 +66,7 @@ export async function POST(request: NextRequest) {
     console.error('Login error:', error);
     return NextResponse.json(
       { error: 'Internal server error' },
-      { status: 500 }
+      { status: 500, headers: noStoreHeaders }
     );
   }
 }
