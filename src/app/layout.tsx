@@ -1,9 +1,7 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
-import { VisualEditsMessenger } from "orchids-visual-edits";
 import ErrorReporter from "@/src/components/ErrorReporter";
-import Script from "next/script";
 
 const geistSans = Geist({
     variable: "--font-geist-sans",
@@ -45,31 +43,8 @@ export default function RootLayout({
             <body
                 className={`${geistSans.variable} ${geistMono.variable} antialiased`}
             >
-                {/* Global scripts (keep here) */}
-                <Script
-                    id="orchids-browser-logs"
-                    src="https://slelguoygbfzlpylpxfs.supabase.co/storage/v1/object/public/scripts/orchids-browser-logs.js"
-                    strategy="afterInteractive"
-                    data-orchids-project-id="d686bc1f-79bc-4677-8f1a-7a3ec4d3747f"
-                />
-
                 <ErrorReporter />
-
-                <Script
-                    src="https://slelguoygbfzlpylpxfs.supabase.co/storage/v1/object/public/scripts/route-messenger.js"
-                    strategy="afterInteractive"
-                    data-target-origin="*"
-                    data-message-type="ROUTE_CHANGE"
-                    data-include-search-params="true"
-                    data-only-in-iframe="true"
-                    data-debug="true"
-                    data-custom-data='{"appName":"Prayaas","version":"1.0.0"}'
-                />
-
-                {/* IMPORTANT: NO Navbar/Footer here */}
                 {children}
-
-                <VisualEditsMessenger />
             </body>
         </html>
     );
