@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import dbConnect from '@/src/lib/mongodb';
 import TeamGroup from '@/src/models/TeamGroup';
 import { verifyToken } from '@/src/lib/auth';
+import { revalidatePublicTags, TAGS } from '@/src/lib/revalidate-paths';
 
 // Helper to verify admin authentication
 function verifyAdmin(request: NextRequest) {
@@ -40,6 +41,7 @@ export async function PUT(request: NextRequest) {
     // Fetch updated groups
     const groups = await TeamGroup.find().sort({ order: 1 });
 
+    revalidatePublicTags([TAGS.TEAM, TAGS.PUBLIC]);
     return NextResponse.json(
       { message: 'Groups reordered successfully', groups },
       { status: 200 }

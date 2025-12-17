@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import dbConnect from '@/src/lib/mongodb';
 import Event from '@/src/models/Event';
 import { verifyToken } from '@/src/lib/auth';
+import { revalidatePublicTags, TAGS } from '@/src/lib/revalidate-paths';
 
 async function verifyAuth(request: NextRequest) {
   const token = request.cookies.get('admin_token')?.value;
@@ -30,6 +31,7 @@ export async function PUT(
       return NextResponse.json({ error: 'Event not found' }, { status: 404 });
     }
 
+    revalidatePublicTags([TAGS.EVENTS, TAGS.PUBLIC]);
     return NextResponse.json({ event }, { status: 200 });
   } catch (error) {
     console.error('Update event error:', error);
@@ -55,6 +57,7 @@ export async function DELETE(
       return NextResponse.json({ error: 'Event not found' }, { status: 404 });
     }
 
+    revalidatePublicTags([TAGS.EVENTS, TAGS.PUBLIC]);
     return NextResponse.json({ message: 'Event deleted' }, { status: 200 });
   } catch (error) {
     console.error('Delete event error:', error);

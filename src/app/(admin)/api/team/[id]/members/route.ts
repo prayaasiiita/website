@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import dbConnect from '@/src/lib/mongodb';
 import TeamGroup from '@/src/models/TeamGroup';
 import { verifyToken } from '@/src/lib/auth';
+import { revalidatePublicTags, TAGS } from '@/src/lib/revalidate-paths';
 
 // Helper to verify admin authentication
 function verifyAdmin(request: NextRequest) {
@@ -66,6 +67,7 @@ export async function POST(
     // Get the newly added member (last one in the array)
     const addedMember = group.members[group.members.length - 1];
 
+    revalidatePublicTags([TAGS.TEAM, TAGS.PUBLIC]);
     return NextResponse.json(
       { message: 'Member added successfully', member: addedMember, group },
       { status: 201 }
@@ -118,6 +120,7 @@ export async function PUT(
 
     await group.save();
 
+    revalidatePublicTags([TAGS.TEAM, TAGS.PUBLIC]);
     return NextResponse.json(
       { message: 'Members reordered successfully', group },
       { status: 200 }

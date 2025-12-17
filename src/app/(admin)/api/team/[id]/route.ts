@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import dbConnect from '@/src/lib/mongodb';
 import TeamGroup from '@/src/models/TeamGroup';
 import { verifyToken } from '@/src/lib/auth';
+import { revalidatePublicTags, TAGS } from '@/src/lib/revalidate-paths';
 
 // Helper to verify admin authentication
 function verifyAdmin(request: NextRequest) {
@@ -73,6 +74,7 @@ export async function PUT(
 
     await group.save();
 
+    revalidatePublicTags([TAGS.TEAM, TAGS.PUBLIC]);
     return NextResponse.json(
       { message: 'Team group updated successfully', group },
       { status: 200 }
@@ -106,6 +108,7 @@ export async function DELETE(
       return NextResponse.json({ error: 'Team group not found' }, { status: 404 });
     }
 
+    revalidatePublicTags([TAGS.TEAM, TAGS.PUBLIC]);
     return NextResponse.json(
       { message: 'Team group deleted successfully' },
       { status: 200 }

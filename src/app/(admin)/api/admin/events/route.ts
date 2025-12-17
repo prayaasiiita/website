@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import dbConnect from '@/src/lib/mongodb';
 import Event from '@/src/models/Event';
 import { verifyToken } from '@/src/lib/auth';
+import { revalidatePublicTags, TAGS } from '@/src/lib/revalidate-paths';
 
 async function verifyAuth(request: NextRequest) {
   const token = request.cookies.get('admin_token')?.value;
@@ -33,6 +34,7 @@ export async function POST(request: NextRequest) {
     await dbConnect();
 
     const event = await Event.create(body);
+    revalidatePublicTags([TAGS.EVENTS, TAGS.PUBLIC]);
     return NextResponse.json({ event }, { status: 201 });
   } catch (error) {
     console.error('Create event error:', error);

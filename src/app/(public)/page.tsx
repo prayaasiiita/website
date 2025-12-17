@@ -16,11 +16,9 @@ import {
   Quote,
   Calendar,
   MapPin,
-  ChevronLeft,
-  ChevronRight,
   Phone,
 } from "lucide-react";
-import PhotoGridSection from "../components/PhotoGridSection";
+import PhotoGridSection from "@/src/components/PhotoGridSection";
 
 function Counter({ end, suffix = "", duration = 2000 }: { end: number; suffix?: string; duration?: number }) {
   const [count, setCount] = useState(0);

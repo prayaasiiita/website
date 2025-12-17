@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import dbConnect from '@/src/lib/mongodb';
 import Content from '@/src/models/Content';
 import { verifyToken } from '@/src/lib/auth';
+import { revalidatePublicTags, TAGS } from '@/src/lib/revalidate-paths';
 
 async function verifyAuth(request: NextRequest) {
   const token = request.cookies.get('admin_token')?.value;
@@ -39,6 +40,7 @@ export async function POST(request: NextRequest) {
     await dbConnect();
 
     const content = await Content.create(body);
+    revalidatePublicTags([TAGS.CONTENT, TAGS.PUBLIC]);
     return NextResponse.json({ content }, { status: 201 });
   } catch (error) {
     console.error('Create content error:', error);
@@ -64,6 +66,7 @@ export async function PUT(request: NextRequest) {
       { new: true, upsert: true }
     );
 
+    revalidatePublicTags([TAGS.CONTENT, TAGS.PUBLIC]);
     return NextResponse.json({ content }, { status: 200 });
   } catch (error) {
     console.error('Update content error:', error);

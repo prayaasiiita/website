@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import { useEffect, useState, useCallback, useRef } from "react";
 import {
     Plus,
@@ -563,12 +564,15 @@ export default function TeamManagementPage() {
                                                         }`}
                                                 >
                                                     <GripVertical className="w-4 h-4 text-gray-400 cursor-grab" />
-                                                    <div className="w-10 h-10 rounded-full bg-gradient-to-br from-[--ngo-orange]/20 to-[--ngo-green]/20 flex items-center justify-center overflow-hidden">
+                                                    <div className="relative w-10 h-10 rounded-full bg-gradient-to-br from-[--ngo-orange]/20 to-[--ngo-green]/20 flex items-center justify-center overflow-hidden">
                                                         {member.image ? (
-                                                            <img
+                                                            <Image
                                                                 src={member.image}
                                                                 alt={member.name}
-                                                                className="w-full h-full object-cover"
+                                                                fill
+                                                                sizes="40px"
+                                                                className="object-cover"
+                                                                unoptimized
                                                             />
                                                         ) : (
                                                             <Users className="w-5 h-5 text-gray-400" />
@@ -804,14 +808,16 @@ export default function TeamManagementPage() {
                                 <div className="relative w-24 h-24 rounded-full overflow-hidden bg-gray-100 flex items-center justify-center border-2 border-dashed border-gray-300">
                                     {memberForm.image ? (
                                         <>
-                                            <img
+                                            <Image
                                                 src={memberForm.image}
                                                 alt="Preview"
-                                                className="w-full h-full object-cover"
-                                                onError={(e) => {
-                                                    (e.target as HTMLImageElement).src = "";
-                                                    (e.target as HTMLImageElement).style.display = "none";
-                                                }}
+                                                fill
+                                                sizes="96px"
+                                                className="object-cover"
+                                                unoptimized
+                                                onError={() =>
+                                                    setMemberForm((prev) => ({ ...prev, image: "" }))
+                                                }
                                             />
                                             <button
                                                 type="button"
