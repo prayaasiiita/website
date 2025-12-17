@@ -9,6 +9,7 @@ import {
   Image as ImageIcon,
   FileText,
   Users,
+  UsersRound,
   LogOut,
   Menu,
   X,
@@ -69,6 +70,11 @@ export default function DashboardLayout({
       name: "Dashboard",
       href: "/admin/dashboard",
       icon: LayoutDashboard,
+    },
+    {
+      name: "Team",
+      href: "/admin/dashboard/team",
+      icon: UsersRound,
     },
     {
       name: "Events",
