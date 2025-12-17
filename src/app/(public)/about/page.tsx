@@ -17,6 +17,8 @@ import {
   Music4,
   Clock5,
   Handshake,
+  Mail,
+  Linkedin,
 } from "lucide-react";
 import SpotlightCard from "@/src/components/SpotlightCard";
 import { useEffect, useState } from "react";
@@ -154,8 +156,8 @@ function StorySection() {
                     aria-label={`Show slide ${index + 1}`}
                     onClick={() => handleDotClick(index)}
                     className={`h-2.5 rounded-full transition-all duration-300 ${activeIndex === index
-                        ? "w-8 bg-(--ngo-orange)"
-                        : "w-3 bg-white/70 hover:bg-white"
+                      ? "w-8 bg-(--ngo-orange)"
+                      : "w-3 bg-white/70 hover:bg-white"
                       }`}
                   />
                 ))}
@@ -354,33 +356,228 @@ function ValuesSection() {
   );
 }
 
+// Team Member Card Component
+interface TeamMember {
+  name: string;
+  role: string;
+  rollNo?: string;
+  image: string;
+  email: string;
+  linkedin: string;
+}
+
+function TeamMemberCard({
+  member,
+  index,
+}: {
+  member: TeamMember;
+  index: number;
+}) {
+  const classes = {
+    card: "p-5 max-w-md",
+    image: "w-24 h-24 md:w-28 md:h-28",
+    name: "text-lg",
+    role: "text-sm",
+    icons: "w-4 h-4",
+  };
+
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 30 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true }}
+      transition={{ duration: 0.5, delay: index * 0.1 }}
+      whileHover={{ scale: 1.03 }}
+    >
+      <SpotlightCard
+        className={`bg-white text-(--ngo-dark) border-transparent rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 w-70 sm:w-[320px] md:w-85 min-h-50 sm:min-h-60 ${classes.card}`}
+        spotlightColor="rgba(234, 179, 8, 0.22)"
+      >
+        <div className="flex flex-col items-center text-center h-full justify-between">
+          <div
+            className={`relative ${classes.image} mb-4 rounded-full overflow-hidden ring-4 ring-(--ngo-orange)/20`}
+          >
+            {member.image ? (
+              <Image
+                src={member.image}
+                alt={`Photo of ${member.name}`}
+                fill
+                className="object-cover"
+              />
+            ) : (
+              <div className="w-full h-full bg-linear-to-br from-(--ngo-orange)/20 to-(--ngo-green)/20 flex items-center justify-center">
+                <Users className="w-1/2 h-1/2 text-(--ngo-gray)/50" />
+              </div>
+            )}
+          </div>
+          <h3
+            className={`font-bold text-(--ngo-dark) ${classes.name}`}
+            style={{ fontFamily: "'Playfair Display', serif" }}
+          >
+            {member.name}
+          </h3>
+          <p className={`text-(--ngo-orange) font-medium ${classes.role}`}>
+            {member.role}
+          </p>
+          <div className="flex gap-3 mt-4">
+            <a
+              href={`mailto:${member.email}`}
+              aria-label={`Send email to ${member.name}`}
+              className="p-2 rounded-full bg-(--ngo-orange)/10 hover:bg-(--ngo-orange)/20 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-(--ngo-orange)"
+            >
+              <Mail className={`${classes.icons} text-(--ngo-orange)`} />
+            </a>
+            {member.linkedin ? (
+              <a
+                href={member.linkedin}
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label={`Visit ${member.name}'s LinkedIn profile`}
+                className="p-2 rounded-full bg-(--ngo-green)/10 hover:bg-(--ngo-green)/20 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-(--ngo-green)"
+              >
+                <Linkedin className={`${classes.icons} text-(--ngo-green)`} />
+              </a>
+            ) : (
+              <span
+                aria-disabled="true"
+                className="p-2 rounded-full bg-gray-200 cursor-not-allowed opacity-50"
+                title="LinkedIn profile not available"
+              >
+                <Linkedin className={`${classes.icons} text-gray-400`} />
+              </span>
+            )}
+          </div>
+        </div>
+      </SpotlightCard>
+    </motion.div>
+  );
+}
+
+// Student Team Group Component
+function StudentTeamGroup({
+  title,
+  members,
+  startIndex,
+}: {
+  title: string;
+  members: TeamMember[];
+  startIndex: number;
+}) {
+  return (
+    <div className="mb-12 last:mb-0">
+      <motion.h4
+        initial={{ opacity: 0, y: 20 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true }}
+        transition={{ duration: 0.5 }}
+        className="text-xl font-semibold text-(--ngo-dark) text-center mb-6"
+        style={{ fontFamily: "'Playfair Display', serif" }}
+      >
+        {title}
+      </motion.h4>
+      <div className="flex flex-wrap justify-center gap-6">
+        {members.map((member, index) => (
+          <TeamMemberCard
+            key={member.name}
+            member={member}
+            index={startIndex + index}
+          />
+        ))}
+      </div>
+    </div>
+  );
+}
+
+// Team Group interface for API data
+interface TeamGroup {
+  _id: string;
+  name: string;
+  slug: string;
+  description?: string;
+  order: number;
+  type: "leadership" | "faculty" | "student";
+  members: TeamMember[];
+  isVisible: boolean;
+}
+
 function TeamSection() {
-  const team = [
-    {
-      name: "Dr. Prateek Kumar",
-      role: "Faculty Advisor",
-      image: "",
-    },
-    {
-      name: "Ananya Singh",
-      role: "President",
-      image: "",
-    },
-    {
-      name: "Rahul Verma",
-      role: "Vice President",
-      image: "",
-    },
-    {
-      name: "Priya Patel",
-      role: "Education Head",
-      image: "",
-    },
-  ];
+  const [teamGroups, setTeamGroups] = useState<TeamGroup[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    async function fetchTeamData() {
+      try {
+        const res = await fetch("/api/team");
+        if (res.ok) {
+          const data = await res.json();
+          setTeamGroups(data.groups);
+        }
+      } catch (error) {
+        console.error("Failed to fetch team data:", error);
+      } finally {
+        setLoading(false);
+      }
+    }
+    fetchTeamData();
+  }, []);
+
+  // Separate groups by type
+  const leadershipGroups = teamGroups.filter((g) => g.type === "leadership");
+  const facultyGroups = teamGroups.filter((g) => g.type === "faculty");
+  const studentGroups = teamGroups.filter((g) => g.type === "student");
+
+  // Get first member from leadership and faculty for special display
+  const director = leadershipGroups[0]?.members[0];
+  const facultyCoordinator = facultyGroups[0]?.members[0];
+
+  if (loading) {
+    return (
+      <section className="py-24 section-gradient">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex items-center justify-center h-64">
+            <div className="w-16 h-16 border-4 border-(--ngo-orange) border-t-transparent rounded-full animate-spin" />
+          </div>
+        </div>
+      </section>
+    );
+  }
+
+  // If no data from API, show placeholder message
+  if (teamGroups.length === 0) {
+    return (
+      <section className="py-24 section-gradient">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.8 }}
+            className="text-center mb-16"
+          >
+            <span className="text-(--ngo-orange) font-semibold uppercase tracking-wider text-sm">
+              Meet Our Team
+            </span>
+            <h2
+              className="text-4xl md:text-5xl font-bold text-(--ngo-dark) mt-2 mb-4"
+              style={{ fontFamily: "'Playfair Display', serif" }}
+            >
+              The People Behind Prayaas
+            </h2>
+            <p className="text-(--ngo-gray) text-lg max-w-2xl mx-auto">
+              Team information coming soon...
+            </p>
+          </motion.div>
+        </div>
+      </section>
+    );
+  }
+
+  let memberIndex = 0;
 
   return (
     <section className="py-24 section-gradient">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        {/* Section Header */}
         <motion.div
           initial={{ opacity: 0, y: 30 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -401,34 +598,57 @@ function TeamSection() {
             Dedicated individuals working together to make a difference
           </p>
         </motion.div>
-        <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-8">
-          {team.map((member, index) => (
+
+        {/* Director - Largest Card, Centered */}
+        {director && (
+          <div className="flex justify-center mb-16">
+            <TeamMemberCard member={director} index={memberIndex++} />
+          </div>
+        )}
+
+        {/* Faculty Coordinator - Medium Card, Centered */}
+        {facultyCoordinator && (
+          <div className="flex justify-center mb-16">
+            <TeamMemberCard member={facultyCoordinator} index={memberIndex++} />
+          </div>
+        )}
+
+        {/* Student Leadership Team */}
+        {studentGroups.length > 0 && (
+          <>
             <motion.div
-              key={member.name}
               initial={{ opacity: 0, y: 30 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
-              transition={{ duration: 0.5, delay: index * 0.1 }}
-              className="text-center"
+              transition={{ duration: 0.8 }}
+              className="text-center mb-12"
             >
-              <div className="relative w-48 h-48 mx-auto mb-6 rounded-full overflow-hidden">
-                <Image
-                  src={member.image}
-                  alt={member.name}
-                  fill
-                  className="object-cover"
-                />
-              </div>
               <h3
-                className="text-xl font-bold text-(--ngo-dark)"
+                className="text-2xl md:text-3xl font-bold text-(--ngo-dark)"
                 style={{ fontFamily: "'Playfair Display', serif" }}
               >
-                {member.name}
+                Student Team
               </h3>
-              <p className="text-(--ngo-orange) font-medium">{member.role}</p>
+              <div className="w-24 h-1 bg-(--ngo-orange) mx-auto mt-4 rounded-full" />
             </motion.div>
-          ))}
-        </div>
+
+            {/* Student Groups */}
+            <div className="space-y-12">
+              {studentGroups.map((group) => {
+                const startIndex = memberIndex;
+                memberIndex += group.members.length;
+                return (
+                  <StudentTeamGroup
+                    key={group._id}
+                    title={group.name}
+                    members={group.members}
+                    startIndex={startIndex}
+                  />
+                );
+              })}
+            </div>
+          </>
+        )}
       </div>
     </section>
   );

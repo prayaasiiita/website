@@ -3,6 +3,7 @@ import mongoose from 'mongoose';
 export interface IGallery extends mongoose.Document {
   title: string;
   image: string;
+  publicId?: string;
   alt: string;
   order: number;
   createdAt: Date;
@@ -19,6 +20,10 @@ const GallerySchema = new mongoose.Schema<IGallery>(
     image: {
       type: String,
       required: [true, 'Image URL is required'],
+    },
+    publicId: {
+      type: String,
+      required: false,
     },
     alt: {
       type: String,
