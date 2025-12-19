@@ -1,4 +1,4 @@
- import { NextRequest, NextResponse } from 'next/server';
+import { NextRequest, NextResponse } from 'next/server';
 import cloudinary, { CLOUDINARY_FOLDER } from '@/src/lib/cloudinary';
 import { verifyToken } from '@/src/lib/auth';
 

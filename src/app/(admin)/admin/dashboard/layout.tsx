@@ -87,6 +87,11 @@ export default function DashboardLayout({
       icon: ImageIcon,
     },
     {
+      name: "Page Images",
+      href: "/admin/dashboard/images",
+      icon: ImageIcon,
+    },
+    {
       name: "Content",
       href: "/admin/dashboard/content",
       icon: FileText,
