@@ -10,6 +10,7 @@ export const TAGS = {
     EVENTS: "events",
     TEAM: "team",
     CONTENT: "content",
+    PAGE_IMAGES: "page-images",
 };
 
 /**

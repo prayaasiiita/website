@@ -18,10 +18,10 @@ export async function GET(request: NextRequest) {
     const section = searchParams.get('section');
 
     await dbConnect();
-    
+
     const query = section ? { section } : {};
     const content = await Content.find(query).sort({ section: 1, key: 1 });
-    
+
     return NextResponse.json({ content }, { status: 200 });
   } catch (error) {
     console.error('Get content error:', error);
