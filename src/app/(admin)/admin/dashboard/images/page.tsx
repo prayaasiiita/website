@@ -324,11 +324,11 @@ export default function ImagesManagement() {
 
         try {
             const { page, section } = bulkCarouselConfig;
-            
+
             // Get existing slide numbers to continue from
             const existingNumbers = getExistingSlideNumbers(page, section);
-            const startNumber = existingNumbers.length > 0 
-                ? Math.max(...existingNumbers) + 1 
+            const startNumber = existingNumbers.length > 0
+                ? Math.max(...existingNumbers) + 1
                 : 1;
 
             let successCount = 0;
@@ -718,7 +718,7 @@ export default function ImagesManagement() {
             {/* Add Image Modal */}
             {showAddModal && (
                 <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-                    <div className="bg-white rounded-2xl max-w-lg w-full max-h-[90vh] overflow-y-auto">
+                    <div className="bg-white rounded-2xl !max-w-xl w-full max-h-[90vh] overflow-y-auto">
                         <div className="flex items-center justify-between p-4 border-b border-gray-200">
                             <h3 className="text-lg font-semibold text-gray-900">Add New Image</h3>
                             <button
@@ -820,7 +820,7 @@ export default function ImagesManagement() {
             {/* Edit Image Modal */}
             {showEditModal && selectedImage && (
                 <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-                    <div className="bg-white rounded-2xl max-w-lg w-full max-h-[90vh] overflow-y-auto">
+                    <div className="bg-white rounded-2xl !max-w-xl w-full max-h-[90vh] overflow-y-auto">
                         <div className="flex items-center justify-between p-4 border-b border-gray-200">
                             <h3 className="text-lg font-semibold text-gray-900">Edit Image</h3>
                             <button
@@ -863,7 +863,7 @@ export default function ImagesManagement() {
             {/* Delete Confirmation Modal */}
             {showDeleteModal && selectedImage && (
                 <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-                    <div className="bg-white rounded-2xl max-w-md w-full">
+                    <div className="bg-white rounded-2xl !max-w-sm w-full">
                         <div className="p-6">
                             <div className="flex items-center justify-center w-12 h-12 mx-auto mb-4 bg-red-100 rounded-full">
                                 <Trash2 className="w-6 h-6 text-red-600" />
@@ -920,7 +920,7 @@ export default function ImagesManagement() {
             {/* Bulk Upload Modal */}
             {showBulkUploadModal && (
                 <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-                    <div className="bg-white rounded-2xl max-w-2xl w-full max-h-[90vh] overflow-hidden flex flex-col">
+                    <div className="bg-white rounded-2xl !max-w-3xl w-full max-h-[90vh] overflow-hidden flex flex-col">
                         <div className="p-6 border-b border-gray-200">
                             <div className="flex items-center justify-between">
                                 <div className="flex items-center gap-3">
@@ -1013,8 +1013,8 @@ export default function ImagesManagement() {
                                     bulkCarouselConfig.page,
                                     bulkCarouselConfig.section
                                 );
-                                const nextSlide = existingNumbers.length > 0 
-                                    ? Math.max(...existingNumbers) + 1 
+                                const nextSlide = existingNumbers.length > 0
+                                    ? Math.max(...existingNumbers) + 1
                                     : 1;
                                 const keysGuide = getKeysGuide(bulkCarouselConfig.page, bulkCarouselConfig.section);
                                 return (
@@ -1091,8 +1091,8 @@ export default function ImagesManagement() {
                                                 bulkCarouselConfig.page,
                                                 bulkCarouselConfig.section
                                             );
-                                            const startNumber = existingNumbers.length > 0 
-                                                ? Math.max(...existingNumbers) + 1 
+                                            const startNumber = existingNumbers.length > 0
+                                                ? Math.max(...existingNumbers) + 1
                                                 : 1;
                                             return (
                                                 <div

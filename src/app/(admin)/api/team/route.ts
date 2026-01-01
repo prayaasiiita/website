@@ -87,8 +87,29 @@ export async function POST(request: NextRequest) {
       );
     }
 
+    // Validate input lengths
+    if (name.length > 100 || (description && description.length > 500)) {
+      return NextResponse.json(
+        { error: 'Name or description is too long' },
+        { status: 400 }
+      );
+    }
+
+    // Validate type
+    const validTypes = ['student', 'alumni', 'coordinator'];
+    if (type && !validTypes.includes(type)) {
+      return NextResponse.json(
+        { error: 'Invalid team type' },
+        { status: 400 }
+      );
+    }
+
+    // Sanitize inputs
+    const sanitizedName = name.trim();
+    const sanitizedDescription = description?.trim() || '';
+
     // Generate slug from name
-    const slug = name
+    const slug = sanitizedName
       .toLowerCase()
       .replace(/[^a-z0-9]+/g, '-')
       .replace(/(^-|-$)/g, '');
@@ -110,9 +131,9 @@ export async function POST(request: NextRequest) {
     }
 
     const newGroup = await TeamGroup.create({
-      name,
+      name: sanitizedName,
       slug,
-      description,
+      description: sanitizedDescription,
       type: type || 'student',
       order: groupOrder,
       members: [],

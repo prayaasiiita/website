@@ -35,6 +35,23 @@ export async function POST(
       );
     }
 
+    // Validate email format
+    const sanitizedEmail = email.toLowerCase().trim();
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(sanitizedEmail)) {
+      return NextResponse.json(
+        { error: 'Invalid email format' },
+        { status: 400 }
+      );
+    }
+
+    // Validate input lengths
+    if (name.length > 100 || role.length > 100) {
+      return NextResponse.json(
+        { error: 'Name or role is too long' },
+        { status: 400 }
+      );
+    }
+
     const group = await TeamGroup.findById(id);
     if (!group) {
       return NextResponse.json({ error: 'Team group not found' }, { status: 404 });
@@ -51,12 +68,12 @@ export async function POST(
     }
 
     const newMember = {
-      name,
-      role,
-      rollNo: rollNo || '',
-      image: image || '',
-      email,
-      linkedin: linkedin || '',
+      name: name.trim(),
+      role: role.trim(),
+      rollNo: rollNo?.trim() || '',
+      image: image?.trim() || '',
+      email: sanitizedEmail,
+      linkedin: linkedin?.trim() || '',
       order: memberOrder,
       isVisible: isVisible !== undefined ? isVisible : true,
     };
@@ -101,6 +118,14 @@ export async function PUT(
     if (!Array.isArray(memberOrders)) {
       return NextResponse.json(
         { error: 'memberOrders array is required' },
+        { status: 400 }
+      );
+    }
+
+    // Validate array length
+    if (memberOrders.length > 100) {
+      return NextResponse.json(
+        { error: 'Too many items to reorder' },
         { status: 400 }
       );
     }

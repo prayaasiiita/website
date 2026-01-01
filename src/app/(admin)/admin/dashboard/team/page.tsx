@@ -35,11 +35,13 @@ import {
     AlertCircle,
     Upload,
     ImageIcon,
+    Crop,
 } from "lucide-react";
 import { Button } from "@/src/components/ui/button";
 import { Input } from "@/src/components/ui/input";
 import { Label } from "@/src/components/ui/label";
 import { Textarea } from "@/src/components/ui/textarea";
+import { ImageCropper } from "@/src/components/admin/ImageCropper";
 import {
     Dialog,
     DialogContent,
@@ -155,10 +157,10 @@ function SortableGroupItem({
                         </h3>
                         <span
                             className={`text-xs px-2 py-0.5 rounded-full ${group.type === "leadership"
-                                    ? "bg-purple-100 text-purple-700"
-                                    : group.type === "faculty"
-                                        ? "bg-blue-100 text-blue-700"
-                                        : "bg-green-100 text-green-700"
+                                ? "bg-purple-100 text-purple-700"
+                                : group.type === "faculty"
+                                    ? "bg-blue-100 text-blue-700"
+                                    : "bg-green-100 text-green-700"
                                 }`}
                         >
                             {group.type}
@@ -287,8 +289,8 @@ function SortableMemberItem({
             ref={setNodeRef}
             style={style}
             className={`flex items-center gap-4 p-3 rounded-lg ${member.isVisible
-                    ? "bg-white border border-gray-200"
-                    : "bg-gray-100 border border-gray-300"
+                ? "bg-white border border-gray-200"
+                : "bg-gray-100 border border-gray-300"
                 }`}
         >
             <div
@@ -391,6 +393,11 @@ export default function TeamManagementPage() {
     // Image upload state
     const [imageUploading, setImageUploading] = useState(false);
     const fileInputRef = useRef<HTMLInputElement>(null);
+    const [imageToCrop, setImageToCrop] = useState<string | null>(null);
+    const [croppedImageBlob, setCroppedImageBlob] = useState<Blob | null>(null);
+    const [uploadSuccess, setUploadSuccess] = useState(false);
+    const [tempUrlImage, setTempUrlImage] = useState("");
+    const [tempUploadedImage, setTempUploadedImage] = useState<string | null>(null);
 
     // Delete confirmation state
     const [deleteGroupId, setDeleteGroupId] = useState<string | null>(null);
@@ -430,6 +437,56 @@ export default function TeamManagementPage() {
     useEffect(() => {
         fetchGroups();
     }, [fetchGroups]);
+
+    // Cleanup temp images on browser close/refresh
+    useEffect(() => {
+        const handleBeforeUnload = async (e: BeforeUnloadEvent) => {
+            if (tempUploadedImage && tempUploadedImage !== editingMember?.image) {
+                // Store in localStorage for cleanup on next visit
+                const orphanedImages = JSON.parse(localStorage.getItem('orphanedImages') || '[]');
+                orphanedImages.push({
+                    url: tempUploadedImage,
+                    timestamp: Date.now()
+                });
+                localStorage.setItem('orphanedImages', JSON.stringify(orphanedImages));
+
+                // Try to delete immediately (may not complete before page unloads)
+                navigator.sendBeacon('/api/upload/cleanup', JSON.stringify({
+                    publicId: extractPublicId(tempUploadedImage)
+                }));
+            }
+        };
+
+        window.addEventListener('beforeunload', handleBeforeUnload);
+        return () => window.removeEventListener('beforeunload', handleBeforeUnload);
+    }, [tempUploadedImage, editingMember]);
+
+    // Cleanup orphaned images on component mount
+    useEffect(() => {
+        const cleanupOrphanedImages = async () => {
+            const orphanedImages = JSON.parse(localStorage.getItem('orphanedImages') || '[]');
+            const now = Date.now();
+            const remainingImages = [];
+
+            for (const item of orphanedImages) {
+                // Only cleanup images older than 5 minutes to avoid race conditions
+                if (now - item.timestamp > 5 * 60 * 1000) {
+                    try {
+                        await deleteUploadedImage(item.url);
+                    } catch (error) {
+                        console.error('Failed to cleanup orphaned image:', error);
+                        remainingImages.push(item);
+                    }
+                } else {
+                    remainingImages.push(item);
+                }
+            }
+
+            localStorage.setItem('orphanedImages', JSON.stringify(remainingImages));
+        };
+
+        cleanupOrphanedImages();
+    }, []);
 
     // Toggle group expansion
     const toggleGroup = (groupId: string) => {
@@ -538,6 +595,7 @@ export default function TeamManagementPage() {
     // Member CRUD handlers
     const openMemberModal = (groupId: string, member?: TeamMember) => {
         setSelectedGroupId(groupId);
+        setTempUploadedImage(null); // Reset temp image tracking
         if (member) {
             setEditingMember(member);
             setMemberForm({
@@ -592,6 +650,7 @@ export default function TeamManagementPage() {
 
             await fetchGroups();
             setMemberModalOpen(false);
+            setTempUploadedImage(null); // Clear temp tracking after successful save
         } catch (err) {
             setError(err instanceof Error ? err.message : "Failed to save member");
         } finally {
@@ -727,10 +786,24 @@ export default function TeamManagementPage() {
             return;
         }
 
+        // Read file and show cropper
+        const reader = new FileReader();
+        reader.onloadend = () => {
+            setImageToCrop(reader.result as string);
+        };
+        reader.readAsDataURL(file);
+    };
+
+    const handleCropComplete = async (croppedBlob: Blob) => {
+        setCroppedImageBlob(croppedBlob);
+        setImageToCrop(null);
+
+        // Upload the cropped image
         setImageUploading(true);
+        setUploadSuccess(false);
         try {
             const formData = new FormData();
-            formData.append("file", file);
+            formData.append("file", croppedBlob, "profile.jpg");
             formData.append("folder", "team");
 
             const res = await fetch("/api/upload", {
@@ -745,6 +818,11 @@ export default function TeamManagementPage() {
 
             const data = await res.json();
             setMemberForm({ ...memberForm, image: data.url });
+            setTempUploadedImage(data.url); // Track as temporary until saved
+            setUploadSuccess(true);
+
+            // Clear success message after 3 seconds
+            setTimeout(() => setUploadSuccess(false), 3000);
         } catch (err) {
             setError(err instanceof Error ? err.message : "Failed to upload image");
         } finally {
@@ -754,6 +832,113 @@ export default function TeamManagementPage() {
                 fileInputRef.current.value = "";
             }
         }
+    };
+
+    const handleCropCancel = () => {
+        setImageToCrop(null);
+        if (fileInputRef.current) {
+            fileInputRef.current.value = "";
+        }
+    };
+
+    const extractPublicId = (imageUrl: string): string => {
+        const urlParts = imageUrl.split('/');
+        const uploadIndex = urlParts.findIndex(part => part === 'upload');
+
+        if (uploadIndex === -1) return '';
+
+        const pathParts = urlParts.slice(uploadIndex + 1);
+        const versionIndex = pathParts[0]?.startsWith('v') ? 1 : 0;
+        const publicIdParts = pathParts.slice(versionIndex);
+        const lastPart = publicIdParts[publicIdParts.length - 1];
+        publicIdParts[publicIdParts.length - 1] = lastPart.split('.')[0];
+        return publicIdParts.join('/');
+    };
+
+    const handleLoadUrlImage = async () => {
+        if (!tempUrlImage.trim()) {
+            setError("Please enter a valid image URL");
+            return;
+        }
+
+        // Validate URL format
+        try {
+            new URL(tempUrlImage);
+        } catch {
+            setError("Please enter a valid URL");
+            return;
+        }
+
+        setImageUploading(true);
+        try {
+            // Fetch image as blob to avoid CORS issues
+            const response = await fetch(tempUrlImage, {
+                mode: 'cors',
+            });
+
+            if (!response.ok) {
+                throw new Error('Failed to fetch image');
+            }
+
+            const blob = await response.blob();
+
+            // Verify it's an image
+            if (!blob.type.startsWith('image/')) {
+                throw new Error('URL does not point to an image');
+            }
+
+            // Convert blob to data URL for cropper
+            const reader = new FileReader();
+            reader.onloadend = () => {
+                setImageToCrop(reader.result as string);
+                setImageUploading(false);
+            };
+            reader.onerror = () => {
+                setError("Failed to load image. Please try again.");
+                setImageUploading(false);
+            };
+            reader.readAsDataURL(blob);
+        } catch (error) {
+            setError("Failed to load image from URL. Please check the URL and CORS settings.");
+            setImageUploading(false);
+        }
+    };
+
+    const deleteUploadedImage = async (imageUrl: string) => {
+        try {
+            const publicId = extractPublicId(imageUrl);
+
+            if (!publicId) {
+                console.error('Invalid Cloudinary URL:', imageUrl);
+                return;
+            }
+
+            const response = await fetch('/api/upload', {
+                method: 'DELETE',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ publicId }),
+            });
+
+            if (!response.ok) {
+                const errorData = await response.json();
+                console.error('Failed to delete image:', errorData);
+            }
+        } catch (error) {
+            console.error('Failed to delete uploaded image:', error);
+        }
+    };
+
+    const handleDialogClose = async (open: boolean) => {
+        if (!open) {
+            // Dialog is closing - check if there's an unsaved uploaded image
+            if (tempUploadedImage && tempUploadedImage !== editingMember?.image) {
+                await deleteUploadedImage(tempUploadedImage);
+            }
+            setTempUploadedImage(null);
+            setTempUrlImage("");
+            setUploadSuccess(false);
+        }
+        setMemberModalOpen(open);
     };
 
     const removeImage = () => {
@@ -853,7 +1038,7 @@ export default function TeamManagementPage() {
 
             {/* Group Modal */}
             <Dialog open={groupModalOpen} onOpenChange={setGroupModalOpen}>
-                <DialogContent className="sm:max-w-md">
+                <DialogContent className="max-w-md!">
                     <DialogHeader>
                         <DialogTitle>
                             {editingGroup ? "Edit Group" : "Create Group"}
@@ -942,8 +1127,8 @@ export default function TeamManagementPage() {
             </Dialog>
 
             {/* Member Modal */}
-            <Dialog open={memberModalOpen} onOpenChange={setMemberModalOpen}>
-                <DialogContent className="sm:max-w-md">
+            <Dialog open={memberModalOpen && !imageToCrop} onOpenChange={handleDialogClose}>
+                <DialogContent className="!max-w-xl">
                     <DialogHeader>
                         <DialogTitle>
                             {editingMember ? "Edit Member" : "Add Member"}
@@ -1065,6 +1250,13 @@ export default function TeamManagementPage() {
                                                 <Loader2 className="w-4 h-4 animate-spin" />
                                                 Uploading...
                                             </>
+                                        ) : uploadSuccess ? (
+                                            <>
+                                                <svg className="w-4 h-4 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                                                </svg>
+                                                Uploaded Successfully!
+                                            </>
                                         ) : (
                                             <>
                                                 <Upload className="w-4 h-4" />
@@ -1075,16 +1267,41 @@ export default function TeamManagementPage() {
                                     <p className="text-xs text-gray-500">
                                         JPEG, PNG, WebP or GIF. Max 5MB.
                                     </p>
-                                    <div className="text-xs text-gray-400">Or enter URL:</div>
-                                    <Input
-                                        id="memberImage"
-                                        value={memberForm.image}
-                                        onChange={(e) =>
-                                            setMemberForm({ ...memberForm, image: e.target.value })
-                                        }
-                                        placeholder="https://..."
-                                        className="text-sm"
-                                    />
+                                    <div className="text-xs text-gray-400 mt-3 mb-1">Or enter URL:</div>
+                                    <div className="flex gap-2">
+                                        <Input
+                                            id="memberImageUrl"
+                                            value={tempUrlImage}
+                                            onChange={(e) => setTempUrlImage(e.target.value)}
+                                            onKeyDown={(e) => {
+                                                if (e.key === "Enter") {
+                                                    e.preventDefault();
+                                                    handleLoadUrlImage();
+                                                }
+                                            }}
+                                            placeholder="https://example.com/image.jpg"
+                                            className="text-sm flex-1"
+                                        />
+                                        <Button
+                                            type="button"
+                                            variant="outline"
+                                            size="sm"
+                                            onClick={handleLoadUrlImage}
+                                            disabled={!tempUrlImage.trim() || imageUploading}
+                                            className="gap-2 shrink-0"
+                                        >
+                                            <Crop className="w-4 h-4" />
+                                            Crop
+                                        </Button>
+                                    </div>
+                                    {memberForm.image && !memberForm.image.startsWith("blob:") && (
+                                        <p className="text-xs text-green-600 mt-1 flex items-center gap-1">
+                                            <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                                            </svg>
+                                            Image set
+                                        </p>
+                                    )}
                                 </div>
                             </div>
                         </div>
@@ -1106,7 +1323,7 @@ export default function TeamManagementPage() {
                     <DialogFooter>
                         <Button
                             variant="outline"
-                            onClick={() => setMemberModalOpen(false)}
+                            onClick={() => handleDialogClose(false)}
                             disabled={memberSaving || imageUploading}
                         >
                             Cancel
@@ -1122,6 +1339,17 @@ export default function TeamManagementPage() {
                     </DialogFooter>
                 </DialogContent>
             </Dialog>
+
+            {/* Image Cropper Modal */}
+            {imageToCrop && (
+                <ImageCropper
+                    image={imageToCrop}
+                    onCropComplete={handleCropComplete}
+                    onCancel={handleCropCancel}
+                    aspect={1}
+                    shape="round"
+                />
+            )}
 
             {/* Delete Group Confirmation */}
             <AlertDialog

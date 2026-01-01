@@ -142,11 +142,10 @@ export default function EventsManagement() {
                   className="object-cover"
                 />
                 <span
-                  className={`absolute top-4 right-4 px-3 py-1 rounded-full text-xs font-semibold ${
-                    event.type === "upcoming"
+                  className={`absolute top-4 right-4 px-3 py-1 rounded-full text-xs font-semibold ${event.type === "upcoming"
                       ? "bg-green-100 text-green-700"
                       : "bg-gray-100 text-gray-700"
-                  }`}
+                    }`}
                 >
                   {event.type}
                 </span>
@@ -186,7 +185,7 @@ export default function EventsManagement() {
 
       {showModal && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-          <div className="bg-white rounded-2xl p-8 max-w-2xl w-full max-h-[90vh] overflow-y-auto">
+          <div className="bg-white rounded-2xl p-8 !max-w-lg w-full max-h-[90vh] overflow-y-auto">
             <h2 className="text-2xl font-bold text-(--ngo-dark) mb-6">
               {editingEvent ? "Edit Event" : "Add New Event"}
             </h2>

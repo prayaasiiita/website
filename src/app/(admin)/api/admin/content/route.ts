@@ -37,9 +37,22 @@ export async function POST(request: NextRequest) {
     }
 
     const body = await request.json();
-    await dbConnect();
+    
+    // Input validation
+    if (!body.section || !body.key || !body.value) {
+      return NextResponse.json({ error: 'Section, key, and value are required' }, { status: 400 });
+    }
 
-    const content = await Content.create(body);
+    // Sanitize inputs
+    const sanitizedBody = {
+      section: body.section.trim().toLowerCase(),
+      key: body.key.trim().toLowerCase(),
+      value: body.value.trim(),
+      type: body.type || 'text',
+    };
+
+    await dbConnect();
+    const content = await Content.create(sanitizedBody);
     revalidatePublicTags([TAGS.CONTENT, TAGS.PUBLIC]);
     return NextResponse.json({ content }, { status: 201 });
   } catch (error) {
