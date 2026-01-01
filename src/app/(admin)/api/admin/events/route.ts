@@ -31,9 +31,22 @@ export async function POST(request: NextRequest) {
     }
 
     const body = await request.json();
-    await dbConnect();
 
-    const event = await Event.create(body);
+    // Input validation
+    if (!body.title || !body.date) {
+      return NextResponse.json({ error: 'Title and date are required' }, { status: 400 });
+    }
+
+    // Sanitize inputs
+    const sanitizedBody = {
+      ...body,
+      title: body.title.trim(),
+      description: body.description?.trim() || '',
+      date: new Date(body.date),
+    };
+
+    await dbConnect();
+    const event = await Event.create(sanitizedBody);
     revalidatePublicTags([TAGS.EVENTS, TAGS.PUBLIC]);
     return NextResponse.json({ event }, { status: 201 });
   } catch (error) {

@@ -29,10 +29,26 @@ export async function GET(request: NextRequest) {
 
 export async function POST(request: NextRequest) {
   try {
-    const body = await request.json();
-    await dbConnect();
+    const isAuth = await verifyAuth(request);
+    if (!isAuth) {
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    }
 
-    const volunteer = await Volunteer.create(body);
+    const body = await request.json();
+    
+    // Input validation
+    if (!body.name || !body.email) {
+      return NextResponse.json({ error: 'Name and email are required' }, { status: 400 });
+    }
+
+    // Sanitize email
+    const email = body.email.toLowerCase().trim();
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+      return NextResponse.json({ error: 'Invalid email format' }, { status: 400 });
+    }
+
+    await dbConnect();
+    const volunteer = await Volunteer.create({ ...body, email });
     return NextResponse.json({ volunteer }, { status: 201 });
   } catch (error) {
     console.error('Create volunteer error:', error);

@@ -58,6 +58,22 @@ export async function PUT(
     const body = await request.json();
     const { name, role, rollNo, image, email, linkedin, order, isVisible } = body;
 
+    // Validate email if provided
+    if (email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.toLowerCase().trim())) {
+      return NextResponse.json(
+        { error: 'Invalid email format' },
+        { status: 400 }
+      );
+    }
+
+    // Validate lengths
+    if ((name && name.length > 100) || (role && role.length > 100)) {
+      return NextResponse.json(
+        { error: 'Name or role is too long' },
+        { status: 400 }
+      );
+    }
+
     const group = await TeamGroup.findById(id);
     if (!group) {
       return NextResponse.json({ error: 'Team group not found' }, { status: 404 });
@@ -69,12 +85,12 @@ export async function PUT(
     }
 
     // Update fields if provided
-    if (name !== undefined) member.name = name;
-    if (role !== undefined) member.role = role;
-    if (rollNo !== undefined) member.rollNo = rollNo;
-    if (image !== undefined) member.image = image;
-    if (email !== undefined) member.email = email;
-    if (linkedin !== undefined) member.linkedin = linkedin;
+    if (name !== undefined) member.name = name.trim();
+    if (role !== undefined) member.role = role.trim();
+    if (rollNo !== undefined) member.rollNo = rollNo.trim();
+    if (image !== undefined) member.image = image.trim();
+    if (email !== undefined) member.email = email.toLowerCase().trim();
+    if (linkedin !== undefined) member.linkedin = linkedin.trim();
     if (order !== undefined) member.order = order;
     if (isVisible !== undefined) member.isVisible = isVisible;
 
