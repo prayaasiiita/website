@@ -182,7 +182,7 @@ function ContactFormSection() {
                                         href={social.href}
                                         target="_blank"
                                         rel="noopener noreferrer"
-                                        className="w-10 h-10 rounded-full bg-[var(--ngo-dark)] flex items-center justify-center text-white hover:bg-(--ngo-orange) transition-colors"
+                                        className="w-10 h-10 rounded-full bg-(--ngo-dark) flex items-center justify-center text-white hover:bg-(--ngo-orange) transition-colors"
                                     >
                                         <social.icon className="w-5 h-5" />
                                     </a>

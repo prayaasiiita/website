@@ -38,13 +38,12 @@ export function Navbar() {
 
   return (
     <nav
-      className={`fixed top-0 left-0 right-0 z-80 w-full transition-all duration-300 ${
-        isOpen
-          ? "bg-white shadow-lg py-3"
-          : scrolled
+      className={`fixed top-0 left-0 right-0 z-80 w-full transition-all duration-300 ${isOpen
+        ? "bg-white shadow-lg py-3"
+        : scrolled
           ? "bg-white/95 backdrop-blur-md shadow-lg py-2"
           : "bg-transparent py-3"
-      }`}
+        }`}
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full">
         <div className="flex items-center justify-between w-full">
@@ -57,11 +56,10 @@ export function Navbar() {
               <Link
                 key={link.href}
                 href={link.href}
-                className={`font-medium text-base xl:text-lg transition-all duration-200 hover:scale-105 ${
-                  scrolled || isOpen
-                    ? "text-(--ngo-dark) hover:text-(--ngo-orange)"
-                    : "text-white/90 hover:text-white"
-                }`}
+                className={`font-medium text-base xl:text-lg transition-all duration-200 hover:scale-105 ${scrolled || isOpen
+                  ? "text-(--ngo-dark) hover:text-(--ngo-orange)"
+                  : "text-(--ngo-dark) hover:text-(--ngo-orange)"
+                  }`}
               >
                 {link.label}
               </Link>
@@ -80,9 +78,8 @@ export function Navbar() {
 
           <button
             onClick={() => setIsOpen(!isOpen)}
-            className={`lg:hidden p-2.5 rounded-lg z-50 min-w-11 min-h-11 flex items-center justify-center ${
-              scrolled || isOpen ? "text-(--ngo-dark)" : "text-white"
-            }`}
+            className={`lg:hidden p-2.5 rounded-lg z-50 min-w-11 min-h-11 flex items-center justify-center ${scrolled || isOpen ? "text-(--ngo-dark)" : "text-(--ngo-dark)"
+              }`}
             aria-label="Toggle navigation menu"
           >
             {isOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
@@ -128,7 +125,7 @@ export function Navbar() {
                   </motion.div>
                 ))}
               </div>
-              
+
               <div className="px-4 sm:px-6 pb-safe pb-6 pt-4 border-t border-gray-200 bg-white">
                 <Link
                   href="/get-involved#donate"
