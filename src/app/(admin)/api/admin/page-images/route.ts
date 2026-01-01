@@ -8,9 +8,9 @@ import { revalidatePath } from 'next/cache';
 import { revalidatePublicTags, TAGS } from '@/src/lib/revalidate-paths';
 import sharp from 'sharp';
 
-// Route segment config - allow large file uploads
-export const maxDuration = 120; // 2 minutes timeout
+// Route segment config
 export const dynamic = 'force-dynamic';
+export const runtime = 'nodejs';
 
 // Constants for validation
 const ALLOWED_MIME_TYPES = ['image/jpeg', 'image/png', 'image/webp', 'image/gif'];

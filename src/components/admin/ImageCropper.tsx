@@ -34,19 +34,6 @@ export function ImageCropper({
     const [croppedAreaPixels, setCroppedAreaPixels] = useState<Area | null>(null);
     const [isProcessing, setIsProcessing] = useState(false);
 
-    // Keyboard shortcuts
-    useEffect(() => {
-        const handleKeyDown = (e: KeyboardEvent) => {
-            if (e.key === 'Escape') onCancel();
-            if (e.key === 'Enter' && !isProcessing) handleCrop();
-            if (e.key === '+' || e.key === '=') setZoom(z => Math.min(3, z + 0.1));
-            if (e.key === '-' || e.key === '_') setZoom(z => Math.max(1, z - 0.1));
-        };
-
-        window.addEventListener('keydown', handleKeyDown);
-        return () => window.removeEventListener('keydown', handleKeyDown);
-    }, [isProcessing, onCancel]);
-
     const onCropChange = useCallback((crop: { x: number; y: number }) => {
         setCrop(crop);
     }, []);
@@ -71,7 +58,7 @@ export function ImageCropper({
             image.src = url;
         });
 
-    const getCroppedImg = async (
+    const getCroppedImg = useCallback(async (
         imageSrc: string,
         pixelCrop: Area,
         rotation = 0
@@ -120,9 +107,9 @@ export function ImageCropper({
                 resolve(blob);
             }, "image/jpeg", 0.95);
         });
-    };
+    }, []);
 
-    const handleCrop = async () => {
+    const handleCrop = useCallback(async () => {
         if (!croppedAreaPixels) return;
 
         setIsProcessing(true);
@@ -134,7 +121,7 @@ export function ImageCropper({
             alert("Failed to crop image. Please try again.");
             setIsProcessing(false);
         }
-    };
+    }, [croppedAreaPixels, image, rotation, onCropComplete, getCroppedImg]);
 
     const handleRotate = () => {
         setRotation((prev) => (prev + 90) % 360);
@@ -145,6 +132,19 @@ export function ImageCropper({
         setRotation(0);
         setCrop({ x: 0, y: 0 });
     };
+
+    // Keyboard shortcuts
+    useEffect(() => {
+        const handleKeyDown = (e: KeyboardEvent) => {
+            if (e.key === 'Escape') onCancel();
+            if (e.key === 'Enter' && !isProcessing) handleCrop();
+            if (e.key === '+' || e.key === '=') setZoom(z => Math.min(3, z + 0.1));
+            if (e.key === '-' || e.key === '_') setZoom(z => Math.max(1, z - 0.1));
+        };
+
+        window.addEventListener('keydown', handleKeyDown);
+        return () => window.removeEventListener('keydown', handleKeyDown);
+    }, [isProcessing, onCancel, handleCrop]);
 
     return (
         <div className="fixed inset-0 bg-black/95 z-100 flex flex-col">
@@ -170,7 +170,7 @@ export function ImageCropper({
             </div>
 
             {/* Cropper Area */}
-            <div className="flex-1 relative bg-gradient-to-br from-gray-950 via-black to-gray-950">
+            <div className="flex-1 relative bg-linear-to-br from-gray-950 via-black to-gray-950">
                 <Cropper
                     image={image}
                     crop={crop}
