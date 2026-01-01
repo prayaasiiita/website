@@ -162,7 +162,7 @@ function ProgramDetail({
                                 </div>
                             ))}
                         </div>
-                        <div className="flex items-center gap-3 p-4 bg-[var(--ngo-cream)] rounded-xl">
+                        <div className="flex items-center gap-3 p-4 bg-(--ngo-cream) rounded-xl">
                             <Clock className="w-5 h-5 text-(--ngo-orange)" />
                             <span className="text-(--ngo-dark) font-medium">
                                 Schedule: {schedule}
@@ -288,7 +288,7 @@ function WeeklySchedule() {
                                 {day.activities.map((item) => (
                                     <div
                                         key={item.time}
-                                        className="flex justify-between items-center p-3 bg-[var(--ngo-cream)] rounded-xl"
+                                        className="flex justify-between items-center p-3 bg-(--ngo-cream) rounded-xl"
                                     >
                                         <span className="text-(--ngo-gray) text-sm">
                                             {item.time}
@@ -311,7 +311,7 @@ function CTASection({ images }: { images: PageImagesMap }) {
     const ctaSrc = getImageSrc(images, "cta", "background", "");
 
     return (
-        <section className="py-24 bg-[var(--ngo-dark)] relative overflow-hidden">
+        <section className="py-24 bg-(--ngo-dark) relative overflow-hidden">
             {ctaSrc && (
                 <div className="absolute inset-0">
                     <Image
@@ -445,7 +445,7 @@ export default function ProgramsPageClient({ images }: { images: PageImagesMap }
                 {programs.map((program, index) => (
                     <div
                         key={program.id}
-                        className={index % 2 === 1 ? "bg-[var(--ngo-cream)]" : "bg-white"}
+                        className={index % 2 === 1 ? "bg-(--ngo-cream)" : "bg-white"}
                     >
                         <ProgramDetail {...program} reverse={index % 2 === 1} />
                     </div>

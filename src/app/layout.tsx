@@ -14,9 +14,8 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-    title: "Prayaas IIIT Allahabad - Empowering Through Education",
-    description:
-        "Prayaas is a student-run initiative at IIIT Allahabad dedicated to making quality education accessible to underprivileged children and creating lasting positive change.",
+    title: "Prayaas",
+    description: "Prayaas is a student-run initiative at IIIT Allahabad dedicated to making quality education accessible to underprivileged children and creating lasting positive change.",
     keywords: [
         "Prayaas",
         "IIIT Allahabad",
@@ -26,9 +25,8 @@ export const metadata: Metadata = {
         "Social Initiative",
     ],
     openGraph: {
-        title: "Prayaas IIIT Allahabad - Empowering Through Education",
-        description:
-            "A student-run initiative dedicated to making quality education accessible to underprivileged children.",
+        title: "Prayaas",
+        description: "A student-run initiative dedicated to making quality education accessible to underprivileged children.",
         type: "website",
     },
 };

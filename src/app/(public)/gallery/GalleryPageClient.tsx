@@ -105,7 +105,7 @@ function GallerySection() {
                             onClick={() => setActiveCategory(category)}
                             className={`px-6 py-2 rounded-full font-medium transition-all duration-300 ${activeCategory === category
                                 ? "bg-(--ngo-orange) text-white"
-                                : "bg-[var(--ngo-cream)] text-(--ngo-dark) hover:bg-(--ngo-orange)/20"
+                                : "bg-(--ngo-cream) text-(--ngo-dark) hover:bg-(--ngo-orange)/20"
                                 }`}
                         >
                             {category}
@@ -247,7 +247,7 @@ function VideoSection() {
                         transition={{ duration: 0.5 }}
                         className="bg-white rounded-2xl overflow-hidden shadow-lg"
                     >
-                        <div className="aspect-video bg-[var(--ngo-cream)] flex items-center justify-center">
+                        <div className="aspect-video bg-(--ngo-cream) flex items-center justify-center">
                             <div className="text-center p-8">
                                 <div className="w-20 h-20 rounded-full bg-(--ngo-orange) flex items-center justify-center mx-auto mb-4 cursor-pointer hover:scale-110 transition-transform">
                                     <svg
@@ -274,7 +274,7 @@ function VideoSection() {
                         transition={{ duration: 0.5, delay: 0.1 }}
                         className="bg-white rounded-2xl overflow-hidden shadow-lg"
                     >
-                        <div className="aspect-video bg-[var(--ngo-cream)] flex items-center justify-center">
+                        <div className="aspect-video bg-(--ngo-cream) flex items-center justify-center">
                             <div className="text-center p-8">
                                 <div className="w-20 h-20 rounded-full bg-(--ngo-green) flex items-center justify-center mx-auto mb-4 cursor-pointer hover:scale-110 transition-transform">
                                     <svg
@@ -304,7 +304,7 @@ function CTASection({ images }: { images: PageImagesMap }) {
     const ctaSrc = getImageSrc(images, "cta", "background", "");
 
     return (
-        <section className="py-24 bg-[var(--ngo-dark)] relative overflow-hidden">
+        <section className="py-24 bg-(--ngo-dark) relative overflow-hidden">
             {ctaSrc && (
                 <div className="absolute inset-0">
                     <Image
