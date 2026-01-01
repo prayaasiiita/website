@@ -43,7 +43,7 @@ function PageHero({ images }: { images: PageImagesMap }) {
     const heroAlt = images["hero:main"]?.alt || FALLBACK_IMAGES.hero.alt;
 
     return (
-        <section className="relative py-32 overflow-hidden">
+        <section className="relative py-24 sm:py-28 md:py-32 overflow-hidden">
             <div className="absolute inset-0">
                 <Image src={heroSrc} alt={heroAlt} fill className="object-cover" priority />
                 <div className="hero-gradient absolute inset-0" />
@@ -54,16 +54,16 @@ function PageHero({ images }: { images: PageImagesMap }) {
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ duration: 0.8 }}
                 >
-                    <span className="inline-block px-4 py-2 bg-white/20 backdrop-blur-sm rounded-full text-white text-sm font-medium mb-6">
+                    <span className="inline-block px-3 sm:px-4 py-2 bg-white/20 backdrop-blur-sm rounded-full text-white text-xs sm:text-sm font-medium mb-4 sm:mb-6">
                         About Us
                     </span>
                     <h1
-                        className="text-4xl sm:text-5xl md:text-6xl font-bold text-white mb-6"
+                        className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-4 sm:mb-6"
                         style={{ fontFamily: "'Playfair Display', serif" }}
                     >
                         Our Story of Hope
                     </h1>
-                    <p className="text-lg sm:text-xl text-white/90 max-w-3xl mx-auto">
+                    <p className="text-sm sm:text-base md:text-lg lg:text-xl text-white/90 max-w-3xl mx-auto px-4">
                         Learn about our journey, mission, and the passionate team behind
                         Prayaas IIIT Allahabad.
                     </p>

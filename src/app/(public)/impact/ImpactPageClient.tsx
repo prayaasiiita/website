@@ -133,7 +133,7 @@ function StatsSection() {
                             whileInView={{ opacity: 1, y: 0 }}
                             viewport={{ once: true }}
                             transition={{ duration: 0.5, delay: index * 0.1 }}
-                            className="bg-(--ngo-cream) rounded-2xl p-8 text-center card-hover"
+                            className="bg-[var(--ngo-cream)] rounded-2xl p-8 text-center card-hover"
                         >
                             <div
                                 className="w-16 h-16 rounded-full mx-auto mb-4 flex items-center justify-center"
@@ -301,7 +301,7 @@ function SuccessStoriesSection() {
                             whileInView={{ opacity: 1, y: 0 }}
                             viewport={{ once: true }}
                             transition={{ duration: 0.5, delay: index * 0.1 }}
-                            className="bg-(--ngo-cream) rounded-2xl p-8 card-hover"
+                            className="bg-[var(--ngo-cream)] rounded-2xl p-8 card-hover"
                         >
                             <div className="w-20 h-20 rounded-full overflow-hidden mx-auto mb-6">
                                 <Image
@@ -344,7 +344,7 @@ function TimelineSection() {
     ];
 
     return (
-        <section className="py-24 bg-(--ngo-dark)">
+        <section className="py-24 bg-[var(--ngo-dark)]">
             <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
                 <motion.div
                     initial={{ opacity: 0, y: 30 }}

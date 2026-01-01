@@ -74,7 +74,6 @@ function Counter({
 function HeroSection({ images }: { images: PageImagesMap }) {
     const heroSrc = getImageSrc(images, "hero", "main", FALLBACK_IMAGES.hero.src);
     const heroAlt = images["hero:main"]?.alt || FALLBACK_IMAGES.hero.alt;
-    console.log(heroSrc)
     return (
         <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
             <div className="absolute inset-0">
@@ -88,13 +87,13 @@ function HeroSection({ images }: { images: PageImagesMap }) {
                 <div className="hero-gradient absolute inset-0" />
                 <div className="absolute inset-0 bg-linear-to-b from-black/60 via-black/25 to-black/10" />
             </div>
-            <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center pt-24 sm:pt-32">
+            <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center pt-20 sm:pt-24 pb-12 sm:pb-16">
                 <motion.div
                     initial={{ opacity: 0, y: 30 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ duration: 0.8 }}
                 >
-                    <span className="inline-block px-4 py-2 bg-white/20 backdrop-blur-sm rounded-full text-white text-sm font-medium mb-6 mt-2 shadow-lg">
+                    <span className="inline-block px-3 sm:px-4 py-2 bg-white/20 backdrop-blur-sm rounded-full text-white text-xs sm:text-sm font-medium mb-4 sm:mb-6 shadow-lg">
                         A Students Initiative at IIIT Allahabad
                     </span>
                 </motion.div>
@@ -102,20 +101,20 @@ function HeroSection({ images }: { images: PageImagesMap }) {
                     initial={{ opacity: 0, y: 30 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ duration: 0.8, delay: 0.2 }}
-                    className="text-4xl sm:text-5xl md:text-7xl font-bold text-white mb-6 leading-tight drop-shadow-[0_6px_18px_rgba(0,0,0,0.45)]"
+                    className="text-3xl sm:text-4xl md:text-5xl lg:text-7xl font-bold text-white mb-4 sm:mb-6 leading-tight drop-shadow-[0_6px_18px_rgba(0,0,0,0.45)]"
                     style={{ fontFamily: "'Playfair Display', serif" }}
                 >
                     Empowering Lives,
                     <br />
                     <span className="text-(--ngo-yellow)">
-                        Education is Opportunity to Succes
+                        Education is Opportunity to Success
                     </span>
                 </motion.h1>
                 <motion.p
                     initial={{ opacity: 0, y: 30 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ duration: 0.8, delay: 0.4 }}
-                    className="text-lg sm:text-xl text-white/90 max-w-3xl mx-auto mb-10"
+                    className="text-sm sm:text-base md:text-lg lg:text-xl text-white/90 max-w-3xl mx-auto mb-8 sm:mb-10 px-4"
                 >
                     Prayaas is an earnest attempt to bring sunshine in wearisome lives. It
                     is a volunteer movement initiated by student fraternity of IIIT
@@ -125,20 +124,20 @@ function HeroSection({ images }: { images: PageImagesMap }) {
                     initial={{ opacity: 0, y: 30 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ duration: 0.8, delay: 0.6 }}
-                    className="flex flex-col sm:flex-row gap-4 justify-center"
+                    className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center items-center px-4"
                 >
                     <Link
                         href="/get-involved#donate"
-                        className="btn-primary flex items-center justify-center gap-2 w-full sm:w-auto"
+                        className="btn-primary flex items-center justify-center gap-2 w-full sm:w-auto max-w-xs"
                     >
-                        <Heart className="w-5 h-5" />
+                        <Heart className="w-4 h-4 sm:w-5 sm:h-5" />
                         Donate Now
                     </Link>
                     <Link
                         href="/contact-us"
-                        className="btn-outline flex items-center justify-center gap-2 w-full sm:w-auto"
+                        className="btn-outline flex items-center justify-center gap-2 w-full sm:w-auto max-w-xs"
                     >
-                        <Users className="w-5 h-5" />
+                        <Users className="w-4 h-4 sm:w-5 sm:h-5" />
                         Contact Us
                     </Link>
                 </motion.div>
@@ -166,37 +165,37 @@ function AboutSection({ images }: { images: PageImagesMap }) {
     };
 
     return (
-        <section className="bg-white py-12 sm:py-16">
+        <section className="bg-white py-12 sm:py-16 md:py-20">
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                <div className="grid lg:grid-cols-2 gap-16 items-center">
+                <div className="grid lg:grid-cols-2 gap-8 sm:gap-12 lg:gap-16 items-center">
                     <motion.div
                         initial={{ opacity: 0, x: -50 }}
                         whileInView={{ opacity: 1, x: 0 }}
                         viewport={{ once: true }}
                         transition={{ duration: 0.8 }}
                     >
-                        <span className="text-(--ngo-orange) font-semibold uppercase tracking-wider text-sm">
+                        <span className="text-(--ngo-orange) font-semibold uppercase tracking-wider text-xs sm:text-sm">
                             About Prayaas
                         </span>
                         <h2
-                            className="text-4xl md:text-5xl font-bold text-(--ngo-dark) mt-2 mb-6"
+                            className="text-3xl sm:text-4xl md:text-5xl font-bold text-(--ngo-dark) mt-2 mb-4 sm:mb-6"
                             style={{ fontFamily: "'Playfair Display', serif" }}
                         >
                             Transforming Communities Through Education
                         </h2>
-                        <p className="text-(--ngo-gray) text-lg leading-relaxed mb-6">
+                        <p className="text-(--ngo-gray) text-sm sm:text-base md:text-lg leading-relaxed mb-4 sm:mb-6">
                             Prayaas, which means &ldquo;effort&rdquo; in Hindi, is a student-run
                             social initiative at IIIT Allahabad. Founded by compassionate
                             students who believe in the power of education, we work tirelessly
                             to bridge the gap between privilege and potential.
                         </p>
-                        <p className="text-(--ngo-gray) text-lg leading-relaxed mb-8">
+                        <p className="text-(--ngo-gray) text-sm sm:text-base md:text-lg leading-relaxed mb-6 sm:mb-8">
                             Our volunteers dedicate their time to teaching underprivileged
                             children from nearby villages, providing them with academic
                             support, life skills training, and recreational activities that
                             nurture their overall development.
                         </p>
-                        <div className="grid grid-cols-2 sm:grid-cols-3 gap-4 sm:gap-6">
+                        <div className="grid grid-cols-3 gap-3 sm:gap-4 md:gap-6">
                             {[
                                 { icon: Heart, label: "Compassion", color: "var(--ngo-orange)" },
                                 { icon: BookOpen, label: "Education", color: "var(--ngo-green)" },
@@ -204,15 +203,15 @@ function AboutSection({ images }: { images: PageImagesMap }) {
                             ].map((item) => (
                                 <div key={item.label} className="text-center">
                                     <div
-                                        className="w-14 h-14 rounded-full mx-auto mb-3 flex items-center justify-center"
+                                        className="w-12 h-12 sm:w-14 sm:h-14 rounded-full mx-auto mb-2 sm:mb-3 flex items-center justify-center"
                                         style={{ backgroundColor: `${item.color}20` }}
                                     >
                                         <item.icon
-                                            className="w-9 h-9"
+                                            className="w-6 h-6 sm:w-7 sm:h-7 md:w-9 md:h-9"
                                             style={{ color: item.color }}
                                         />
                                     </div>
-                                    <span className="font-bold text-(--ngo-dark)">{item.label}</span>
+                                    <span className="font-bold text-(--ngo-dark) text-xs sm:text-sm md:text-base">{item.label}</span>
                                 </div>
                             ))}
                         </div>
@@ -224,43 +223,43 @@ function AboutSection({ images }: { images: PageImagesMap }) {
                         transition={{ duration: 0.8 }}
                         className="relative"
                     >
-                        <div className="relative z-10 rounded-2xl overflow-hidden shadow-2xl transition-transform duration-300 hover:scale-105">
+                        <div className="relative z-10 rounded-xl sm:rounded-2xl overflow-hidden shadow-xl sm:shadow-2xl transition-transform duration-300 hover:scale-[1.02]">
                             <motion.div
                                 className="flex"
                                 animate={{ x: `-${activeIndex * 100}%` }}
                                 transition={{ duration: 0.6, ease: "easeInOut" }}
                             >
                                 {aboutImages.map((image, index) => (
-                                    <div key={`about-${index}`} className="min-w-full">
+                                    <div key={`about-${index}`} className="min-w-full aspect-4/3 sm:aspect-3/2 relative">
                                         <Image
                                             src={image.src}
                                             alt={image.alt}
-                                            width={600}
-                                            height={500}
-                                            className="w-full h-auto"
+                                            fill
+                                            className="object-cover"
+                                            sizes="(max-width: 768px) 100vw, 50vw"
                                             priority={index === 0}
                                             loading={index === 0 ? "eager" : "lazy"}
                                         />
                                     </div>
                                 ))}
                             </motion.div>
-                            <div className="absolute inset-x-0 bottom-4 flex items-center justify-center gap-2">
+                            <div className="absolute inset-x-0 bottom-3 sm:bottom-4 flex items-center justify-center gap-2">
                                 {aboutImages.map((_, index) => (
                                     <button
                                         key={`dot-${index}`}
                                         type="button"
                                         aria-label={`Show slide ${index + 1}`}
                                         onClick={() => handleDotClick(index)}
-                                        className={`h-2.5 rounded-full transition-all duration-300 ${activeIndex === index
-                                                ? "w-8 bg-(--ngo-orange)"
-                                                : "w-3 bg-white/70 hover:bg-white"
+                                        className={`h-2 sm:h-2.5 rounded-full transition-all duration-300 ${activeIndex === index
+                                                ? "w-6 sm:w-8 bg-(--ngo-orange)"
+                                                : "w-2 sm:w-3 bg-white/70 hover:bg-white"
                                             }`}
                                     />
                                 ))}
                             </div>
                         </div>
-                        <div className="absolute -bottom-6 -left-6 w-72 h-72 bg-(--ngo-orange)/10 rounded-2xl -z-10" />
-                        <div className="absolute -top-6 -right-6 w-48 h-48 bg-(--ngo-green)/10 rounded-2xl -z-10" />
+                        <div className="absolute -bottom-4 -left-4 sm:-bottom-6 sm:-left-6 w-48 h-48 sm:w-72 sm:h-72 bg-(--ngo-orange)/10 rounded-xl sm:rounded-2xl -z-10" />
+                        <div className="absolute -top-4 -right-4 sm:-top-6 sm:-right-6 w-32 h-32 sm:w-48 sm:h-48 bg-(--ngo-green)/10 rounded-xl sm:rounded-2xl -z-10" />
                     </motion.div>
                 </div>
             </div>
@@ -301,30 +300,30 @@ function ProgramsSection() {
     ];
 
     return (
-        <section className="section-gradient py-12 sm:py-16">
+        <section className="section-gradient py-12 sm:py-16 md:py-20">
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 <motion.div
                     initial={{ opacity: 0, y: 30 }}
                     whileInView={{ opacity: 1, y: 0 }}
                     viewport={{ once: true }}
                     transition={{ duration: 0.8 }}
-                    className="text-center mb-16"
+                    className="text-center mb-10 sm:mb-12 md:mb-16"
                 >
-                    <span className="text-(--ngo-orange) font-semibold uppercase tracking-wider text-sm">
+                    <span className="text-(--ngo-orange) font-semibold uppercase tracking-wider text-xs sm:text-sm">
                         What We Do
                     </span>
                     <h2
-                        className="text-4xl md:text-5xl font-bold text-(--ngo-dark) mt-2 mb-4"
+                        className="text-3xl sm:text-4xl md:text-5xl font-bold text-(--ngo-dark) mt-2 mb-3 sm:mb-4"
                         style={{ fontFamily: "'Playfair Display', serif" }}
                     >
                         Our Programs
                     </h2>
-                    <p className="text-(--ngo-gray) text-lg max-w-2xl mx-auto">
+                    <p className="text-(--ngo-gray) text-sm sm:text-base md:text-lg max-w-2xl mx-auto px-4">
                         We run comprehensive programs designed to nurture every aspect of a
                         child&apos;s development
                     </p>
                 </motion.div>
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 sm:gap-8">
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 lg:gap-8">
                     {programs.map((program, index) => (
                         <motion.div
                             key={program.title}
@@ -335,32 +334,32 @@ function ProgramsSection() {
                             className="h-full"
                         >
                             <SpotlightCard
-                                className="h-full bg-white border-transparent text-(--ngo-dark) shadow-lg card-hover"
+                                className="h-full bg-white border-transparent text-(--ngo-dark) shadow-lg card-hover p-5 sm:p-6"
                                 spotlightColor="rgba(255, 138, 76, 0.2)"
                             >
                                 <div
-                                    className="w-16 h-16 rounded-2xl mb-6 flex items-center justify-center"
+                                    className="w-14 h-14 sm:w-16 sm:h-16 rounded-xl sm:rounded-2xl mb-4 sm:mb-6 flex items-center justify-center"
                                     style={{ backgroundColor: `${program.color}15` }}
                                 >
                                     <program.icon
-                                        className="w-10 h-10"
+                                        className="w-7 h-7 sm:w-9 sm:h-9 md:w-10 md:h-10"
                                         style={{ color: program.color }}
                                     />
                                 </div>
                                 <h3
-                                    className="text-xl font-bold text-(--ngo-dark) mb-3"
+                                    className="text-lg sm:text-xl font-bold text-(--ngo-dark) mb-2 sm:mb-3"
                                     style={{ fontFamily: "'Playfair Display', serif" }}
                                 >
                                     {program.title}
                                 </h3>
-                                <p className="text-(--ngo-gray) leading-relaxed">
+                                <p className="text-(--ngo-gray) leading-relaxed text-sm sm:text-base mb-3 sm:mb-4">
                                     {program.description}
                                 </p>
                                 <Link
                                     href={`/programs#${program.title.toLowerCase().replace(/ /g, "-")}`}
-                                    className="inline-flex items-center gap-2 mt-4 text-(--ngo-orange) font-semibold hover:gap-3 transition-all"
+                                    className="inline-flex items-center gap-2 mt-2 text-(--ngo-orange) font-semibold hover:gap-3 transition-all text-sm sm:text-base"
                                 >
-                                    Learn More <ArrowRight className="w-4 h-4" />
+                                    Learn More <ArrowRight className="w-3 h-3 sm:w-4 sm:h-4" />
                                 </Link>
                             </SpotlightCard>
                         </motion.div>
@@ -380,10 +379,10 @@ function ImpactSection() {
     ];
 
     return (
-        <section className="bg-(--ngo-dark) relative overflow-hidden py-12 sm:py-16">
+        <section className="bg-(--ngo-dark) relative overflow-hidden py-12 sm:py-16 md:py-20">
             <div className="absolute inset-0 opacity-10">
-                <div className="absolute top-0 left-0 w-96 h-96 bg-(--ngo-orange) rounded-full blur-3xl -translate-x-1/2 -translate-y-1/2" />
-                <div className="absolute bottom-0 right-0 w-96 h-96 bg-(--ngo-green) rounded-full blur-3xl translate-x-1/2 translate-y-1/2" />
+                <div className="absolute top-0 left-0 w-64 h-64 sm:w-96 sm:h-96 bg-(--ngo-orange) rounded-full blur-3xl -translate-x-1/2 -translate-y-1/2" />
+                <div className="absolute bottom-0 right-0 w-64 h-64 sm:w-96 sm:h-96 bg-(--ngo-green) rounded-full blur-3xl translate-x-1/2 translate-y-1/2" />
             </div>
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
                 <motion.div
@@ -391,23 +390,23 @@ function ImpactSection() {
                     whileInView={{ opacity: 1, y: 0 }}
                     viewport={{ once: true }}
                     transition={{ duration: 0.8 }}
-                    className="text-center mb-16"
+                    className="text-center mb-10 sm:mb-12 md:mb-16"
                 >
-                    <span className="text-(--ngo-orange) font-semibold uppercase tracking-wider text-sm">
+                    <span className="text-(--ngo-orange) font-semibold uppercase tracking-wider text-xs sm:text-sm">
                         Our Impact
                     </span>
                     <h2
-                        className="text-4xl md:text-5xl font-bold text-white mt-2 mb-4"
+                        className="text-3xl sm:text-4xl md:text-5xl font-bold text-white mt-2 mb-3 sm:mb-4"
                         style={{ fontFamily: "'Playfair Display', serif" }}
                     >
                         Creating Lasting Change
                     </h2>
-                    <p className="text-gray-400 text-lg max-w-2xl mx-auto">
+                    <p className="text-gray-400 text-sm sm:text-base md:text-lg max-w-2xl mx-auto px-4">
                         Every number represents a story of hope, transformation, and a step
                         towards a brighter future
                     </p>
                 </motion.div>
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 sm:gap-8">
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 lg:gap-8">
                     {stats.map((stat, index) => (
                         <motion.div
                             key={stat.label}
@@ -418,19 +417,19 @@ function ImpactSection() {
                             className="h-full"
                         >
                             <SpotlightCard
-                                className="h-full text-center p-8 rounded-2xl bg-white/5 backdrop-blur-sm border border-white/10"
+                                className="h-full text-center p-6 sm:p-8 rounded-xl sm:rounded-2xl bg-white/5 backdrop-blur-sm border border-white/10"
                                 spotlightColor="rgba(255, 255, 255, 0.25)"
                             >
-                                <div className="w-16 h-16 rounded-full bg-(--ngo-orange)/20 flex items-center justify-center mx-auto mb-4">
-                                    <stat.icon className="w-8 h-8 text-(--ngo-orange)" />
+                                <div className="w-12 h-12 sm:w-14 sm:h-14 md:w-16 md:h-16 rounded-full bg-(--ngo-orange)/20 flex items-center justify-center mx-auto mb-3 sm:mb-4">
+                                    <stat.icon className="w-6 h-6 sm:w-7 sm:h-7 md:w-8 md:h-8 text-(--ngo-orange)" />
                                 </div>
                                 <div
-                                    className="text-5xl font-bold text-white mb-2"
+                                    className="text-3xl sm:text-4xl md:text-5xl font-bold text-white mb-2"
                                     style={{ fontFamily: "'Playfair Display', serif" }}
                                 >
                                     <Counter end={stat.value} suffix={stat.suffix} />
                                 </div>
-                                <p className="text-gray-400 font-medium">{stat.label}</p>
+                                <p className="text-gray-400 font-medium text-sm sm:text-base">{stat.label}</p>
                             </SpotlightCard>
                         </motion.div>
                     ))}
@@ -504,30 +503,30 @@ function TestimonialsSection() {
             : `repeat(${columnCount}, minmax(0, 1fr))`;
 
     return (
-        <section className="py-12 bg-white">
+        <section className="py-12 sm:py-16 md:py-20 bg-white">
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 <motion.div
                     initial={{ opacity: 0, y: 30 }}
                     whileInView={{ opacity: 1, y: 0 }}
                     viewport={{ once: true }}
                     transition={{ duration: 0.8 }}
-                    className="text-center mb-16"
+                    className="text-center mb-10 sm:mb-12 md:mb-16"
                 >
-                    <span className="text-(--ngo-orange) font-semibold uppercase tracking-wider text-sm">
+                    <span className="text-(--ngo-orange) font-semibold uppercase tracking-wider text-xs sm:text-sm">
                         Real Stories
                     </span>
                     <h2
-                        className="text-4xl md:text-5xl font-bold text-(--ngo-dark) mt-2 mb-4"
+                        className="text-3xl sm:text-4xl md:text-5xl font-bold text-(--ngo-dark) mt-2 mb-3 sm:mb-4"
                         style={{ fontFamily: "'Playfair Display', serif" }}
                     >
                         Stories of Hope
                     </h2>
-                    <p className="text-(--ngo-gray) text-lg max-w-2xl mx-auto">
+                    <p className="text-(--ngo-gray) text-sm sm:text-base md:text-lg max-w-2xl mx-auto px-4">
                         Hover over the stories on desktop; tap to read on mobile
                     </p>
                 </motion.div>
                 <div
-                    className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5 transition-all duration-300"
+                    className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-5 transition-all duration-300"
                     style={{ gridTemplateColumns: columnTemplate }}
                 >
                     {testimonials.map((item, index) => (
@@ -599,8 +598,8 @@ function TestimonialsSection() {
                                         </p>
                                     </div>
                                 </div>
-                                <Quote className="w-8 h-8 text-(--ngo-orange)" />
-                                <p className="text-sm md:text-base leading-relaxed">
+                                <Quote className="w-6 h-6 sm:w-7 sm:h-7 md:w-8 md:h-8 text-(--ngo-orange)" />
+                                <p className="text-xs sm:text-sm md:text-base leading-relaxed">
                                     &quot;{item.quote}&quot;
                                 </p>
                             </motion.div>
@@ -720,16 +719,16 @@ function GallerySection({ images }: { images: PageImagesMap }) {
                     transition={{ duration: 0.8 }}
                     className="text-center mb-6"
                 >
-                    <span className="text-(--ngo-orange) font-semibold uppercase tracking-wider text-sm">
+                    <span className="text-(--ngo-orange) font-semibold uppercase tracking-wider text-xs sm:text-sm">
                         Gallery
                     </span>
                     <h2
-                        className="text-4xl md:text-5xl font-bold text-(--ngo-dark) mt-2 mb-4"
+                        className="text-3xl sm:text-4xl md:text-5xl font-bold text-(--ngo-dark) mt-2 mb-3 sm:mb-4"
                         style={{ fontFamily: "'Playfair Display', serif" }}
                     >
                         Moments of Joy
                     </h2>
-                    <p className="text-(--ngo-gray) text-lg max-w-2xl mx-auto">
+                    <p className="text-(--ngo-gray) text-sm sm:text-base md:text-lg max-w-2xl mx-auto px-4">
                         Glimpses of our journey in transforming lives
                     </p>
                 </motion.div>
@@ -738,9 +737,9 @@ function GallerySection({ images }: { images: PageImagesMap }) {
             <div className="text-center mt-6 sm:mt-10">
                 <Link
                     href="/gallery"
-                    className="inline-flex items-center gap-2 text-(--ngo-orange) font-semibold hover:gap-3 transition-all text-lg"
+                    className="inline-flex items-center gap-2 text-(--ngo-orange) font-semibold hover:gap-3 transition-all text-base sm:text-lg py-2 min-h-11"
                 >
-                    View Full Gallery <ArrowRight className="w-5 h-5" />
+                    View Full Gallery <ArrowRight className="w-4 h-4 sm:w-5 sm:h-5" />
                 </Link>
             </div>
         </section>
@@ -752,7 +751,7 @@ function CTASection({ images }: { images: PageImagesMap }) {
     const ctaAlt = images["cta:background"]?.alt || FALLBACK_IMAGES.cta.alt;
 
     return (
-        <section className="relative overflow-hidden py-12 sm:py-16">
+        <section className="relative overflow-hidden py-12 sm:py-16 md:py-20">
             <div className="absolute inset-0">
                 <Image src={ctaSrc} alt={ctaAlt} fill className="object-cover" />
                 <div className="hero-gradient absolute inset-0" />
@@ -766,28 +765,28 @@ function CTASection({ images }: { images: PageImagesMap }) {
                     transition={{ duration: 0.8 }}
                 >
                     <h2
-                        className="text-3xl sm:text-4xl md:text-5xl font-bold text-white mb-6"
+                        className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-white mb-4 sm:mb-6"
                         style={{ fontFamily: "'Playfair Display', serif" }}
                     >
                         Together, We Can Make a Difference
                     </h2>
-                    <p className="text-white/90 text-lg mb-10 max-w-2xl mx-auto">
+                    <p className="text-white/90 text-sm sm:text-base md:text-lg mb-8 sm:mb-10 max-w-2xl mx-auto">
                         Every child deserves the opportunity to learn, grow, and dream. Join
                         Prayaas today and be part of this beautiful journey of transformation.
                     </p>
-                    <div className="flex flex-col sm:flex-row gap-4 justify-center">
+                    <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center items-center">
                         <Link
                             href="/get-involved#donate"
-                            className="btn-primary flex items-center justify-center gap-2 w-full sm:w-auto"
+                            className="btn-primary flex items-center justify-center gap-2 w-full sm:w-auto max-w-xs"
                         >
-                            <Heart className="w-5 h-5" />
+                            <Heart className="w-4 h-4 sm:w-5 sm:h-5" />
                             Donate Now
                         </Link>
                         <Link
                             href="/get-involved#volunteer"
-                            className="btn-outline flex items-center justify-center gap-2 w-full sm:w-auto"
+                            className="btn-outline flex items-center justify-center gap-2 w-full sm:w-auto max-w-xs"
                         >
-                            <Phone className="w-5 h-5" />
+                            <Phone className="w-4 h-4 sm:w-5 sm:h-5" />
                             Contact Us
                         </Link>
                     </div>
@@ -802,7 +801,6 @@ interface HomePageClientProps {
 }
 
 export default function HomePageClient({ images }: HomePageClientProps) {
-    console.log(images);
     return (
         <>
             <HeroSection images={images} />
