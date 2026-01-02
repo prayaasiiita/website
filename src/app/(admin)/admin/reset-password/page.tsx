@@ -77,8 +77,8 @@ function ResetPasswordForm() {
 
     if (success) {
         return (
-            <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-[#fff8f5] via-white to-[#fef3f0] p-4">
-                <div className="max-w-[420px] w-full">
+            <div className="min-h-screen flex items-center justify-center bg-linear-to-br from-[#fff8f5] via-white to-[#fef3f0] p-4">
+                <div className="max-w-105 w-full">
                     <div className="bg-white rounded-2xl shadow-xl p-8 text-center">
                         <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
                             <CheckCircle className="w-8 h-8 text-green-600" />
@@ -97,7 +97,7 @@ function ResetPasswordForm() {
     }
 
     return (
-        <div className="min-h-screen bg-gradient-to-br from-[#fff8f5] via-white to-[#fef3f0] px-4 py-8 relative overflow-hidden">
+        <div className="min-h-screen bg-linear-to-br from-[#fff8f5] via-white to-[#fef3f0] px-4 py-8 relative overflow-hidden">
             {/* Background Decorative Elements */}
             <div className="absolute top-0 left-0 w-64 h-64 bg-orange-200 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-blob" />
             <div className="absolute top-0 right-0 w-64 h-64 bg-pink-200 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-blob animation-delay-2000" />
@@ -125,7 +125,7 @@ function ResetPasswordForm() {
                     <div className="bg-white/80 backdrop-blur-lg rounded-2xl shadow-2xl p-6 sm:p-8 border border-white/20">
                         {/* Header */}
                         <div className="text-center mb-6 sm:mb-8">
-                            <div className="w-16 h-16 bg-gradient-to-br from-orange-100 to-pink-100 rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-md">
+                            <div className="w-16 h-16 bg-linear-to-br from-orange-100 to-pink-100 rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-md">
                                 <Lock className="w-8 h-8 text-[#e85a4f]" />
                             </div>
                             <h1 className="text-3xl font-bold text-gray-900 mb-2">
@@ -225,7 +225,7 @@ function ResetPasswordForm() {
                             <button
                                 type="submit"
                                 disabled={loading || !token}
-                                className="w-full bg-gradient-to-r from-[#e85a4f] to-[#c94a40] hover:from-[#d64a3f] hover:to-[#b93a30] text-white font-semibold py-4 px-6 rounded-xl shadow-lg shadow-orange-500/25 hover:shadow-xl hover:shadow-orange-500/30 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-300 flex items-center justify-center gap-2"
+                                className="w-full bg-linear-to-r from-[#e85a4f] to-[#c94a40] hover:from-[#d64a3f] hover:to-[#b93a30] text-white font-semibold py-4 px-6 rounded-xl shadow-lg shadow-orange-500/25 hover:shadow-xl hover:shadow-orange-500/30 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-300 flex items-center justify-center gap-2"
                             >
                                 {loading ? (
                                     <>
@@ -265,7 +265,7 @@ function ResetPasswordForm() {
 export default function ResetPasswordPage() {
     return (
         <Suspense fallback={
-            <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-[#fff8f5] via-white to-[#fef3f0]">
+            <div className="min-h-screen flex items-center justify-center bg-linear-to-br from-[#fff8f5] via-white to-[#fef3f0]">
                 <Loader2 className="w-10 h-10 animate-spin text-[#e85a4f]" />
             </div>
         }>

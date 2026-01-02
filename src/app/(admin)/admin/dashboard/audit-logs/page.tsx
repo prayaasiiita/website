@@ -298,7 +298,7 @@ export default function AuditLogsPage() {
                                             <td className="p-4 text-sm font-medium">
                                                 {log.resource}
                                                 {log.resourceId && (
-                                                    <div className="text-xs text-muted-foreground truncate max-w-[100px]">
+                                                    <div className="text-xs text-muted-foreground truncate max-w-25">
                                                         {log.resourceId}
                                                     </div>
                                                 )}
@@ -350,13 +350,13 @@ export default function AuditLogsPage() {
                                                         <summary className="cursor-pointer text-blue-500">
                                                             View changes
                                                         </summary>
-                                                        <pre className="mt-2 p-2 bg-muted rounded text-xs overflow-auto max-w-[300px]">
+                                                        <pre className="mt-2 p-2 bg-muted rounded text-xs overflow-auto max-w-75">
                                                             {JSON.stringify(log.changes, null, 2)}
                                                         </pre>
                                                     </details>
                                                 )}
                                                 {log.userAgent && (
-                                                    <div className="text-xs text-muted-foreground mt-1 truncate max-w-[200px]">
+                                                    <div className="text-xs text-muted-foreground mt-1 truncate max-w-50">
                                                         {log.userAgent}
                                                     </div>
                                                 )}
