@@ -9,8 +9,8 @@ export interface AuditLogParams {
     admin: JWTPayload;
     request: NextRequest;
     changes?: {
-        before?: any;
-        after?: any;
+        before?: unknown;
+        after?: unknown;
     };
     status?: 'success' | 'failure';
     errorMessage?: string;
@@ -98,15 +98,19 @@ export async function createAuditLog(params: AuditLogParams): Promise<void> {
 /**
  * Sanitize changes object to remove sensitive fields
  */
-function sanitizeChanges(changes?: { before?: any; after?: any }) {
+function sanitizeChanges(changes?: { before?: unknown; after?: unknown }) {
     if (!changes) return undefined;
 
     const sensitiveFields = ['password', 'token', 'secret', 'apiKey', 'apiSecret'];
 
-    const sanitize = (obj: any): any => {
+    const sanitize = (obj: unknown): unknown => {
         if (!obj || typeof obj !== 'object') return obj;
 
-        const sanitized = Array.isArray(obj) ? [...obj] : { ...obj };
+        if (Array.isArray(obj)) {
+            return obj.map(item => sanitize(item));
+        }
+
+        const sanitized: Record<string, unknown> = { ...obj as Record<string, unknown> };
 
         for (const key in sanitized) {
             if (sensitiveFields.some(field => key.toLowerCase().includes(field))) {
@@ -137,16 +141,16 @@ export async function getAuditLogs(filters: {
     limit?: number;
     skip?: number;
 }) {
-    const query: any = {};
+    const query: Record<string, unknown> = {};
 
     if (filters.adminId) query.adminId = filters.adminId;
     if (filters.resource) query.resource = filters.resource;
     if (filters.action) query.action = filters.action;
 
     if (filters.startDate || filters.endDate) {
-        query.timestamp = {};
-        if (filters.startDate) query.timestamp.$gte = filters.startDate;
-        if (filters.endDate) query.timestamp.$lte = filters.endDate;
+        query.timestamp = {} as Record<string, Date>;
+        if (filters.startDate) (query.timestamp as Record<string, Date>).$gte = filters.startDate;
+        if (filters.endDate) (query.timestamp as Record<string, Date>).$lte = filters.endDate;
     }
 
     const logs = await AuditLog

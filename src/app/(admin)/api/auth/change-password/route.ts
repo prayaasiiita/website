@@ -6,6 +6,7 @@ import Admin from '@/src/models/Admin';
 import { sendPasswordChangeConfirmation } from '@/src/lib/email';
 import { createAuditLog } from '@/src/lib/audit';
 import { apiRateLimiter } from '@/src/lib/security';
+import bcrypt from 'bcryptjs';
 
 export async function POST(request: NextRequest) {
     try {
@@ -72,7 +73,6 @@ export async function POST(request: NextRequest) {
         }
 
         // Verify current password
-        const bcrypt = require('bcryptjs');
         const isValidPassword = await bcrypt.compare(currentPassword, admin.password);
 
         if (!isValidPassword) {

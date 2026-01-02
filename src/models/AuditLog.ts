@@ -19,8 +19,8 @@ export interface IAuditLog extends mongoose.Document {
         lon?: number;
     };
     changes?: {
-        before?: any;
-        after?: any;
+        before?: unknown;
+        after?: unknown;
     };
     status: 'success' | 'failure';
     errorMessage?: string;

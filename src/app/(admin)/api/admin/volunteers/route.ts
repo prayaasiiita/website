@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import dbConnect from '@/src/lib/mongodb';
-import Volunteer from '@/src/models/Volunteer';
+import Volunteer, { IVolunteer } from '@/src/models/Volunteer';
 import { verifyToken } from '@/src/lib/auth';
 import { createAuditLog } from '@/src/lib/audit';
 
@@ -47,17 +47,17 @@ export async function POST(request: NextRequest) {
     }
 
     await dbConnect();
-    const volunteer = await Volunteer.create({ ...body, email });
+    const volunteer = (await Volunteer.create({ ...body, email })) as unknown as IVolunteer;
     
     // Log volunteer creation
     createAuditLog({
       action: 'create',
       resource: 'volunteer',
-      resourceId: (volunteer as any)._id?.toString(),
+      resourceId: volunteer._id?.toString(),
       admin,
       request,
       changes: {
-        after: { name: (volunteer as any).name, email: (volunteer as any).email }
+        after: { name: volunteer.name, email: volunteer.email }
       }
     }).catch(err => console.error('Audit log failed:', err));
     

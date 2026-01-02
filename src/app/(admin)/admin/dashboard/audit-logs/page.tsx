@@ -30,8 +30,8 @@ interface AuditLog {
     errorMessage?: string;
     timestamp: string;
     changes?: {
-        before?: any;
-        after?: any;
+        before?: unknown;
+        after?: unknown;
     };
 }
 
