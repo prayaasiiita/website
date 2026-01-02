@@ -14,6 +14,7 @@ import {
   Menu,
   X,
   Shield,
+  MessageSquare,
 } from "lucide-react";
 
 export default function DashboardLayout({
@@ -101,6 +102,11 @@ export default function DashboardLayout({
       name: "Volunteers",
       href: "/admin/dashboard/volunteers",
       icon: Users,
+    },
+    {
+      name: "Contacts",
+      href: "/admin/dashboard/contacts",
+      icon: MessageSquare,
     },
     {
       name: "Audit Logs",

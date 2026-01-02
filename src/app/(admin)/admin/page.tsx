@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
-import { Lock, Eye, EyeOff, Loader2, Heart, Users, BookOpen } from "lucide-react";
+import { Lock, Eye, EyeOff, Loader2 } from "lucide-react";
 import Link from "next/link";
 
 export default function AdminLogin() {

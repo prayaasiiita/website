@@ -394,7 +394,6 @@ export default function TeamManagementPage() {
     const [imageUploading, setImageUploading] = useState(false);
     const fileInputRef = useRef<HTMLInputElement>(null);
     const [imageToCrop, setImageToCrop] = useState<string | null>(null);
-    const [croppedImageBlob, setCroppedImageBlob] = useState<Blob | null>(null);
     const [uploadSuccess, setUploadSuccess] = useState(false);
     const [tempUrlImage, setTempUrlImage] = useState("");
     const [tempUploadedImage, setTempUploadedImage] = useState<string | null>(null);
@@ -438,9 +437,34 @@ export default function TeamManagementPage() {
         fetchGroups();
     }, [fetchGroups]);
 
+    // Define deleteUploadedImage before it's used
+    const deleteUploadedImage = useCallback(async (imageUrl: string) => {
+        try {
+            const publicId = extractPublicId(imageUrl);
+
+            if (!publicId) {
+                console.error('Invalid Cloudinary URL:', imageUrl);
+                return;
+            }
+
+            const response = await fetch('/api/upload', {
+                method: 'DELETE',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ publicId }),
+            });
+
+            if (!response.ok) {
+                const errorData = await response.json();
+                console.error('Failed to delete image:', errorData);
+            }
+        } catch (error) {
+            console.error('Failed to delete uploaded image:', error);
+        }
+    }, []);
+
     // Cleanup temp images on browser close/refresh
     useEffect(() => {
-        const handleBeforeUnload = async (e: BeforeUnloadEvent) => {
+        const handleBeforeUnload = async () => {
             if (tempUploadedImage && tempUploadedImage !== editingMember?.image) {
                 // Store in localStorage for cleanup on next visit
                 const orphanedImages = JSON.parse(localStorage.getItem('orphanedImages') || '[]');
@@ -486,7 +510,7 @@ export default function TeamManagementPage() {
         };
 
         cleanupOrphanedImages();
-    }, []);
+    }, [deleteUploadedImage]);
 
     // Toggle group expansion
     const toggleGroup = (groupId: string) => {
@@ -795,7 +819,6 @@ export default function TeamManagementPage() {
     };
 
     const handleCropComplete = async (croppedBlob: Blob) => {
-        setCroppedImageBlob(croppedBlob);
         setImageToCrop(null);
 
         // Upload the cropped image
@@ -898,33 +921,9 @@ export default function TeamManagementPage() {
                 setImageUploading(false);
             };
             reader.readAsDataURL(blob);
-        } catch (error) {
+        } catch {
             setError("Failed to load image from URL. Please check the URL and CORS settings.");
             setImageUploading(false);
-        }
-    };
-
-    const deleteUploadedImage = async (imageUrl: string) => {
-        try {
-            const publicId = extractPublicId(imageUrl);
-
-            if (!publicId) {
-                console.error('Invalid Cloudinary URL:', imageUrl);
-                return;
-            }
-
-            const response = await fetch('/api/upload', {
-                method: 'DELETE',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ publicId }),
-            });
-
-            if (!response.ok) {
-                const errorData = await response.json();
-                console.error('Failed to delete image:', errorData);
-            }
-        } catch (error) {
-            console.error('Failed to delete uploaded image:', error);
         }
     };
 
