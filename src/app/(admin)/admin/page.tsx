@@ -264,6 +264,16 @@ export default function AdminLogin() {
                 </button>
               </form>
 
+              {/* Forgot Password Link */}
+              <div className="text-center mt-4">
+                <Link
+                  href="/admin/forgot-password"
+                  className="text-sm text-gray-600 hover:text-[#e85a4f] font-medium transition-colors"
+                >
+                  Forgot your password?
+                </Link>
+              </div>
+
               {/* Footer Note */}
               <p className="text-center text-gray-400 text-xs sm:text-sm mt-4 sm:mt-6">
                 Authorized personnel only. Contact admin for access.

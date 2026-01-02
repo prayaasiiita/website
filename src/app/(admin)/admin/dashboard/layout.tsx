@@ -13,6 +13,7 @@ import {
   LogOut,
   Menu,
   X,
+  Shield,
 } from "lucide-react";
 
 export default function DashboardLayout({
@@ -100,6 +101,11 @@ export default function DashboardLayout({
       name: "Volunteers",
       href: "/admin/dashboard/volunteers",
       icon: Users,
+    },
+    {
+      name: "Audit Logs",
+      href: "/admin/dashboard/audit-logs",
+      icon: Shield,
     },
   ];
 

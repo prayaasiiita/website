@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import dbConnect from '@/src/lib/mongodb';
 import Admin from '@/src/models/Admin';
 import { comparePassword, generateToken } from '@/src/lib/auth';
+import { createAuditLog } from '@/src/lib/audit';
 
 // Simple rate limiting (in production, use Redis)
 const loginAttempts = new Map<string, { count: number; resetTime: number }>();
@@ -80,6 +81,20 @@ export async function POST(request: NextRequest) {
     const isPasswordValid = await comparePassword(password, admin.password);
 
     if (!isPasswordValid) {
+      // Log failed login attempt
+      createAuditLog({
+        action: 'login',
+        resource: 'auth',
+        admin: {
+          userId: admin._id.toString(),
+          username: admin.username,
+          email: admin.email,
+        },
+        request,
+        status: 'failure',
+        errorMessage: 'Invalid password',
+      }).catch(err => console.error('Audit log failed:', err));
+
       return NextResponse.json(
         { error: 'Invalid credentials' },
         { status: 401, headers: noStoreHeaders }
@@ -91,6 +106,19 @@ export async function POST(request: NextRequest) {
       username: admin.username,
       email: admin.email,
     });
+
+    // Log successful login
+    createAuditLog({
+      action: 'login',
+      resource: 'auth',
+      admin: {
+        userId: admin._id.toString(),
+        username: admin.username,
+        email: admin.email,
+      },
+      request,
+      status: 'success',
+    }).catch(err => console.error('Audit log failed:', err));
 
     const response = NextResponse.json(
       {
@@ -107,8 +135,8 @@ export async function POST(request: NextRequest) {
     response.cookies.set('admin_token', token, {
       httpOnly: true,
       secure: process.env.NODE_ENV === 'production',
-      sameSite: 'lax',
-      maxAge: 60 * 60 * 24 * 7,
+      sameSite: 'strict', // Changed from 'lax' to 'strict' for better CSRF protection
+      maxAge: 60 * 60 * 24, // 24 hours (reduced from 7 days)
     });
 
     return response;

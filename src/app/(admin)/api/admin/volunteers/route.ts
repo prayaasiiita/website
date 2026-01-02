@@ -2,19 +2,18 @@ import { NextRequest, NextResponse } from 'next/server';
 import dbConnect from '@/src/lib/mongodb';
 import Volunteer from '@/src/models/Volunteer';
 import { verifyToken } from '@/src/lib/auth';
+import { createAuditLog } from '@/src/lib/audit';
 
 async function verifyAuth(request: NextRequest) {
   const token = request.cookies.get('admin_token')?.value;
-  if (!token || !verifyToken(token)) {
-    return false;
-  }
-  return true;
+  if (!token) return null;
+  return verifyToken(token);
 }
 
 export async function GET(request: NextRequest) {
   try {
-    const isAuth = await verifyAuth(request);
-    if (!isAuth) {
+    const admin = await verifyAuth(request);
+    if (!admin) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
@@ -29,8 +28,8 @@ export async function GET(request: NextRequest) {
 
 export async function POST(request: NextRequest) {
   try {
-    const isAuth = await verifyAuth(request);
-    if (!isAuth) {
+    const admin = await verifyAuth(request);
+    if (!admin) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
@@ -49,6 +48,19 @@ export async function POST(request: NextRequest) {
 
     await dbConnect();
     const volunteer = await Volunteer.create({ ...body, email });
+    
+    // Log volunteer creation
+    createAuditLog({
+      action: 'create',
+      resource: 'volunteer',
+      resourceId: (volunteer as any)._id?.toString(),
+      admin,
+      request,
+      changes: {
+        after: { name: (volunteer as any).name, email: (volunteer as any).email }
+      }
+    }).catch(err => console.error('Audit log failed:', err));
+    
     return NextResponse.json({ volunteer }, { status: 201 });
   } catch (error) {
     console.error('Create volunteer error:', error);
