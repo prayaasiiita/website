@@ -42,7 +42,7 @@ export function Footer() {
   ];
 
   return (
-    <footer className="relative bg-gradient-to-br from-[#1a1a2e] via-[#16213e] to-[#0f1419] text-white rounded-t-4xl mt-16">
+    <footer className="relative bg-linear-to-br from-[#1a1a2e] via-[#16213e] to-[#0f1419] text-white rounded-t-4xl">
       {/* Decorative Background Elements */}
       <div className="absolute inset-0 opacity-5 rounded-t-4xl overflow-hidden">
         <div className="absolute top-0 right-0 w-96 h-96 bg-(--ngo-orange) rounded-full blur-3xl" />
@@ -188,7 +188,7 @@ export function Footer() {
         </div>
 
         {/* CTA Section */}
-        <div className="bg-gradient-to-r from-(--ngo-orange)/10 to-(--ngo-green)/10 backdrop-blur-sm rounded-2xl p-4 sm:p-5 mb-5 border border-white/10">
+        <div className="bg-linear-to-r from-(--ngo-orange)/10 to-(--ngo-green)/10 backdrop-blur-sm rounded-2xl p-4 sm:p-5 mb-5 border border-white/10">
           <div className="flex flex-col md:flex-row items-center justify-between gap-4">
             <div className="text-center md:text-left">
               <h4 className="text-base sm:text-lg font-bold text-white mb-1 flex items-center justify-center md:justify-start gap-2" style={{ fontFamily: "'Playfair Display', serif" }}>

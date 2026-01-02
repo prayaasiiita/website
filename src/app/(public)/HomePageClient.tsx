@@ -751,13 +751,14 @@ function CTASection({ images }: { images: PageImagesMap }) {
     const ctaAlt = images["cta:background"]?.alt || FALLBACK_IMAGES.cta.alt;
 
     return (
-        <section className="relative overflow-hidden py-12 sm:py-16 md:py-20">
-            <div className="absolute inset-0">
-                <Image src={ctaSrc} alt={ctaAlt} fill className="object-cover" />
-                <div className="hero-gradient absolute inset-0" />
-                <div className="absolute inset-0 bg-linear-to-b from-black/70 via-black/45 to-black/30" />
-            </div>
-            <div className="relative z-10 max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+        <section className="py-8 sm:py-12 md:py-14 px-4 sm:px-6 lg:px-8">
+            <div className="relative overflow-hidden rounded-3xl sm:rounded-[40px] md:rounded-[50px] max-w-7xl mx-auto ">
+                <div className="absolute inset-0">
+                    <Image src={ctaSrc} alt={ctaAlt} fill className="object-cover" />
+                    <div className="hero-gradient absolute inset-0" />
+                    <div className="absolute inset-0 bg-linear-to-b from-black/70 via-black/45 to-black/30" />
+                </div>
+                <div className="relative z-10 max-w-4xl mx-auto px-6 sm:px-8 lg:px-12 py-12 sm:py-14 md:py-16 text-center">
                 <motion.div
                     initial={{ opacity: 0, y: 30 }}
                     whileInView={{ opacity: 1, y: 0 }}
@@ -791,6 +792,7 @@ function CTASection({ images }: { images: PageImagesMap }) {
                         </Link>
                     </div>
                 </motion.div>
+                </div>
             </div>
         </section>
     );
