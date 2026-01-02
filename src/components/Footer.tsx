@@ -42,7 +42,7 @@ export function Footer() {
   ];
 
   return (
-    <footer className="relative bg-linear-to-br from-[#1a1a2e] via-[#16213e] to-[#0f1419] text-white rounded-t-4xl">
+    <footer className="relative bg-linear-to-br from-[#1a1a2e] via-[#16213e] to-[#0f1419] text-white">
       {/* Decorative Background Elements */}
       <div className="absolute inset-0 opacity-5 rounded-t-4xl overflow-hidden">
         <div className="absolute top-0 right-0 w-96 h-96 bg-(--ngo-orange) rounded-full blur-3xl" />
@@ -60,10 +60,10 @@ export function Footer() {
                 alt="Prayaas Logo" 
                 width={140} 
                 height={93} 
-                className="h-12 w-auto sm:h-14 transition-transform duration-300 group-hover:scale-105" 
+                className="h-16 w-auto sm:h-18 transition-transform duration-300 group-hover:scale-110" 
               />
             </Link>
-            <p className="text-gray-300 leading-relaxed text-xs sm:text-sm">
+            <p className="text-gray-300 leading-relaxed text-s sm:text-sm">
               A student-run initiative at IIIT Allahabad dedicated to making
               quality education accessible to underprivileged children and
               creating lasting positive change in our community.
@@ -108,7 +108,7 @@ export function Footer() {
                 <li key={link.href}>
                   <Link
                     href={link.href}
-                    className="text-gray-300 hover:text-(--ngo-orange) transition-all duration-200 text-xs sm:text-sm py-0.5 flex items-center group"
+                    className="text-gray-300 hover:text-(--ngo-orange) transition-all duration-200 text-sm sm:text-base py-0.5 flex items-center group"
                   >
                     <ArrowRight className="w-4 h-4 mr-2 opacity-0 -ml-6 group-hover:opacity-100 group-hover:ml-0 transition-all duration-300" />
                     {link.label}
@@ -125,14 +125,14 @@ export function Footer() {
               style={{ fontFamily: "'Playfair Display', serif" }}
             >
               Our Programs
-              <span className="absolute -bottom-2 left-0 w-12 h-1 bg-(--ngo-green) rounded-full" />
+              <span className="absolute -bottom-2 left-0 w-12 h-1 bg-(--ngo-orange) rounded-full" />
             </h3>
             <ul className="space-y-2.5">
               {programs.map((link) => (
                 <li key={link.href}>
                   <Link
                     href={link.href}
-                    className="text-gray-300 hover:text-(--ngo-green) transition-all duration-200 text-xs sm:text-sm py-0.5 flex items-center group"
+                    className="text-gray-300 hover:text-(--ngo-orange) transition-all duration-200 text-sm sm:text-base py-0.5 flex items-center group"
                   >
                     <ArrowRight className="w-4 h-4 mr-2 opacity-0 -ml-6 group-hover:opacity-100 group-hover:ml-0 transition-all duration-300" />
                     {link.label}
@@ -157,7 +157,7 @@ export function Footer() {
                 <div className="w-8 h-8 rounded-lg bg-(--ngo-orange)/10 flex items-center justify-center shrink-0 group-hover:bg-(--ngo-orange)/20 transition-colors">
                   <MapPin className="w-4 h-4 text-(--ngo-orange)" />
                 </div>
-                <span className="text-gray-300 text-xs sm:text-sm leading-relaxed pt-0.5">
+                <span className="text-gray-300 text-sm sm:text-base leading-relaxed pt-0.5">
                   IIIT Allahabad, Jhalwa, Prayagraj, Uttar Pradesh 211015, India
                 </span>
               </li>
@@ -167,7 +167,7 @@ export function Footer() {
                 </div>
                 <a
                   href="mailto:prayaas@iiita.ac.in"
-                  className="text-gray-300 hover:text-(--ngo-orange) transition-colors text-xs sm:text-sm"
+                  className="text-gray-300 hover:text-(--ngo-orange) transition-colors text-sm sm:text-base"
                 >
                   prayaas@iiita.ac.in
                 </a>
@@ -178,34 +178,12 @@ export function Footer() {
                 </div>
                 <a
                   href="tel:+919876543210"
-                  className="text-gray-300 hover:text-(--ngo-orange) transition-colors text-xs sm:text-sm"
+                  className="text-gray-300 hover:text-(--ngo-orange) transition-colors text-sm sm:text-base"
                 >
                   +91 98765 43210
                 </a>
               </li>
             </ul>
-          </div>
-        </div>
-
-        {/* CTA Section */}
-        <div className="bg-linear-to-r from-(--ngo-orange)/10 to-(--ngo-green)/10 backdrop-blur-sm rounded-2xl p-4 sm:p-5 mb-5 border border-white/10">
-          <div className="flex flex-col md:flex-row items-center justify-between gap-4">
-            <div className="text-center md:text-left">
-              <h4 className="text-base sm:text-lg font-bold text-white mb-1 flex items-center justify-center md:justify-start gap-2" style={{ fontFamily: "'Playfair Display', serif" }}>
-                <Heart className="w-4 h-4 text-(--ngo-orange)" />
-                Make a Difference Today
-              </h4>
-              <p className="text-gray-300 text-xs sm:text-sm">
-                Your support helps us provide quality education to children in need
-              </p>
-            </div>
-            <Link
-              href="/get-involved#donate"
-              className="btn-primary text-xs sm:text-sm px-4 py-2 flex items-center gap-2 whitespace-nowrap group hover:scale-105 transition-transform"
-            >
-              Donate Now
-              <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
-            </Link>
           </div>
         </div>
 
