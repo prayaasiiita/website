@@ -67,6 +67,31 @@ class RateLimiter {
         return { allowed: true, remaining: this.maxRequests - record.count };
     }
 
+    /**
+     * Check rate limit with custom parameters
+     * @param identifier - IP address or user identifier
+     * @param maxRequests - Maximum requests allowed (defaults to instance maxRequests)
+     * @param windowMs - Time window in milliseconds (defaults to instance windowMs)
+     */
+    checkLimit(identifier: string, maxRequests?: number, windowMs?: number): boolean {
+        const now = Date.now();
+        const record = this.requests.get(identifier);
+        const max = maxRequests || this.maxRequests;
+        const window = windowMs || this.windowMs;
+
+        if (!record || now > record.resetTime) {
+            this.requests.set(identifier, { count: 1, resetTime: now + window });
+            return true;
+        }
+
+        if (record.count >= max) {
+            return false;
+        }
+
+        record.count++;
+        return true;
+    }
+
     reset(identifier: string): void {
         this.requests.delete(identifier);
     }

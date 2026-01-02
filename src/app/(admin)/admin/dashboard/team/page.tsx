@@ -1128,7 +1128,7 @@ export default function TeamManagementPage() {
 
             {/* Member Modal */}
             <Dialog open={memberModalOpen && !imageToCrop} onOpenChange={handleDialogClose}>
-                <DialogContent className="!max-w-xl">
+                <DialogContent className="max-w-xl!">
                     <DialogHeader>
                         <DialogTitle>
                             {editingMember ? "Edit Member" : "Add Member"}

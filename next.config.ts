@@ -41,6 +41,20 @@ const nextConfig: NextConfig = {
           {
             key: 'Permissions-Policy',
             value: 'camera=(), microphone=(), geolocation=()'
+          },
+          {
+            key: 'Content-Security-Policy',
+            value: [
+              "default-src 'self'",
+              "script-src 'self' 'unsafe-inline' 'unsafe-eval'",
+              "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
+              "img-src 'self' data: https: http:",
+              "font-src 'self' data: https://fonts.gstatic.com",
+              "connect-src 'self' http://ip-api.com https:",
+              "frame-ancestors 'self'",
+              "base-uri 'self'",
+              "form-action 'self'"
+            ].join('; ')
           }
         ]
       }

@@ -1,0 +1,20 @@
+# Allow crawling of public pages
+User-agent: *
+Allow: /
+Allow: /about
+Allow: /programs
+Allow: /gallery
+Allow: /get-involved
+Allow: /contact-us
+Allow: /impact
+Allow: /privacy
+Allow: /terms
+
+# Disallow admin pages
+Disallow: /admin/
+Disallow: /admin
+Disallow: /api/admin/
+Disallow: /api/auth/
+
+# Sitemap
+Sitemap: https://yourwebsite.com/sitemap.xml

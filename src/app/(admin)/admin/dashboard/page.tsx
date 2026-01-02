@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { Calendar, Image as ImageIcon, FileText, Users } from "lucide-react";
+import { Calendar, Image as ImageIcon, FileText, Users, Shield } from "lucide-react";
 import Link from "next/link";
 
 export default function AdminDashboard() {
@@ -76,6 +76,13 @@ export default function AdminDashboard() {
       color: "#8b5cf6",
       href: "/admin/dashboard/volunteers",
     },
+    {
+      title: "Audit Logs",
+      count: "🔒",
+      icon: Shield,
+      color: "#ef4444",
+      href: "/admin/dashboard/audit-logs",
+    },
   ];
 
   return (
@@ -90,8 +97,8 @@ export default function AdminDashboard() {
       </div>
 
       {loading ? (
-        <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
-          {[1, 2, 3, 4].map((i) => (
+        <div className="grid md:grid-cols-2 lg:grid-cols-5 gap-6">
+          {[1, 2, 3, 4, 5].map((i) => (
             <div
               key={i}
               className="bg-white rounded-2xl p-6 border border-gray-200 animate-pulse"
@@ -103,7 +110,7 @@ export default function AdminDashboard() {
           ))}
         </div>
       ) : (
-        <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+        <div className="grid md:grid-cols-2 lg:grid-cols-5 gap-6">
           {cards.map((card) => (
             <Link
               key={card.title}
@@ -120,7 +127,7 @@ export default function AdminDashboard() {
                 className="text-3xl font-bold mb-2"
                 style={{ color: card.color }}
               >
-                {card.count}
+                {typeof card.count === 'number' ? card.count : card.count}
               </div>
               <div className="text-(--ngo-gray) font-medium">
                 {card.title}
@@ -188,6 +195,20 @@ export default function AdminDashboard() {
               </h3>
               <p className="text-sm text-(--ngo-gray)">
                 Manage applications
+              </p>
+            </div>
+          </Link>
+          <Link
+            href="/admin/dashboard/audit-logs"
+            className="flex items-center gap-4 p-4 rounded-xl border border-gray-200 hover:border-red-500 hover:bg-red-500/5 transition-all"
+          >
+            <Shield className="w-8 h-8 text-red-500" />
+            <div>
+              <h3 className="font-semibold text-(--ngo-dark)">
+                Security Audit Logs
+              </h3>
+              <p className="text-sm text-(--ngo-gray)">
+                Monitor admin activities
               </p>
             </div>
           </Link>

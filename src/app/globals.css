@@ -194,7 +194,12 @@ html {
 }
 
 /* Prevent any element from causing horizontal scroll */
-section, div, main {
+section, main {
+    max-width: 100vw;
+}
+
+/* Only apply to direct children of body to avoid overriding intentional constraints */
+body > div {
     max-width: 100vw;
 }
 

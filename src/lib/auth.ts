@@ -1,5 +1,6 @@
 import jwt from 'jsonwebtoken';
 import bcrypt from 'bcryptjs';
+import { NextRequest } from 'next/server';
 
 const JWT_SECRET = process.env.JWT_SECRET;
 
@@ -31,7 +32,7 @@ export function generateToken(payload: JWTPayload): string {
   if (!SECRET) {
     throw new Error('JWT_SECRET is not configured');
   }
-  return jwt.sign(payload, SECRET, { expiresIn: '7d' });
+  return jwt.sign(payload, SECRET, { expiresIn: '24h' }); // Changed from 7d to 24h
 }
 
 export function verifyToken(token: string): JWTPayload | null {
@@ -44,4 +45,14 @@ export function verifyToken(token: string): JWTPayload | null {
   } catch {
     return null;
   }
+}
+
+/**
+ * Verify authentication from request cookie
+ * Returns admin payload if authenticated, null otherwise
+ */
+export async function verifyAuth(request: NextRequest): Promise<JWTPayload | null> {
+  const token = request.cookies.get('admin_token')?.value;
+  if (!token) return null;
+  return verifyToken(token);
 }
