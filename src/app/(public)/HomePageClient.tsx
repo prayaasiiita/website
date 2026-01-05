@@ -93,7 +93,7 @@ function HeroSection({ images }: { images: PageImagesMap }) {
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ duration: 0.8 }}
                 >
-                    <span className="inline-block px-3 sm:px-4 py-2 bg-white/20 backdrop-blur-sm rounded-full text-white text-xs sm:text-sm font-medium mb-4 sm:mb-6 shadow-lg">
+                    <span className="inline-block px-3 sm:px-4 py-2 bg-white/10 backdrop-blur-xs rounded-3xl text-white text-base sm:text-sm font-medium mb-4 sm:mb-6 shadow-lg">
                         A Students Initiative at IIIT Allahabad
                     </span>
                 </motion.div>
@@ -101,12 +101,12 @@ function HeroSection({ images }: { images: PageImagesMap }) {
                     initial={{ opacity: 0, y: 30 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ duration: 0.8, delay: 0.2 }}
-                    className="text-3xl sm:text-4xl md:text-5xl lg:text-7xl font-bold text-white mb-4 sm:mb-6 leading-tight drop-shadow-[0_6px_18px_rgba(0,0,0,0.45)]"
+                    className="text-5xl sm:text-4xl md:text-5xl lg:text-7xl font-bold text-white mb-4 sm:mb-6 leading-tight drop-shadow-[0_6px_18px_rgba(0,0,0,0.45)]"
                     style={{ fontFamily: "'Playfair Display', serif" }}
                 >
                     Empowering Lives,
                     <br />
-                    <span className="text-(--ngo-yellow)">
+                    <span className="bg-linear-to-r from-[#FFF6A5] via-[#F2C94C] to-[#fedc8d] bg-clip-text text-transparent drop-shadow-[0_0_2px_rgba(242,201,76,0.45)]">
                         Education is Opportunity to Success
                     </span>
                 </motion.h1>
@@ -114,7 +114,7 @@ function HeroSection({ images }: { images: PageImagesMap }) {
                     initial={{ opacity: 0, y: 30 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ duration: 0.8, delay: 0.4 }}
-                    className="text-sm sm:text-base md:text-lg lg:text-xl text-white/90 max-w-3xl mx-auto mb-8 sm:mb-10 px-4"
+                    className="text-xl sm:text-base md:text-lg lg:text-xl text-white/90 max-w-3xl mx-auto mb-8 sm:mb-10 px-4"
                 >
                     Prayaas is an earnest attempt to bring sunshine in wearisome lives. It
                     is a volunteer movement initiated by student fraternity of IIIT
@@ -251,8 +251,8 @@ function AboutSection({ images }: { images: PageImagesMap }) {
                                         aria-label={`Show slide ${index + 1}`}
                                         onClick={() => handleDotClick(index)}
                                         className={`h-2 sm:h-2.5 rounded-full transition-all duration-300 ${activeIndex === index
-                                                ? "w-6 sm:w-8 bg-(--ngo-orange)"
-                                                : "w-2 sm:w-3 bg-white/70 hover:bg-white"
+                                            ? "w-6 sm:w-8 bg-(--ngo-orange)"
+                                            : "w-2 sm:w-3 bg-white/70 hover:bg-white"
                                             }`}
                                     />
                                 ))}
@@ -614,7 +614,7 @@ function TestimonialsSection() {
 function GallerySection({ images }: { images: PageImagesMap }) {
     // Get gallery images from database, fall back to local images
     const dynamicGalleryImages = getCarouselImages(images, "gallery", []);
-    
+
     // Default local gallery images as fallback
     const localGalleryImages = [
         { src: "/gallery/1.jpeg", alt: "1", aspect: "aspect-[3/2]" },
@@ -687,7 +687,7 @@ function GallerySection({ images }: { images: PageImagesMap }) {
     ];
 
     // Use dynamic images if available, otherwise fall back to local
-    const galleryImages = dynamicGalleryImages.length > 0 
+    const galleryImages = dynamicGalleryImages.length > 0
         ? dynamicGalleryImages.map((img) => {
             // Calculate aspect ratio from actual dimensions
             let aspect = "aspect-[3/2]"; // Default fallback
@@ -751,46 +751,48 @@ function CTASection({ images }: { images: PageImagesMap }) {
     const ctaAlt = images["cta:background"]?.alt || FALLBACK_IMAGES.cta.alt;
 
     return (
-        <section className="relative overflow-hidden py-12 sm:py-16 md:py-20">
-            <div className="absolute inset-0">
-                <Image src={ctaSrc} alt={ctaAlt} fill className="object-cover" />
-                <div className="hero-gradient absolute inset-0" />
-                <div className="absolute inset-0 bg-linear-to-b from-black/70 via-black/45 to-black/30" />
-            </div>
-            <div className="relative z-10 max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-                <motion.div
-                    initial={{ opacity: 0, y: 30 }}
-                    whileInView={{ opacity: 1, y: 0 }}
-                    viewport={{ once: true }}
-                    transition={{ duration: 0.8 }}
-                >
-                    <h2
-                        className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-white mb-4 sm:mb-6"
-                        style={{ fontFamily: "'Playfair Display', serif" }}
+        <section className="py-8 sm:py-12 md:py-14 px-4 sm:px-6 lg:px-8">
+            <div className="relative overflow-hidden rounded-3xl sm:rounded-[40px] md:rounded-[50px] max-w-7xl mx-auto ">
+                <div className="absolute inset-0">
+                    <Image src={ctaSrc} alt={ctaAlt} fill className="object-cover" />
+                    <div className="hero-gradient absolute inset-0" />
+                    <div className="absolute inset-0 bg-linear-to-b from-black/70 via-black/45 to-black/30" />
+                </div>
+                <div className="relative z-10 max-w-4xl mx-auto px-6 sm:px-8 lg:px-12 py-12 sm:py-14 md:py-16 text-center">
+                    <motion.div
+                        initial={{ opacity: 0, y: 30 }}
+                        whileInView={{ opacity: 1, y: 0 }}
+                        viewport={{ once: true }}
+                        transition={{ duration: 0.8 }}
                     >
-                        Together, We Can Make a Difference
-                    </h2>
-                    <p className="text-white/90 text-sm sm:text-base md:text-lg mb-8 sm:mb-10 max-w-2xl mx-auto">
-                        Every child deserves the opportunity to learn, grow, and dream. Join
-                        Prayaas today and be part of this beautiful journey of transformation.
-                    </p>
-                    <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center items-center">
-                        <Link
-                            href="/get-involved#donate"
-                            className="btn-primary flex items-center justify-center gap-2 w-full sm:w-auto max-w-xs"
+                        <h2
+                            className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-white mb-4 sm:mb-6"
+                            style={{ fontFamily: "'Playfair Display', serif" }}
                         >
-                            <Heart className="w-4 h-4 sm:w-5 sm:h-5" />
-                            Donate Now
-                        </Link>
-                        <Link
-                            href="/get-involved#volunteer"
-                            className="btn-outline flex items-center justify-center gap-2 w-full sm:w-auto max-w-xs"
-                        >
-                            <Phone className="w-4 h-4 sm:w-5 sm:h-5" />
-                            Contact Us
-                        </Link>
-                    </div>
-                </motion.div>
+                            Together, We Can Make a Difference
+                        </h2>
+                        <p className="text-white/90 text-sm sm:text-base md:text-lg mb-8 sm:mb-10 max-w-2xl mx-auto">
+                            Every child deserves the opportunity to learn, grow, and dream. Join
+                            Prayaas today and be part of this beautiful journey of transformation.
+                        </p>
+                        <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center items-center">
+                            <Link
+                                href="/get-involved#donate"
+                                className="btn-primary flex items-center justify-center gap-2 w-full sm:w-auto max-w-xs"
+                            >
+                                <Heart className="w-4 h-4 sm:w-5 sm:h-5" />
+                                Donate Now
+                            </Link>
+                            <Link
+                                href="/get-involved#volunteer"
+                                className="btn-outline flex items-center justify-center gap-2 w-full sm:w-auto max-w-xs"
+                            >
+                                <Phone className="w-4 h-4 sm:w-5 sm:h-5" />
+                                Contact Us
+                            </Link>
+                        </div>
+                    </motion.div>
+                </div>
             </div>
         </section>
     );

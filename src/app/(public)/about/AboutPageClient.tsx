@@ -383,7 +383,7 @@ function TeamMemberCard({
 }) {
     const classes = {
         card: "p-5 max-w-md",
-        image: "w-24 h-24 md:w-28 md:h-28",
+        image: "w-24 h-24 md:w-32 md:h-32",
         name: "text-lg",
         role: "text-sm",
         icons: "w-4 h-4",
@@ -394,7 +394,7 @@ function TeamMemberCard({
             initial={{ opacity: 0, y: 30 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            transition={{ duration: 0.5, delay: index * 0.1 }}
+            transition={{ duration: 0.4, delay: index * 0.01 }}
             whileHover={{ scale: 1.03 }}
         >
             <SpotlightCard
@@ -472,13 +472,13 @@ function StudentTeamGroup({
     startIndex: number;
 }) {
     return (
-        <div className="mb-12 last:mb-0">
+        <div className="mb-6 last:mb-0">
             <motion.h4
                 initial={{ opacity: 0, y: 20 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ duration: 0.5 }}
-                className="text-xl font-semibold text-(--ngo-dark) text-center mb-6"
+                className="text-2xl font-bold text-(--ngo-dark) text-center mb-6"
                 style={{ fontFamily: "'Playfair Display', serif" }}
             >
                 {title}
@@ -553,7 +553,7 @@ function TeamSection() {
     // If no data from API, show placeholder message
     if (teamGroups.length === 0) {
         return (
-            <section className="py-24 section-gradient">
+            <section className="py-12 sm:py-16 md:py-20 section-gradient">
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                     <motion.div
                         initial={{ opacity: 0, y: 30 }}
@@ -583,7 +583,7 @@ function TeamSection() {
     let memberIndex = 0;
 
     return (
-        <section className="py-24 section-gradient">
+        <section className="py-12 sm:py-14 md:py-18 section-gradient">
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 {/* Section Header */}
                 <motion.div
@@ -591,7 +591,7 @@ function TeamSection() {
                     whileInView={{ opacity: 1, y: 0 }}
                     viewport={{ once: true }}
                     transition={{ duration: 0.8 }}
-                    className="text-center mb-16"
+                    className="text-center mb-6"
                 >
                     <span className="text-(--ngo-orange) font-semibold uppercase tracking-wider text-sm">
                         Meet Our Team
@@ -609,14 +609,14 @@ function TeamSection() {
 
                 {/* Director - Largest Card, Centered */}
                 {director && (
-                    <div className="flex justify-center mb-16">
+                    <div className="flex justify-center mb-6">
                         <TeamMemberCard member={director} index={memberIndex++} />
                     </div>
                 )}
 
                 {/* Faculty Coordinator - Medium Card, Centered */}
                 {facultyCoordinator && (
-                    <div className="flex justify-center mb-16">
+                    <div className="flex justify-center mb-6">
                         <TeamMemberCard member={facultyCoordinator} index={memberIndex++} />
                     </div>
                 )}
@@ -629,7 +629,7 @@ function TeamSection() {
                             whileInView={{ opacity: 1, y: 0 }}
                             viewport={{ once: true }}
                             transition={{ duration: 0.8 }}
-                            className="text-center mb-12"
+                            className="text-center mb-6"
                         >
                             <h3
                                 className="text-2xl md:text-3xl font-bold text-(--ngo-dark)"
@@ -641,7 +641,7 @@ function TeamSection() {
                         </motion.div>
 
                         {/* Student Groups */}
-                        <div className="space-y-12">
+                        <div className="space-y-2">
                             {studentGroups.map((group) => {
                                 const startIndex = memberIndex;
                                 memberIndex += group.members.length;
