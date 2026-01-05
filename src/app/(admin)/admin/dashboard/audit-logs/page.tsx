@@ -1,11 +1,10 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useCallback } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/src/components/ui/card';
 import { Badge } from '@/src/components/ui/badge';
 import { Button } from '@/src/components/ui/button';
 import { Input } from '@/src/components/ui/input';
-import { Select } from '@/src/components/ui/select';
 import { Alert, AlertDescription } from '@/src/components/ui/alert';
 
 interface AuditLog {
@@ -56,11 +55,7 @@ export default function AuditLogsPage() {
     const [statusFilter, setStatusFilter] = useState('');
     const [searchEmail, setSearchEmail] = useState('');
 
-    useEffect(() => {
-        fetchLogs();
-    }, [page, resourceFilter, actionFilter, statusFilter]);
-
-    const fetchLogs = async () => {
+    const fetchLogs = useCallback(async () => {
         try {
             setLoading(true);
             const params = new URLSearchParams({
@@ -111,7 +106,11 @@ export default function AuditLogsPage() {
         } finally {
             setLoading(false);
         }
-    };
+    }, [page, resourceFilter, actionFilter, searchEmail]);
+
+    useEffect(() => {
+        fetchLogs();
+    }, [fetchLogs]);
 
     const getActionBadge = (action: string) => {
         const colors: Record<string, string> = {
