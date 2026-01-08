@@ -3,15 +3,25 @@ import nodemailer from 'nodemailer';
 
 // Email transporter configuration
 // For production, use services like SendGrid, AWS SES, or Mailgun
-const transporter = nodemailer.createTransport({
+// Create transporter dynamically with proper validation
+function getTransporter() {
+  const user = process.env.SMTP_USER?.trim();
+  const pass = process.env.SMTP_PASS?.trim();
+
+  if (!user || !pass) {
+    throw new Error('SMTP credentials not configured. Please set SMTP_USER and SMTP_PASS environment variables.');
+  }
+
+  return nodemailer.createTransport({
     host: process.env.SMTP_HOST || 'smtp.gmail.com',
     port: parseInt(process.env.SMTP_PORT || '587'),
-    secure: process.env.SMTP_SECURE === 'true', // true for 465, false for other ports
+    secure: process.env.SMTP_SECURE === 'true',
     auth: {
-        user: process.env.SMTP_USER,
-        pass: process.env.SMTP_PASS,
+      user: user,
+      pass: pass,
     },
-});
+  });
+}
 
 export interface EmailOptions {
     to: string;
@@ -33,6 +43,7 @@ export async function sendEmail(options: EmailOptions): Promise<boolean> {
             return false;
         }
 
+        const transporter = getTransporter();
         await transporter.sendMail({
             from: process.env.SMTP_FROM || `"Prayaas Admin" <${process.env.SMTP_USER}>`,
             to: options.to,
@@ -314,6 +325,7 @@ This message was sent via the Prayaas contact form.
 
     try {
         // Send email with replyTo set to user's email for easy responses
+        const transporter = getTransporter();
         await transporter.sendMail({
             from: process.env.SMTP_FROM || `"Prayaas Contact Form" <${process.env.SMTP_USER}>`,
             to: process.env.CONTACT_FORM_EMAIL || 'prayaas@iiita.ac.in',
@@ -450,6 +462,7 @@ This is an automated confirmation email.
   `;
 
     try {
+        const transporter = getTransporter();
         await transporter.sendMail({
             from: process.env.SMTP_FROM || `"Prayaas IIITA" <${process.env.SMTP_USER}>`,
             to: data.email,
