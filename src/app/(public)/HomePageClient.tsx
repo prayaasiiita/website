@@ -455,12 +455,17 @@ function TestimonialsSection() {
         async function load() {
             try {
                 const res = await fetch('/api/empowerments?limit=12');
+                if (!res.ok) {
+                    console.warn('Failed to fetch empowerments:', res.status);
+                    return;
+                }
                 const data = await res.json();
                 if (data.items && data.items.length > 0) {
                     setEmpowerments(data.items);
                 }
-            } catch {
-                // Silently fall back to static testimonials
+            } catch (error) {
+                console.warn('Error fetching empowerments:', error);
+                // Silently fall back to empty array
             }
         }
         load();
@@ -531,6 +536,11 @@ function TestimonialsSection() {
         if (autoPlayTimeoutRef.current) clearTimeout(autoPlayTimeoutRef.current);
         autoPlayTimeoutRef.current = setTimeout(() => setIsAutoPlay(true), 5000);
     };
+
+    // Don't render the section if no items
+    if (items.length === 0) {
+        return null;
+    }
 
     return (
         <section className="py-8 sm:py-12 md:py-14 bg-white">
