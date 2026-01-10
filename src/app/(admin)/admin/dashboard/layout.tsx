@@ -15,6 +15,7 @@ import {
   X,
   Shield,
   MessageSquare,
+  Sparkles,
 } from "lucide-react";
 
 export default function DashboardLayout({
@@ -99,6 +100,11 @@ export default function DashboardLayout({
       icon: FileText,
     },
     {
+      name: "Empowerments",
+      href: "/admin/dashboard/empowerments",
+      icon: Sparkles,
+    },
+    {
       name: "Volunteers",
       href: "/admin/dashboard/volunteers",
       icon: Users,
@@ -143,7 +149,7 @@ export default function DashboardLayout({
           </p>
         </div>
 
-        <nav className="p-4 space-y-2">
+        <nav className="p-4 space-y-2 overflow-y-auto" style={{ maxHeight: "calc(100vh - 180px)" }}>
           {navItems.map((item) => {
             const isActive = pathname === item.href;
             return (
@@ -164,7 +170,7 @@ export default function DashboardLayout({
           })}
         </nav>
 
-        <div className="absolute bottom-0 left-0 right-0 p-4 border-t border-gray-200">
+        <div className="absolute bottom-0 left-0 right-0 p-4 border-t border-gray-200 bg-white">
           <button
             onClick={handleLogout}
             className="flex items-center gap-3 px-4 py-3 rounded-xl text-red-600 hover:bg-red-50 transition-all w-full"
