@@ -47,7 +47,7 @@ export async function GET(request: NextRequest) {
     const skip = (page - 1) * limit;
 
     await dbConnect();
-    const filter: any = {};
+    const filter: Record<string, unknown> = {};
     if (status && ['draft', 'published'].includes(status)) filter.status = status;
     if (q) filter.title = { $regex: sanitizeString(q, 100), $options: 'i' };
 

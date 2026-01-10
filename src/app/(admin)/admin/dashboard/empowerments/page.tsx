@@ -1,11 +1,9 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
-import Link from "next/link";
-import { z } from "zod";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { empowermentCreateSchema, slugify, tagCreateSchema } from "@/src/lib/validations/empowerment";
 import { ImageUpload } from "@/src/components/admin/ImageUpload";
-import { Loader2, Plus, Pencil, Trash2, Search, X, Tag as TagIcon } from "lucide-react";
+import { Loader2, Plus, Pencil, Trash2, Search } from "lucide-react";
 
 type Tag = { _id: string; name: string; color: string };
 
@@ -76,7 +74,7 @@ export default function EmpowermentPage() {
     }, []);
 
     // Load list
-    async function loadList() {
+    const loadList = useCallback(async () => {
         setLoading(true);
         const params = new URLSearchParams();
         params.set("page", String(page));
@@ -90,19 +88,17 @@ export default function EmpowermentPage() {
             setTotal(data.total || 0);
         }
         setLoading(false);
-    }
+    }, [page, limit, q, statusFilter]);
 
     useEffect(() => {
         if (view === "list") {
             loadList();
         }
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [page, statusFilter, view]);
+    }, [loadList, view]);
 
     const autoSlug = useMemo(() => slugify(title), [title]);
     useEffect(() => {
         setSlug((prev) => (prev.trim().length === 0 ? autoSlug : prev));
-        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [autoSlug]);
 
     function toggleTag(id: string) {
@@ -312,7 +308,7 @@ export default function EmpowermentPage() {
                         </div>
                         <select
                             value={statusFilter}
-                            onChange={(e) => setStatusFilter(e.target.value as any)}
+                            onChange={(e) => setStatusFilter(e.target.value as "" | "draft" | "published")}
                             className="px-3 py-2 border rounded-lg border-gray-200 focus:ring-2 focus:ring-(--ngo-orange)/30 focus:border-(--ngo-orange) outline-none"
                         >
                             <option value="">All</option>
@@ -607,7 +603,7 @@ export default function EmpowermentPage() {
                             <label className="block text-sm font-medium text-gray-700 mb-1">Status</label>
                             <select
                                 value={status}
-                                onChange={(e) => setStatus(e.target.value as any)}
+                                onChange={(e) => setStatus(e.target.value as "draft" | "published")}
                                 className="w-full border border-gray-200 rounded-lg px-3 py-2 focus:ring-2 focus:ring-(--ngo-orange)/30 focus:border-(--ngo-orange) outline-none"
                             >
                                 {statusOptions.map((o) => (

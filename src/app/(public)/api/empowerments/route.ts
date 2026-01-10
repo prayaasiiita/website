@@ -18,14 +18,22 @@ export async function GET(request: NextRequest) {
 
     return NextResponse.json(
       {
-        items: items.map((e: any) => ({
+        items: items.map((e: {
+          _id: string;
+          title: string;
+          shortDescription: string;
+          coverImageUrl?: string;
+          coverImageAlt?: string;
+          slug: string;
+          tags?: { _id: string; name: string; color: string }[];
+        }) => ({
           _id: e._id,
           title: e.title,
           shortDescription: e.shortDescription,
           coverImageUrl: e.coverImageUrl,
           coverImageAlt: e.coverImageAlt,
           slug: e.slug,
-          tags: (e.tags || []).map((t: any) => ({ _id: t._id, name: t.name, color: t.color })),
+          tags: (e.tags || []).map((t: { _id: string; name: string; color: string }) => ({ _id: t._id, name: t.name, color: t.color })),
         })),
       },
       {

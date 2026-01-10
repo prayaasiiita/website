@@ -13,7 +13,6 @@ import {
     Lightbulb,
     HandHeart,
     ArrowRight,
-    Quote,
     Calendar,
     Phone,
 } from "lucide-react";
@@ -440,8 +439,18 @@ function ImpactSection() {
     );
 }
 
+type EmpowermentItem = {
+    _id: string;
+    title: string;
+    shortDescription: string;
+    coverImageUrl?: string;
+    coverImageAlt?: string;
+    slug: string;
+    tags?: { _id: string; name: string; color?: string }[];
+};
+
 function TestimonialsSection() {
-    const [empowerments, setEmpowerments] = useState<any[]>([]);
+    const [empowerments, setEmpowerments] = useState<EmpowermentItem[]>([]);
     const [currentIndex, setCurrentIndex] = useState(0);
     const [itemsPerView, setItemsPerView] = useState(1);
     const [isAutoPlay, setIsAutoPlay] = useState(true);
@@ -488,23 +497,19 @@ function TestimonialsSection() {
     const maxIndex = Math.max(0, items.length - itemsPerView);
     const pageCount = Math.max(1, maxIndex + 1);
     const showDots = pageCount > 1;
-
-    // Keep the current index within bounds when layout changes
-    useEffect(() => {
-        setCurrentIndex((prev) => Math.min(prev, maxIndex));
-    }, [maxIndex]);
+    const clampedIndex = Math.min(currentIndex, maxIndex);
 
     // Scroll container to align selected card to left edge with peek of next card
     useEffect(() => {
         if (cardsRef.current && containerRef.current) {
             const cards = cardsRef.current.children;
-            if (cards[currentIndex]) {
-                const selectedCard = cards[currentIndex] as HTMLElement;
+            if (cards[clampedIndex]) {
+                const selectedCard = cards[clampedIndex] as HTMLElement;
                 // Scroll to position card at the left edge of the container
                 containerRef.current.scrollLeft = selectedCard.offsetLeft;
             }
         }
-    }, [currentIndex]);
+    }, [clampedIndex]);
 
     // Auto-play carousel
     useEffect(() => {
@@ -577,10 +582,9 @@ function TestimonialsSection() {
                         {/* Cards Wrapper */}
                         <div ref={cardsRef} className="flex gap-1 sm:gap-6 w-fit">
                             {items.map((item, index) => {
-                                const isEmpowerment = empowerments.length > 0;
                                 return (
                                     <motion.div
-                                        key={isEmpowerment ? item._id : item.name}
+                                        key={item._id}
                                         initial={{ opacity: 0, y: 20 }}
                                         whileInView={{ opacity: 1, y: 0 }}
                                         viewport={{ once: true }}
@@ -590,14 +594,14 @@ function TestimonialsSection() {
                                         onMouseLeave={() => setIsAutoPlay(true)}
                                     >
                                         <EmpCard
-                                            tag={isEmpowerment && item.tags?.[0]?.name ? item.tags[0].name : "Impact Story"}
-                                            tagBgColor={isEmpowerment && item.tags?.[0]?.color ? item.tags[0].color : undefined}
-                                            headline={isEmpowerment ? item.title : item.name}
-                                            description={isEmpowerment ? item.shortDescription : item.quote}
-                                            imageSrc={isEmpowerment ? item.coverImageUrl : item.image}
-                                            imageAlt={isEmpowerment ? item.coverImageAlt || item.title : item.name}
+                                            tag={item.tags?.[0]?.name ?? "Impact Story"}
+                                            tagBgColor={item.tags?.[0]?.color}
+                                            headline={item.title}
+                                            description={item.shortDescription}
+                                            imageSrc={item.coverImageUrl}
+                                            imageAlt={item.coverImageAlt || item.title}
                                             ctaText="Read More"
-                                            ctaLink={isEmpowerment ? `/empowerments/${item.slug}` : "#"}
+                                            ctaLink={`/empowerments/${item.slug}`}
                                         />
                                     </motion.div>
                                 );
@@ -621,7 +625,7 @@ function TestimonialsSection() {
                             <button
                                 key={index}
                                 onClick={() => setCurrentIndex(index)}
-                                className={`h-2 rounded-full transition-all ${currentIndex === index
+                                        className={`h-2 rounded-full transition-all ${clampedIndex === index
                                     ? "w-8 bg-(--ngo-orange)"
                                     : "w-2 bg-(--ngo-gray)/30 hover:bg-(--ngo-gray)/50"
                                     }`}

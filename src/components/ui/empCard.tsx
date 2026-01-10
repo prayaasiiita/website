@@ -4,7 +4,7 @@ import Link from 'next/link';
 // Define the interface for the props
 interface EmpCardProps {
     tag: string;
-    tagBgColor: string;
+    tagBgColor?: string;
     headline: string;
     description: string;
     imageSrc?: string;
@@ -37,7 +37,7 @@ const EmpCard = ({
                 {/* Tag */}
                 <span
                     className="text-[#0F172A] text-xs sm:text-sm font-semibold px-2.5 sm:px-3 py-1 sm:py-1.5 rounded-lg tracking-wide"
-                    style={{ backgroundColor: tagBgColor }}
+                    style={{ backgroundColor: tagBgColor || '#f2d5c4' }}
                 >
                     {tag}
                 </span>
