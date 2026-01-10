@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import dbConnect from '@/src/lib/mongodb';
 import Empowerment from '@/src/models/Empowerment';
 import { TAGS } from '@/src/lib/revalidate-paths';
+import '@/src/models/Tag'; // register Tag schema for populate
 
 export async function GET(request: NextRequest) {
   try {

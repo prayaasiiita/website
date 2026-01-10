@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import dbConnect from '@/src/lib/mongodb';
 import Empowerment from '@/src/models/Empowerment';
+import '@/src/models/Tag'; // register Tag schema for populate
 import { empowermentCreateSchema, slugify } from '@/src/lib/validations/empowerment';
 import { verifyToken } from '@/src/lib/auth';
 import { revalidatePublicTags, TAGS } from '@/src/lib/revalidate-paths';
