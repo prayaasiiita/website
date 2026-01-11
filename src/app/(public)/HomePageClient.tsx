@@ -13,12 +13,18 @@ import {
     Lightbulb,
     HandHeart,
     ArrowRight,
-    Quote,
     Calendar,
     Phone,
+    HelpingHand,
 } from "lucide-react";
 import PhotoGridSection from "@/src/components/PhotoGridSection";
 import { PageImagesMap, getImageSrc, getCarouselImages } from "@/src/components/DynamicImage";
+import EmpCard from "@/src/components/ui/empCard";
+import { Program } from "@/src/components/ui/program";
+import { StudentSvg } from "@/src/components/svg/StudentSvg";
+import { DrawingSvg } from "@/src/components/svg/DrawingSvg";
+import { ChildrenPlayingSvg } from "@/src/components/svg/ChildrenPlayingSvg";
+import { HelpingHandSvg } from "@/src/components/svg/HelpingHandSvg";
 
 // Default fallback images
 const FALLBACK_IMAGES = {
@@ -270,28 +276,28 @@ function AboutSection({ images }: { images: PageImagesMap }) {
 function ProgramsSection() {
     const programs = [
         {
-            icon: BookOpen,
+            icon: StudentSvg,
             title: "Education & Tutoring",
             description:
                 "Regular classes covering academics, computer literacy, and language skills to help children excel in their studies.",
             color: "var(--ngo-orange)",
         },
         {
-            icon: Palette,
+            icon: DrawingSvg,
             title: "Recreational Activities",
             description:
                 "Art, music, sports, and cultural programs that foster creativity and teamwork among children.",
-            color: "var(--ngo-green)",
+            color: "#4ade80",
         },
         {
-            icon: Lightbulb,
+            icon: ChildrenPlayingSvg,
             title: "Life Skills Development",
             description:
                 "Sessions on hygiene, communication, leadership, and other essential skills for holistic growth.",
             color: "var(--ngo-yellow)",
         },
         {
-            icon: HandHeart,
+            icon: HelpingHandSvg,
             title: "Community Outreach",
             description:
                 "Health camps, awareness drives, and community events that extend our impact beyond the classroom.",
@@ -300,7 +306,7 @@ function ProgramsSection() {
     ];
 
     return (
-        <section className="section-gradient py-12 sm:py-16 md:py-20">
+        <section className="section-gradient py-8 sm:py-12 md:py-14">
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 <motion.div
                     initial={{ opacity: 0, y: 30 }}
@@ -327,41 +333,24 @@ function ProgramsSection() {
                     {programs.map((program, index) => (
                         <motion.div
                             key={program.title}
-                            initial={{ opacity: 0, y: 30 }}
-                            whileInView={{ opacity: 1, y: 0 }}
-                            viewport={{ once: true }}
-                            transition={{ duration: 0.5, delay: index * 0.1 }}
-                            className="h-full"
+                            initial={{ opacity: 0, y: 30, scale: 0.95 }}
+                            whileInView={{ opacity: 1, y: 0, scale: 1 }}
+                            viewport={{ once: true, margin: "-50px" }}
+                            transition={{
+                                duration: 0.5,
+                                delay: index * 0.1,
+                                ease: [0.25, 0.46, 0.45, 0.94]
+                            }}
+                            whileHover={{ y: -8, transition: { duration: 0.3 } }}
+                            className="h-full flex justify-center"
                         >
-                            <SpotlightCard
-                                className="h-full bg-white border-transparent text-(--ngo-dark) shadow-lg card-hover p-5 sm:p-6"
-                                spotlightColor="rgba(255, 138, 76, 0.2)"
-                            >
-                                <div
-                                    className="w-14 h-14 sm:w-16 sm:h-16 rounded-xl sm:rounded-2xl mb-4 sm:mb-6 flex items-center justify-center"
-                                    style={{ backgroundColor: `${program.color}15` }}
-                                >
-                                    <program.icon
-                                        className="w-7 h-7 sm:w-9 sm:h-9 md:w-10 md:h-10"
-                                        style={{ color: program.color }}
-                                    />
-                                </div>
-                                <h3
-                                    className="text-lg sm:text-xl font-bold text-(--ngo-dark) mb-2 sm:mb-3"
-                                    style={{ fontFamily: "'Playfair Display', serif" }}
-                                >
-                                    {program.title}
-                                </h3>
-                                <p className="text-(--ngo-gray) leading-relaxed text-sm sm:text-base mb-3 sm:mb-4">
-                                    {program.description}
-                                </p>
-                                <Link
-                                    href={`/programs#${program.title.toLowerCase().replace(/ /g, "-")}`}
-                                    className="inline-flex items-center gap-2 mt-2 text-(--ngo-orange) font-semibold hover:gap-3 transition-all text-sm sm:text-base"
-                                >
-                                    Learn More <ArrowRight className="w-3 h-3 sm:w-4 sm:h-4" />
-                                </Link>
-                            </SpotlightCard>
+                            <Program
+                                href={`/programs#${program.title.toLowerCase().replace(/ /g, "-")}`}
+                                info={program.description}
+                                heading={program.title}
+                                svg={<program.icon />}
+                                color={program.color}
+                            />
                         </motion.div>
                     ))}
                 </div>
@@ -379,7 +368,7 @@ function ImpactSection() {
     ];
 
     return (
-        <section className="bg-(--ngo-dark) relative overflow-hidden py-12 sm:py-16 md:py-20">
+        <section className="bg-(--ngo-dark) relative overflow-hidden py-8 sm:py-12 md:py-14">
             <div className="absolute inset-0 opacity-10">
                 <div className="absolute top-0 left-0 w-64 h-64 sm:w-96 sm:h-96 bg-(--ngo-orange) rounded-full blur-3xl -translate-x-1/2 -translate-y-1/2" />
                 <div className="absolute bottom-0 right-0 w-64 h-64 sm:w-96 sm:h-96 bg-(--ngo-green) rounded-full blur-3xl translate-x-1/2 translate-y-1/2" />
@@ -439,177 +428,281 @@ function ImpactSection() {
     );
 }
 
+type EmpowermentItem = {
+    _id: string;
+    title: string;
+    shortDescription: string;
+    coverImageUrl?: string;
+    coverImageAlt?: string;
+    slug: string;
+    tags?: { _id: string; name: string; color?: string }[];
+};
+
 function TestimonialsSection() {
-    const testimonials = [
-        {
-            quote:
-                "Prayaas changed my life. The volunteers taught me not just academics but also how to dream big. I am now studying engineering because of their support.",
-            name: "Rahul Kumar",
-            role: "Former Student, Now Engineering Student",
-            image:
-                "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=200&q=80",
-        },
-        {
-            quote:
-                "Being a volunteer at Prayaas has been the most fulfilling experience of my college life. Seeing the children grow and learn is incredibly rewarding.",
-            name: "Priya Sharma",
-            role: "Volunteer, 3rd Year Student",
-            image:
-                "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=200&q=80",
-        },
-        {
-            quote:
-                "The dedication of Prayaas volunteers is remarkable. My daughter has shown tremendous improvement in her studies and confidence since joining their program.",
-            name: "Sunita Devi",
-            role: "Parent",
-            image:
-                "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=200&q=80",
-        },
-        {
-            quote:
-                "Prayaas empowered our community. With their guidance, my son returned to school and is now preparing for competitive exams with renewed confidence.",
-            name: "Ramesh Yadav",
-            role: "Parent",
-            image:
-                "https://images.unsplash.com/photo-1524504388940-b1c1722653e1?w=200&q=80",
-        },
-    ];
-    const [hovered, setHovered] = useState<number | null>(null);
-    const [columnCount, setColumnCount] = useState(4);
+    const [empowerments, setEmpowerments] = useState<EmpowermentItem[]>([]);
+    const [currentIndex, setCurrentIndex] = useState(0);
+    const [isAutoPlay, setIsAutoPlay] = useState(true);
+    const [isTransitioning, setIsTransitioning] = useState(false);
+    const [cardWidth, setCardWidth] = useState(0);
+    const [gap, setGap] = useState(24);
+    const containerRef = useRef<HTMLDivElement>(null);
+    const autoPlayTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+    const autoPlayIntervalRef = useRef<NodeJS.Timeout | null>(null);
 
+    // Fetch empowerments from MongoDB
     useEffect(() => {
-        const getColumns = () => {
-            if (typeof window === "undefined") return 4;
-            const width = window.innerWidth;
-            if (width < 640) return 1;
-            if (width < 1024) return 2;
-            return 4;
-        };
-
-        const handleResize = () => setColumnCount(getColumns());
-
-        handleResize();
-        window.addEventListener("resize", handleResize);
-        return () => window.removeEventListener("resize", handleResize);
+        async function load() {
+            try {
+                const res = await fetch('/api/empowerments?limit=12');
+                if (!res.ok) {
+                    console.warn('Failed to fetch empowerments:', res.status);
+                    return;
+                }
+                const data = await res.json();
+                if (data.items && data.items.length > 0) {
+                    setEmpowerments(data.items);
+                }
+            } catch (error) {
+                console.warn('Error fetching empowerments:', error);
+            }
+        }
+        load();
     }, []);
 
-    const hoverEnabled = columnCount === 4;
+    const items = empowerments;
+    const totalItems = items.length;
 
-    const columnTemplate =
-        hoverEnabled && hovered !== null
-            ? testimonials
-                .map((_, i) => (hovered === i ? "1.6fr" : "0.8fr"))
-                .join(" ")
-            : `repeat(${columnCount}, minmax(0, 1fr))`;
+    // Calculate card width and gap based on viewport
+    // Shows partial cards to indicate more content (peek effect)
+    useEffect(() => {
+        const calculateDimensions = () => {
+            if (!containerRef.current) return;
+            const containerWidth = containerRef.current.offsetWidth;
+            const viewportWidth = window.innerWidth;
+
+            // Fractional values create the "peek" effect:
+            // - 1.5 = 1 full card + half of next card visible
+            // - 2.5 = 2 full cards + half of next card visible
+            // - 3.5 = 3 full cards + half of next card visible
+            let cardsVisible: number;
+            let currentGap: number;
+
+            if (viewportWidth < 640) {
+                // Mobile: 1 full card + 0.5 peek
+                cardsVisible = 1.5;
+                currentGap = 12;
+            } else if (viewportWidth < 1024) {
+                // Tablet: 2 full cards + 0.5 peek
+                cardsVisible = 2.5;
+                currentGap = 16;
+            } else {
+                // Desktop: 3 full cards + 0.5 peek
+                cardsVisible = 3.5;
+                currentGap = 24;
+            }
+
+            // Calculate card width to fit the fractional number of cards
+            // Formula: (containerWidth - total gaps) / cardsVisible
+            // The number of gaps = floor(cardsVisible) since we're showing partial cards
+            const numGaps = Math.floor(cardsVisible);
+            const totalGapWidth = numGaps * currentGap;
+            const calculatedCardWidth = (containerWidth - totalGapWidth) / cardsVisible;
+
+            setCardWidth(calculatedCardWidth);
+            setGap(currentGap);
+        };
+
+        calculateDimensions();
+        window.addEventListener('resize', calculateDimensions);
+        return () => window.removeEventListener('resize', calculateDimensions);
+    }, [items.length]);
+
+    // Auto-play carousel - infinite loop
+    useEffect(() => {
+        if (!isAutoPlay || totalItems === 0 || isTransitioning) return;
+
+        if (autoPlayIntervalRef.current) clearInterval(autoPlayIntervalRef.current);
+
+        autoPlayIntervalRef.current = setInterval(() => {
+            handleNext();
+        }, 4000);
+
+        return () => {
+            if (autoPlayIntervalRef.current) clearInterval(autoPlayIntervalRef.current);
+        };
+    }, [isAutoPlay, totalItems, isTransitioning]);
+
+    const handlePrev = () => {
+        if (isTransitioning || totalItems === 0) return;
+
+        setIsAutoPlay(false);
+        setIsTransitioning(true);
+        setCurrentIndex((prev) => prev - 1);
+
+        if (autoPlayTimeoutRef.current) clearTimeout(autoPlayTimeoutRef.current);
+        autoPlayTimeoutRef.current = setTimeout(() => setIsAutoPlay(true), 5000);
+    };
+
+    const handleNext = () => {
+        if (isTransitioning || totalItems === 0) return;
+
+        setIsAutoPlay(false);
+        setIsTransitioning(true);
+        setCurrentIndex((prev) => prev + 1);
+
+        if (autoPlayTimeoutRef.current) clearTimeout(autoPlayTimeoutRef.current);
+        autoPlayTimeoutRef.current = setTimeout(() => setIsAutoPlay(true), 5000);
+    };
+
+    // Handle transition end - reset position for infinite loop
+    const handleTransitionEnd = () => {
+        setIsTransitioning(false);
+
+        // If we've gone past the end, jump to the real first item
+        if (currentIndex >= totalItems) {
+            setCurrentIndex(0);
+        }
+        // If we've gone before the start, jump to the real last item
+        else if (currentIndex < 0) {
+            setCurrentIndex(totalItems - 1);
+        }
+    };
+
+    // Don't render the section if no items
+    if (items.length === 0) {
+        return null;
+    }
+
+    // Create extended items array: [last, ...all, first] for infinite loop
+    const extendedItems = [
+        { ...items[totalItems - 1], _cloneId: 'clone-start' },
+        ...items,
+        { ...items[0], _cloneId: 'clone-end' },
+    ];
+
+    // Calculate transform offset (add 1 because of clone at start)
+    const translateX = -((currentIndex + 1) * (cardWidth + gap));
+
+    // Determine if we should animate (don't animate when jumping from clone to real)
+    const shouldAnimate = isTransitioning;
+
+    // Get the actual index for dot indicators (handle wrap-around)
+    const displayIndex = currentIndex < 0
+        ? totalItems - 1
+        : currentIndex >= totalItems
+            ? 0
+            : currentIndex;
 
     return (
-        <section className="py-12 sm:py-16 md:py-20 bg-white">
-            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <section className="py-8 sm:py-12 md:py-14 bg-white">
+            <div className="w-full max-w-none mx-auto px-3 sm:px-4 lg:px-6">
                 <motion.div
                     initial={{ opacity: 0, y: 30 }}
                     whileInView={{ opacity: 1, y: 0 }}
                     viewport={{ once: true }}
                     transition={{ duration: 0.8 }}
-                    className="text-center mb-10 sm:mb-12 md:mb-16"
+                    className="text-center mb-5 sm:mb-4 md:mb-7"
                 >
                     <span className="text-(--ngo-orange) font-semibold uppercase tracking-wider text-xs sm:text-sm">
                         Real Stories
                     </span>
                     <h2
-                        className="text-3xl sm:text-4xl md:text-5xl font-bold text-(--ngo-dark) mt-2 mb-3 sm:mb-4"
+                        className="text-3xl sm:text-4xl md:text-5xl font-bold text-(--ngo-dark) mt-1 mb-1 sm:mb-2"
                         style={{ fontFamily: "'Playfair Display', serif" }}
                     >
-                        Stories of Hope
+                        Stories of Empowerment
                     </h2>
                     <p className="text-(--ngo-gray) text-sm sm:text-base md:text-lg max-w-2xl mx-auto px-4">
-                        Hover over the stories on desktop; tap to read on mobile
+                        Explore inspiring stories of transformation
                     </p>
                 </motion.div>
-                <div
-                    className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-5 transition-all duration-300"
-                    style={{ gridTemplateColumns: columnTemplate }}
-                >
-                    {testimonials.map((item, index) => (
-                        <motion.div
-                            key={item.name}
-                            initial={{ opacity: 0, y: 20 }}
-                            whileInView={{ opacity: 1, y: 0 }}
-                            viewport={{ once: true }}
-                            transition={{ duration: 0.6, delay: index * 0.08, ease: "easeOut" }}
-                            animate={{
-                                scale: hoverEnabled
-                                    ? hovered === null
-                                        ? 1
-                                        : hovered === index
-                                            ? 1.05
-                                            : 0.92
-                                    : 1,
-                                zIndex: hoverEnabled && hovered === index ? 10 : 0,
+
+                {/* Carousel Container */}
+                <div className="relative group">
+                    <div
+                        ref={containerRef}
+                        className="overflow-hidden relative group-hover:overflow-visible"
+                    >
+                        <div
+                            className="flex items-stretch gap-1 sm:gap-6 w-fit"
+                            style={{
+                                transform: `translateX(${translateX}px)`,
+                                transition: shouldAnimate ? 'transform 500ms ease-in-out' : 'none',
+                                gap: `${gap}px`,
                             }}
-                            className="relative h-80 transition-transform duration-500 ease-out isolation-isolate"
-                            onMouseEnter={() => hoverEnabled && setHovered(index)}
-                            onMouseLeave={() => hoverEnabled && setHovered(null)}
-                            onClick={() =>
-                                !hoverEnabled && setHovered(hovered === index ? null : index)
-                            }
+                            onTransitionEnd={handleTransitionEnd}
                         >
-                            <div className="absolute inset-0 rounded-2xl overflow-hidden shadow-lg">
-                                <Image
-                                    src={item.image}
-                                    alt={item.name}
-                                    fill
-                                    sizes="(max-width: 1024px) 100vw, 25vw"
-                                    className="object-cover"
-                                />
-                            </div>
-                            <motion.div
-                                className="absolute inset-0 rounded-2xl bg-black/70 pointer-events-none"
-                                style={{ transformOrigin: "center center" }}
-                                initial={{ scaleX: 0, opacity: 0 }}
-                                animate={{
-                                    scaleX: 1,
-                                    opacity: hoverEnabled ? (hovered === index ? 1 : 0) : 1,
-                                }}
-                                transition={{ duration: 0.55, ease: "easeInOut" }}
-                            />
-                            <motion.div
-                                className="absolute inset-0 p-6 md:p-7 flex flex-col justify-end gap-3 text-white"
-                                initial={{ opacity: 0, y: 10 }}
-                                animate={{
-                                    opacity: hoverEnabled ? (hovered === index ? 1 : 0) : 1,
-                                    y: hoverEnabled ? (hovered === index ? 0 : 10) : 0,
-                                }}
-                                transition={{ duration: 0.5, ease: "easeInOut" }}
-                            >
-                                <div className="flex items-center gap-3">
-                                    <div className="w-12 h-12 rounded-full overflow-hidden border-2 border-white/60 shadow-md">
-                                        <Image
-                                            src={item.image}
-                                            alt={item.name}
-                                            width={48}
-                                            height={48}
-                                            className="w-full h-full object-cover"
-                                        />
-                                    </div>
-                                    <div>
-                                        <h4 className="font-semibold text-lg">{item.name}</h4>
-                                        <p className="text-xs uppercase tracking-wide text-white/80">
-                                            {item.role}
-                                        </p>
-                                    </div>
+                            {extendedItems.map((item, index) => (
+                                <div
+                                    key={'_cloneId' in item ? item._cloneId : item._id}
+                                    className="shrink-0 h-full"
+                                    style={{ width: cardWidth > 0 ? `${cardWidth}px` : '100%' }}
+                                    onMouseEnter={() => setIsAutoPlay(false)}
+                                    onMouseLeave={() => setIsAutoPlay(true)}
+                                >
+                                    <EmpCard
+                                        tag={item.tags?.[0]?.name ?? "Impact Story"}
+                                        tagBgColor={item.tags?.[0]?.color}
+                                        headline={item.title}
+                                        description={item.shortDescription}
+                                        imageSrc={item.coverImageUrl}
+                                        imageAlt={item.coverImageAlt || item.title}
+                                        ctaText="Read More"
+                                        ctaLink={`/empowerments/${item.slug}`}
+                                    />
                                 </div>
-                                <Quote className="w-6 h-6 sm:w-7 sm:h-7 md:w-8 md:h-8 text-(--ngo-orange)" />
-                                <p className="text-xs sm:text-sm md:text-base leading-relaxed">
-                                    &quot;{item.quote}&quot;
-                                </p>
-                            </motion.div>
-                        </motion.div>
-                    ))}
+                            ))}
+                        </div>
+                    </div>
+                </div>
+
+                {/* Navigation Controls */}
+                <div className="flex items-center justify-center gap-3 sm:gap-4 mt-4">
+                    <button
+                        onClick={handlePrev}
+                        disabled={isTransitioning}
+                        className="z-10 p-2 sm:p-3 rounded-full bg-(--ngo-orange) text-white hover:bg-(--ngo-orange)/80 transition-all disabled:opacity-50"
+                        aria-label="Previous stories"
+                    >
+                        <ArrowRight className="w-5 h-5 sm:w-6 sm:h-6 rotate-180" />
+                    </button>
+
+                    {/* Dot Indicators */}
+                    <div className="flex items-center gap-2">
+                        {items.map((_, index) => (
+                            <button
+                                key={index}
+                                onClick={() => {
+                                    if (isTransitioning) return;
+                                    setIsAutoPlay(false);
+                                    setIsTransitioning(true);
+                                    setCurrentIndex(index);
+                                    if (autoPlayTimeoutRef.current) clearTimeout(autoPlayTimeoutRef.current);
+                                    autoPlayTimeoutRef.current = setTimeout(() => setIsAutoPlay(true), 5000);
+                                }}
+                                className={`h-2 rounded-full transition-all ${displayIndex === index
+                                    ? "w-8 bg-(--ngo-orange)"
+                                    : "w-2 bg-(--ngo-gray)/30 hover:bg-(--ngo-gray)/50"
+                                    }`}
+                                aria-label={`Go to slide ${index + 1}`}
+                            />
+                        ))}
+                    </div>
+
+                    <button
+                        onClick={handleNext}
+                        disabled={isTransitioning}
+                        className="z-10 p-2 sm:p-3 rounded-full bg-(--ngo-orange) text-white hover:bg-(--ngo-orange)/80 transition-all disabled:opacity-50"
+                        aria-label="Next stories"
+                    >
+                        <ArrowRight className="w-5 h-5 sm:w-6 sm:h-6" />
+                    </button>
                 </div>
             </div>
         </section>
     );
 }
+
 
 function GallerySection({ images }: { images: PageImagesMap }) {
     // Get gallery images from database, fall back to local images
@@ -710,7 +803,7 @@ function GallerySection({ images }: { images: PageImagesMap }) {
         : localGalleryImages;
 
     return (
-        <section className="section-gradient py-12 sm:py-16">
+        <section className="section-gradient py-8 sm:py-12 md:py-14">
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 <motion.div
                     initial={{ opacity: 0, y: 30 }}

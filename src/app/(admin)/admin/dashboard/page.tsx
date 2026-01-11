@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { Calendar, Image as ImageIcon, FileText, Users, Shield } from "lucide-react";
+import { Calendar, Image as ImageIcon, FileText, Users, Shield, Sparkles } from "lucide-react";
 import Link from "next/link";
 
 export default function AdminDashboard() {
@@ -10,25 +10,28 @@ export default function AdminDashboard() {
     gallery: 0,
     volunteers: 0,
     content: 0,
+    empowerments: 0,
   });
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     async function fetchStats() {
       try {
-        const [eventsRes, galleryRes, volunteersRes, contentRes] =
+        const [eventsRes, galleryRes, volunteersRes, contentRes, empowermentsRes] =
           await Promise.all([
             fetch("/api/admin/events"),
             fetch("/api/admin/gallery"),
             fetch("/api/admin/volunteers"),
             fetch("/api/admin/content"),
+            fetch("/api/admin/empowerments?limit=1000"),
           ]);
 
-        const [events, gallery, volunteers, content] = await Promise.all([
+        const [events, gallery, volunteers, content, empowerments] = await Promise.all([
           eventsRes.json(),
           galleryRes.json(),
           volunteersRes.json(),
           contentRes.json(),
+          empowermentsRes.json(),
         ]);
 
         setStats({
@@ -36,6 +39,7 @@ export default function AdminDashboard() {
           gallery: gallery.images?.length || 0,
           volunteers: volunteers.volunteers?.length || 0,
           content: content.content?.length || 0,
+          empowerments: empowerments.total || 0,
         });
       } catch (err) {
         console.error("Failed to fetch stats:", err);
@@ -77,6 +81,13 @@ export default function AdminDashboard() {
       href: "/admin/dashboard/volunteers",
     },
     {
+      title: "Empowerments",
+      count: stats.empowerments,
+      icon: Sparkles,
+      color: "#ec4899",
+      href: "/admin/dashboard/empowerments",
+    },
+    {
       title: "Audit Logs",
       count: "🔒",
       icon: Shield,
@@ -97,8 +108,8 @@ export default function AdminDashboard() {
       </div>
 
       {loading ? (
-        <div className="grid md:grid-cols-2 lg:grid-cols-5 gap-6">
-          {[1, 2, 3, 4, 5].map((i) => (
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {[1, 2, 3, 4, 5, 6].map((i) => (
             <div
               key={i}
               className="bg-white rounded-2xl p-6 border border-gray-200 animate-pulse"
@@ -110,7 +121,7 @@ export default function AdminDashboard() {
           ))}
         </div>
       ) : (
-        <div className="grid md:grid-cols-2 lg:grid-cols-5 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {cards.map((card) => (
             <Link
               key={card.title}
@@ -204,11 +215,25 @@ export default function AdminDashboard() {
           >
             <Shield className="w-8 h-8 text-red-500" />
             <div>
-              <h3 className="font-semibold text-(--ngo-dark)">
+              <h3 className="font-normal text-(--ngo-dark)">
                 Security Audit Logs
               </h3>
               <p className="text-sm text-(--ngo-gray)">
                 Monitor admin activities
+              </p>
+            </div>
+          </Link>
+          <Link
+            href="/admin/dashboard/empowerments"
+            className="flex items-center gap-4 p-4 rounded-xl border border-gray-200 hover:border-pink-500 hover:bg-pink-500/5 transition-all"
+          >
+            <Sparkles className="w-8 h-8 text-pink-500" />
+            <div>
+              <h3 className="font-semibold text-(--ngo-dark)">
+                Manage Empowerments
+              </h3>
+              <p className="text-sm text-(--ngo-gray)">
+                Create and publish stories
               </p>
             </div>
           </Link>
