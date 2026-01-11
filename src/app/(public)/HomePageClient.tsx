@@ -15,10 +15,16 @@ import {
     ArrowRight,
     Calendar,
     Phone,
+    HelpingHand,
 } from "lucide-react";
 import PhotoGridSection from "@/src/components/PhotoGridSection";
 import { PageImagesMap, getImageSrc, getCarouselImages } from "@/src/components/DynamicImage";
 import EmpCard from "@/src/components/ui/empCard";
+import { Program } from "@/src/components/ui/program";
+import { StudentSvg } from "@/src/components/svg/StudentSvg";
+import { DrawingSvg } from "@/src/components/svg/DrawingSvg";
+import { ChildrenPlayingSvg } from "@/src/components/svg/ChildrenPlayingSvg";
+import { HelpingHandSvg } from "@/src/components/svg/HelpingHandSvg";
 
 // Default fallback images
 const FALLBACK_IMAGES = {
@@ -270,28 +276,28 @@ function AboutSection({ images }: { images: PageImagesMap }) {
 function ProgramsSection() {
     const programs = [
         {
-            icon: BookOpen,
+            icon: StudentSvg,
             title: "Education & Tutoring",
             description:
                 "Regular classes covering academics, computer literacy, and language skills to help children excel in their studies.",
             color: "var(--ngo-orange)",
         },
         {
-            icon: Palette,
+            icon: DrawingSvg,
             title: "Recreational Activities",
             description:
                 "Art, music, sports, and cultural programs that foster creativity and teamwork among children.",
-            color: "var(--ngo-green)",
+            color: "#4ade80",
         },
         {
-            icon: Lightbulb,
+            icon: ChildrenPlayingSvg,
             title: "Life Skills Development",
             description:
                 "Sessions on hygiene, communication, leadership, and other essential skills for holistic growth.",
             color: "var(--ngo-yellow)",
         },
         {
-            icon: HandHeart,
+            icon: HelpingHandSvg,
             title: "Community Outreach",
             description:
                 "Health camps, awareness drives, and community events that extend our impact beyond the classroom.",
@@ -300,7 +306,7 @@ function ProgramsSection() {
     ];
 
     return (
-        <section className="section-gradient py-12 sm:py-16 md:py-20">
+        <section className="section-gradient py-8 sm:py-12 md:py-14">
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 <motion.div
                     initial={{ opacity: 0, y: 30 }}
@@ -327,41 +333,24 @@ function ProgramsSection() {
                     {programs.map((program, index) => (
                         <motion.div
                             key={program.title}
-                            initial={{ opacity: 0, y: 30 }}
-                            whileInView={{ opacity: 1, y: 0 }}
-                            viewport={{ once: true }}
-                            transition={{ duration: 0.5, delay: index * 0.1 }}
-                            className="h-full"
+                            initial={{ opacity: 0, y: 30, scale: 0.95 }}
+                            whileInView={{ opacity: 1, y: 0, scale: 1 }}
+                            viewport={{ once: true, margin: "-50px" }}
+                            transition={{
+                                duration: 0.5,
+                                delay: index * 0.1,
+                                ease: [0.25, 0.46, 0.45, 0.94]
+                            }}
+                            whileHover={{ y: -8, transition: { duration: 0.3 } }}
+                            className="h-full flex justify-center"
                         >
-                            <SpotlightCard
-                                className="h-full bg-white border-transparent text-(--ngo-dark) shadow-lg card-hover p-5 sm:p-6"
-                                spotlightColor="rgba(255, 138, 76, 0.2)"
-                            >
-                                <div
-                                    className="w-14 h-14 sm:w-16 sm:h-16 rounded-xl sm:rounded-2xl mb-4 sm:mb-6 flex items-center justify-center"
-                                    style={{ backgroundColor: `${program.color}15` }}
-                                >
-                                    <program.icon
-                                        className="w-7 h-7 sm:w-9 sm:h-9 md:w-10 md:h-10"
-                                        style={{ color: program.color }}
-                                    />
-                                </div>
-                                <h3
-                                    className="text-lg sm:text-xl font-bold text-(--ngo-dark) mb-2 sm:mb-3"
-                                    style={{ fontFamily: "'Playfair Display', serif" }}
-                                >
-                                    {program.title}
-                                </h3>
-                                <p className="text-(--ngo-gray) leading-relaxed text-sm sm:text-base mb-3 sm:mb-4">
-                                    {program.description}
-                                </p>
-                                <Link
-                                    href={`/programs#${program.title.toLowerCase().replace(/ /g, "-")}`}
-                                    className="inline-flex items-center gap-2 mt-2 text-(--ngo-orange) font-semibold hover:gap-3 transition-all text-sm sm:text-base"
-                                >
-                                    Learn More <ArrowRight className="w-3 h-3 sm:w-4 sm:h-4" />
-                                </Link>
-                            </SpotlightCard>
+                            <Program
+                                href={`/programs#${program.title.toLowerCase().replace(/ /g, "-")}`}
+                                info={program.description}
+                                heading={program.title}
+                                svg={<program.icon />}
+                                color={program.color}
+                            />
                         </motion.div>
                     ))}
                 </div>
@@ -452,10 +441,11 @@ type EmpowermentItem = {
 function TestimonialsSection() {
     const [empowerments, setEmpowerments] = useState<EmpowermentItem[]>([]);
     const [currentIndex, setCurrentIndex] = useState(0);
-    const [itemsPerView, setItemsPerView] = useState(1);
     const [isAutoPlay, setIsAutoPlay] = useState(true);
+    const [isTransitioning, setIsTransitioning] = useState(false);
+    const [cardWidth, setCardWidth] = useState(0);
+    const [gap, setGap] = useState(24);
     const containerRef = useRef<HTMLDivElement>(null);
-    const cardsRef = useRef<HTMLDivElement>(null);
     const autoPlayTimeoutRef = useRef<NodeJS.Timeout | null>(null);
     const autoPlayIntervalRef = useRef<NodeJS.Timeout | null>(null);
 
@@ -474,78 +464,134 @@ function TestimonialsSection() {
                 }
             } catch (error) {
                 console.warn('Error fetching empowerments:', error);
-                // Silently fall back to empty array
             }
         }
         load();
     }, []);
 
     const items = empowerments;
+    const totalItems = items.length;
 
+    // Calculate card width and gap based on viewport
+    // Shows partial cards to indicate more content (peek effect)
     useEffect(() => {
-        const handleResize = () => {
-            const width = window.innerWidth;
-            const desired = width < 640 ? 1 : width < 1024 ? 2 : 4; // desktop shows all cards
-            setItemsPerView(Math.min(items.length, desired));
+        const calculateDimensions = () => {
+            if (!containerRef.current) return;
+            const containerWidth = containerRef.current.offsetWidth;
+            const viewportWidth = window.innerWidth;
+
+            // Fractional values create the "peek" effect:
+            // - 1.5 = 1 full card + half of next card visible
+            // - 2.5 = 2 full cards + half of next card visible
+            // - 3.5 = 3 full cards + half of next card visible
+            let cardsVisible: number;
+            let currentGap: number;
+
+            if (viewportWidth < 640) {
+                // Mobile: 1 full card + 0.5 peek
+                cardsVisible = 1.5;
+                currentGap = 12;
+            } else if (viewportWidth < 1024) {
+                // Tablet: 2 full cards + 0.5 peek
+                cardsVisible = 2.5;
+                currentGap = 16;
+            } else {
+                // Desktop: 3 full cards + 0.5 peek
+                cardsVisible = 3.5;
+                currentGap = 24;
+            }
+
+            // Calculate card width to fit the fractional number of cards
+            // Formula: (containerWidth - total gaps) / cardsVisible
+            // The number of gaps = floor(cardsVisible) since we're showing partial cards
+            const numGaps = Math.floor(cardsVisible);
+            const totalGapWidth = numGaps * currentGap;
+            const calculatedCardWidth = (containerWidth - totalGapWidth) / cardsVisible;
+
+            setCardWidth(calculatedCardWidth);
+            setGap(currentGap);
         };
 
-        handleResize();
-        window.addEventListener("resize", handleResize);
-        return () => window.removeEventListener("resize", handleResize);
+        calculateDimensions();
+        window.addEventListener('resize', calculateDimensions);
+        return () => window.removeEventListener('resize', calculateDimensions);
     }, [items.length]);
 
-    const maxIndex = Math.max(0, items.length - itemsPerView);
-    const pageCount = Math.max(1, maxIndex + 1);
-    const showDots = pageCount > 1;
-    const clampedIndex = Math.min(currentIndex, maxIndex);
-
-    // Scroll container to align selected card to left edge with peek of next card
+    // Auto-play carousel - infinite loop
     useEffect(() => {
-        if (cardsRef.current && containerRef.current) {
-            const cards = cardsRef.current.children;
-            if (cards[clampedIndex]) {
-                const selectedCard = cards[clampedIndex] as HTMLElement;
-                // Scroll to position card at the left edge of the container
-                containerRef.current.scrollLeft = selectedCard.offsetLeft;
-            }
-        }
-    }, [clampedIndex]);
-
-    // Auto-play carousel
-    useEffect(() => {
-        if (!isAutoPlay) return;
+        if (!isAutoPlay || totalItems === 0 || isTransitioning) return;
 
         if (autoPlayIntervalRef.current) clearInterval(autoPlayIntervalRef.current);
 
         autoPlayIntervalRef.current = setInterval(() => {
-            setCurrentIndex((prev) => (prev === maxIndex ? 0 : prev + 1));
-        }, 4000); // Change slide every 4 seconds
+            handleNext();
+        }, 4000);
 
         return () => {
             if (autoPlayIntervalRef.current) clearInterval(autoPlayIntervalRef.current);
         };
-    }, [isAutoPlay, maxIndex]);
+    }, [isAutoPlay, totalItems, isTransitioning]);
 
     const handlePrev = () => {
+        if (isTransitioning || totalItems === 0) return;
+
         setIsAutoPlay(false);
-        setCurrentIndex((prev) => (prev === 0 ? maxIndex : prev - 1));
-        // Resume autoplay after 5 seconds of inactivity
+        setIsTransitioning(true);
+        setCurrentIndex((prev) => prev - 1);
+
         if (autoPlayTimeoutRef.current) clearTimeout(autoPlayTimeoutRef.current);
         autoPlayTimeoutRef.current = setTimeout(() => setIsAutoPlay(true), 5000);
     };
 
     const handleNext = () => {
+        if (isTransitioning || totalItems === 0) return;
+
         setIsAutoPlay(false);
-        setCurrentIndex((prev) => (prev === maxIndex ? 0 : prev + 1));
-        // Resume autoplay after 5 seconds of inactivity
+        setIsTransitioning(true);
+        setCurrentIndex((prev) => prev + 1);
+
         if (autoPlayTimeoutRef.current) clearTimeout(autoPlayTimeoutRef.current);
         autoPlayTimeoutRef.current = setTimeout(() => setIsAutoPlay(true), 5000);
+    };
+
+    // Handle transition end - reset position for infinite loop
+    const handleTransitionEnd = () => {
+        setIsTransitioning(false);
+
+        // If we've gone past the end, jump to the real first item
+        if (currentIndex >= totalItems) {
+            setCurrentIndex(0);
+        }
+        // If we've gone before the start, jump to the real last item
+        else if (currentIndex < 0) {
+            setCurrentIndex(totalItems - 1);
+        }
     };
 
     // Don't render the section if no items
     if (items.length === 0) {
         return null;
     }
+
+    // Create extended items array: [last, ...all, first] for infinite loop
+    const extendedItems = [
+        { ...items[totalItems - 1], _cloneId: 'clone-start' },
+        ...items,
+        { ...items[0], _cloneId: 'clone-end' },
+    ];
+
+    // Calculate transform offset (add 1 because of clone at start)
+    const translateX = -((currentIndex + 1) * (cardWidth + gap));
+
+    // Determine if we should animate (don't animate when jumping from clone to real)
+    const shouldAnimate = isTransitioning;
+
+    // Get the actual index for dot indicators (handle wrap-around)
+    const displayIndex = currentIndex < 0
+        ? totalItems - 1
+        : currentIndex >= totalItems
+            ? 0
+            : currentIndex;
 
     return (
         <section className="py-8 sm:py-12 md:py-14 bg-white">
@@ -567,84 +613,96 @@ function TestimonialsSection() {
                         Stories of Empowerment
                     </h2>
                     <p className="text-(--ngo-gray) text-sm sm:text-base md:text-lg max-w-2xl mx-auto px-4">
-                        Swipe or use arrows to explore more stories
+                        Explore inspiring stories of transformation
                     </p>
                 </motion.div>
 
                 {/* Carousel Container */}
                 <div className="relative group">
-
                     <div
                         ref={containerRef}
-                        className="relative overflow-hidden scroll-smooth"
-                        style={{ scrollBehavior: 'smooth' }}
+                        className="overflow-hidden relative group-hover:overflow-visible"
                     >
-                        {/* Cards Wrapper */}
-                        <div ref={cardsRef} className="flex gap-1 sm:gap-6 w-fit">
-                            {items.map((item, index) => {
-                                return (
-                                    <motion.div
-                                        key={item._id}
-                                        initial={{ opacity: 0, y: 20 }}
-                                        whileInView={{ opacity: 1, y: 0 }}
-                                        viewport={{ once: true }}
-                                        transition={{ duration: 0.5, delay: index * 0.08, ease: "easeOut" }}
-                                        className="shrink-0 w-[55%] sm:w-[50%] lg:w-[26%]"
-                                        onMouseEnter={() => setIsAutoPlay(false)}
-                                        onMouseLeave={() => setIsAutoPlay(true)}
-                                    >
-                                        <EmpCard
-                                            tag={item.tags?.[0]?.name ?? "Impact Story"}
-                                            tagBgColor={item.tags?.[0]?.color}
-                                            headline={item.title}
-                                            description={item.shortDescription}
-                                            imageSrc={item.coverImageUrl}
-                                            imageAlt={item.coverImageAlt || item.title}
-                                            ctaText="Read More"
-                                            ctaLink={`/empowerments/${item.slug}`}
-                                        />
-                                    </motion.div>
-                                );
-                            })}
+                        <div
+                            className="flex items-stretch gap-1 sm:gap-6 w-fit"
+                            style={{
+                                transform: `translateX(${translateX}px)`,
+                                transition: shouldAnimate ? 'transform 500ms ease-in-out' : 'none',
+                                gap: `${gap}px`,
+                            }}
+                            onTransitionEnd={handleTransitionEnd}
+                        >
+                            {extendedItems.map((item, index) => (
+                                <div
+                                    key={'_cloneId' in item ? item._cloneId : item._id}
+                                    className="shrink-0 h-full"
+                                    style={{ width: cardWidth > 0 ? `${cardWidth}px` : '100%' }}
+                                    onMouseEnter={() => setIsAutoPlay(false)}
+                                    onMouseLeave={() => setIsAutoPlay(true)}
+                                >
+                                    <EmpCard
+                                        tag={item.tags?.[0]?.name ?? "Impact Story"}
+                                        tagBgColor={item.tags?.[0]?.color}
+                                        headline={item.title}
+                                        description={item.shortDescription}
+                                        imageSrc={item.coverImageUrl}
+                                        imageAlt={item.coverImageAlt || item.title}
+                                        ctaText="Read More"
+                                        ctaLink={`/empowerments/${item.slug}`}
+                                    />
+                                </div>
+                            ))}
                         </div>
                     </div>
-
                 </div>
 
-                {/* Dot Indicators */}
-                {showDots && (
-                    <div className="flex items-center justify-center gap-3 sm:gap-4 mt-4 sm:mt-4">
-                        <button
-                            onClick={handlePrev}
-                            className="z-10 p-2 sm:p-3 rounded-full bg-(--ngo-orange) text-white hover:bg-(--ngo-orange)/80 transition-all"
-                            aria-label="Previous stories"
-                        >
-                            <ArrowRight className="w-5 h-5 sm:w-6 sm:h-6 rotate-180" />
-                        </button>
-                        {Array.from({ length: pageCount }).map((_, index) => (
+                {/* Navigation Controls */}
+                <div className="flex items-center justify-center gap-3 sm:gap-4 mt-4">
+                    <button
+                        onClick={handlePrev}
+                        disabled={isTransitioning}
+                        className="z-10 p-2 sm:p-3 rounded-full bg-(--ngo-orange) text-white hover:bg-(--ngo-orange)/80 transition-all disabled:opacity-50"
+                        aria-label="Previous stories"
+                    >
+                        <ArrowRight className="w-5 h-5 sm:w-6 sm:h-6 rotate-180" />
+                    </button>
+
+                    {/* Dot Indicators */}
+                    <div className="flex items-center gap-2">
+                        {items.map((_, index) => (
                             <button
                                 key={index}
-                                onClick={() => setCurrentIndex(index)}
-                                        className={`h-2 rounded-full transition-all ${clampedIndex === index
+                                onClick={() => {
+                                    if (isTransitioning) return;
+                                    setIsAutoPlay(false);
+                                    setIsTransitioning(true);
+                                    setCurrentIndex(index);
+                                    if (autoPlayTimeoutRef.current) clearTimeout(autoPlayTimeoutRef.current);
+                                    autoPlayTimeoutRef.current = setTimeout(() => setIsAutoPlay(true), 5000);
+                                }}
+                                className={`h-2 rounded-full transition-all ${displayIndex === index
                                     ? "w-8 bg-(--ngo-orange)"
                                     : "w-2 bg-(--ngo-gray)/30 hover:bg-(--ngo-gray)/50"
                                     }`}
                                 aria-label={`Go to slide ${index + 1}`}
                             />
                         ))}
-                        <button
-                            onClick={handleNext}
-                            className="z-10 p-2 sm:p-3 rounded-full bg-(--ngo-orange) text-white hover:bg-(--ngo-orange)/80 transition-all"
-                            aria-label="Next stories"
-                        >
-                            <ArrowRight className="w-5 h-5 sm:w-6 sm:h-6" />
-                        </button>
                     </div>
-                )}
+
+                    <button
+                        onClick={handleNext}
+                        disabled={isTransitioning}
+                        className="z-10 p-2 sm:p-3 rounded-full bg-(--ngo-orange) text-white hover:bg-(--ngo-orange)/80 transition-all disabled:opacity-50"
+                        aria-label="Next stories"
+                    >
+                        <ArrowRight className="w-5 h-5 sm:w-6 sm:h-6" />
+                    </button>
+                </div>
             </div>
         </section>
     );
 }
+
 
 function GallerySection({ images }: { images: PageImagesMap }) {
     // Get gallery images from database, fall back to local images

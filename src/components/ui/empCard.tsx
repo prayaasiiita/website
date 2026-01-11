@@ -28,7 +28,7 @@ const EmpCard = ({
     const finalImageSrc = imageSrc && imageSrc.trim() ? imageSrc : DUMMY_IMAGE;
 
     return (
-        <article className="w-full max-w-xs sm:max-w-sm md:max-w-md lg:max-w-lg bg-[#f8f2ed] rounded-4xl p-4 sm:p-5 md:p-6 lg:p-7 flex flex-col font-sans antialiased text-left shadow-sm hover:shadow-md transition-shadow duration-300 mb-2">
+        <article className="w-full h-full bg-[#f8f2ed] rounded-4xl p-4 sm:p-5 md:p-6 lg:p-7 flex flex-col font-sans antialiased text-left shadow-sm hover:shadow-md transition-shadow duration-300">
 
 
             {/* Text Content Section */}
@@ -53,20 +53,20 @@ const EmpCard = ({
                     />
                 </div>
 
-                {/* Headline */}
-                <h2 className="text-[#111827] text-lg sm:text-xl md:text-2xl leading-tight font-bold mt-3 sm:mt-4 tracking-tight">
+                {/* Headline - uses explicit height for 2 lines: text-lg=1.125rem, leading-tight≈1.25 → 2*1.125*1.25 = 2.8125rem */}
+                <h2 className="text-[#111827] text-lg sm:text-xl md:text-2xl leading-tight font-bold mt-3 sm:mt-4 tracking-tight line-clamp-2 h-[2.8rem] sm:h-[3.1rem] md:h-[3.75rem]">
                     {headline}
                 </h2>
 
-                {/* Description */}
-                <p className="text-[#6B7280] text-sm sm:text-base leading-snug mt-1.5 sm:mt-2 font-normal line-clamp-3">
+                {/* Description - uses explicit height for 3 lines: text-sm=0.875rem, leading-snug≈1.375 → 3*0.875*1.375 ≈ 3.6rem */}
+                <p className="text-[#6B7280] text-sm sm:text-base leading-snug mt-1.5 sm:mt-2 font-normal line-clamp-3 h-[3.6rem] sm:h-[4.1rem]">
                     {description}
                 </p>
 
                 {/* CTA Link */}
                 <Link
                     href={ctaLink}
-                    className="group flex items-center gap-2 mt-4 text-[#111827] font-semibold text-[16px] hover:opacity-80 transition-opacity"
+                    className="group flex items-center gap-2 mt-auto pt-4 text-[#111827] font-semibold text-[16px] hover:opacity-80 transition-opacity"
                 >
                     {ctaText}
                     <svg
