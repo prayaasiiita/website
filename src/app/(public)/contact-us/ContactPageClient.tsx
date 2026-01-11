@@ -26,7 +26,7 @@ import { toast } from "sonner";
 import SpotlightCard from "@/src/components/ui/spotlightCard";
 import { PageImagesMap, getImageSrc } from "@/src/components/DynamicImage";
 import { contactFormSchema, type ContactFormData } from "@/src/lib/validations/contact-form";
-import { submitContactForm } from "./actions";
+import { submitContactForm } from "@/src/lib/actions";
 
 // Default fallback images
 const FALLBACK_IMAGES = {
@@ -276,7 +276,7 @@ function ContactFormSection() {
                         viewport={{ once: true }}
                         transition={{ duration: 0.8 }}
                     >
-                        <form 
+                        <form
                             onSubmit={handleSubmit(onSubmit)}
                             className="bg-white rounded-3xl p-8 shadow-xl"
                             noValidate
@@ -289,9 +289,8 @@ function ContactFormSection() {
                                     <input
                                         type="text"
                                         {...register("firstName")}
-                                        className={`w-full px-4 py-3 rounded-xl border ${
-                                            errors.firstName ? "border-red-500" : "border-gray-200"
-                                        } focus:border-(--ngo-orange) focus:ring-2 focus:ring-(--ngo-orange)/20 outline-none transition-all`}
+                                        className={`w-full px-4 py-3 rounded-xl border ${errors.firstName ? "border-red-500" : "border-gray-200"
+                                            } focus:border-(--ngo-orange) focus:ring-2 focus:ring-(--ngo-orange)/20 outline-none transition-all`}
                                         placeholder="First Name"
                                         disabled={isSubmitting}
                                     />
@@ -308,9 +307,8 @@ function ContactFormSection() {
                                     <input
                                         type="text"
                                         {...register("lastName")}
-                                        className={`w-full px-4 py-3 rounded-xl border ${
-                                            errors.lastName ? "border-red-500" : "border-gray-200"
-                                        } focus:border-(--ngo-orange) focus:ring-2 focus:ring-(--ngo-orange)/20 outline-none transition-all`}
+                                        className={`w-full px-4 py-3 rounded-xl border ${errors.lastName ? "border-red-500" : "border-gray-200"
+                                            } focus:border-(--ngo-orange) focus:ring-2 focus:ring-(--ngo-orange)/20 outline-none transition-all`}
                                         placeholder="Last Name"
                                         disabled={isSubmitting}
                                     />
@@ -328,9 +326,8 @@ function ContactFormSection() {
                                 <input
                                     type="email"
                                     {...register("email")}
-                                    className={`w-full px-4 py-3 rounded-xl border ${
-                                        errors.email ? "border-red-500" : "border-gray-200"
-                                    } focus:border-(--ngo-orange) focus:ring-2 focus:ring-(--ngo-orange)/20 outline-none transition-all`}
+                                    className={`w-full px-4 py-3 rounded-xl border ${errors.email ? "border-red-500" : "border-gray-200"
+                                        } focus:border-(--ngo-orange) focus:ring-2 focus:ring-(--ngo-orange)/20 outline-none transition-all`}
                                     placeholder="example@example.com"
                                     disabled={isSubmitting}
                                 />
@@ -347,9 +344,8 @@ function ContactFormSection() {
                                 <input
                                     type="tel"
                                     {...register("phone")}
-                                    className={`w-full px-4 py-3 rounded-xl border ${
-                                        errors.phone ? "border-red-500" : "border-gray-200"
-                                    } focus:border-(--ngo-orange) focus:ring-2 focus:ring-(--ngo-orange)/20 outline-none transition-all`}
+                                    className={`w-full px-4 py-3 rounded-xl border ${errors.phone ? "border-red-500" : "border-gray-200"
+                                        } focus:border-(--ngo-orange) focus:ring-2 focus:ring-(--ngo-orange)/20 outline-none transition-all`}
                                     placeholder="+91 XXXXX XXXXX"
                                     disabled={isSubmitting}
                                 />
@@ -363,11 +359,10 @@ function ContactFormSection() {
                                 <label className="block text-(--ngo-dark) font-medium mb-2">
                                     Subject <span className="text-red-500">*</span>
                                 </label>
-                                <select 
+                                <select
                                     {...register("subject")}
-                                    className={`w-full px-4 py-3 rounded-xl border ${
-                                        errors.subject ? "border-red-500" : "border-gray-200"
-                                    } focus:border-(--ngo-orange) focus:ring-2 focus:ring-(--ngo-orange)/20 outline-none transition-all bg-white`}
+                                    className={`w-full px-4 py-3 rounded-xl border ${errors.subject ? "border-red-500" : "border-gray-200"
+                                        } focus:border-(--ngo-orange) focus:ring-2 focus:ring-(--ngo-orange)/20 outline-none transition-all bg-white`}
                                     disabled={isSubmitting}
                                 >
                                     <option value="">Select a topic</option>
@@ -390,9 +385,8 @@ function ContactFormSection() {
                                 <textarea
                                     rows={5}
                                     {...register("message")}
-                                    className={`w-full px-4 py-3 rounded-xl border ${
-                                        errors.message ? "border-red-500" : "border-gray-200"
-                                    } focus:border-(--ngo-orange) focus:ring-2 focus:ring-(--ngo-orange)/20 outline-none transition-all resize-none`}
+                                    className={`w-full px-4 py-3 rounded-xl border ${errors.message ? "border-red-500" : "border-gray-200"
+                                        } focus:border-(--ngo-orange) focus:ring-2 focus:ring-(--ngo-orange)/20 outline-none transition-all resize-none`}
                                     placeholder="How can we help you?"
                                     disabled={isSubmitting}
                                 />

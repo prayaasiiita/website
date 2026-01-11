@@ -29,7 +29,8 @@ export function Navbar() {
   const navLinks = [
     { href: "/", label: "Home" },
     { href: "/about", label: "About Us" },
-    { href: "/programs", label: "Events" }, // program to event krna hai 
+    { href: "/our-work", label: "Our Work" },
+    { href: "/events", label: "Events" },
     { href: "/impact", label: "Impact" },
     { href: "/gallery", label: "Gallery" },
     { href: "/get-involved", label: "Get Involved" },

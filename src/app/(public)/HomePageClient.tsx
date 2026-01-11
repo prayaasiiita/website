@@ -273,7 +273,7 @@ function AboutSection({ images }: { images: PageImagesMap }) {
     );
 }
 
-function ProgramsSection() {
+function OurWorkSection() {
     const programs = [
         {
             icon: StudentSvg,
@@ -322,7 +322,7 @@ function ProgramsSection() {
                         className="text-3xl sm:text-4xl md:text-5xl font-bold text-(--ngo-dark) mt-2 mb-3 sm:mb-4"
                         style={{ fontFamily: "'Playfair Display', serif" }}
                     >
-                        Our Programs
+                        Our Work
                     </h2>
                     <p className="text-(--ngo-gray) text-sm sm:text-base md:text-lg max-w-2xl mx-auto px-4">
                         We run comprehensive programs designed to nurture every aspect of a
@@ -345,7 +345,7 @@ function ProgramsSection() {
                             className="h-full flex justify-center"
                         >
                             <Program
-                                href={`/programs#${program.title.toLowerCase().replace(/ /g, "-")}`}
+                                href={`/our-work#${program.title.toLowerCase().replace(/ /g, "-")}`}
                                 info={program.description}
                                 heading={program.title}
                                 svg={<program.icon />}
@@ -559,7 +559,7 @@ function TestimonialsSection() {
         setIsTransitioning(false);
 
         // If we've gone past the end, jump to the real first item
-        if (currentIndex >= totalItems) {
+        if (currentIndex >= totalItems-1) {
             setCurrentIndex(0);
         }
         // If we've gone before the start, jump to the real last item
@@ -900,7 +900,7 @@ export default function HomePageClient({ images }: HomePageClientProps) {
         <>
             <HeroSection images={images} />
             <AboutSection images={images} />
-            <ProgramsSection />
+            <OurWorkSection />
             <ImpactSection />
             <TestimonialsSection />
             <GallerySection images={images} />

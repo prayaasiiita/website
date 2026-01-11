@@ -19,7 +19,8 @@ import Image from "next/image";
 export function Footer() {
   const quickLinks = [
     { href: "/about", label: "About Us" },
-    { href: "/programs", label: "Our Programs" },
+    { href: "/our-work", label: "Our Programs" },
+    { href: "/events", label: "Events" },
     { href: "/impact", label: "Our Impact" },
     { href: "/gallery", label: "Gallery" },
     { href: "/get-involved", label: "Get Involved" },
@@ -27,10 +28,10 @@ export function Footer() {
   ];
 
   const programs = [
-    { href: "/programs#education", label: "Education & Tutoring" },
-    { href: "/programs#recreation", label: "Recreational Activities" },
-    { href: "/programs#life-skills", label: "Life Skills Development" },
-    { href: "/programs#outreach", label: "Community Outreach" },
+    { href: "/our-work#education", label: "Education & Tutoring" },
+    { href: "/our-work#recreation", label: "Recreational Activities" },
+    { href: "/our-work#life-skills", label: "Life Skills Development" },
+    { href: "/our-work#outreach", label: "Community Outreach" },
   ];
 
   const socialLinks = [
@@ -55,12 +56,12 @@ export function Footer() {
           {/* Brand Section */}
           <div className="space-y-2.5 lg:col-span-1 col-span-1">
             <Link href="/" className="inline-block group">
-              <Image 
-                src="/logo.png" 
-                alt="Prayaas Logo" 
-                width={140} 
-                height={93} 
-                className="h-16 w-auto sm:h-18 transition-transform duration-300 group-hover:scale-110" 
+              <Image
+                src="/logo.png"
+                alt="Prayaas Logo"
+                width={140}
+                height={93}
+                className="h-16 w-auto sm:h-18 transition-transform duration-300 group-hover:scale-110"
               />
             </Link>
             <p className="text-gray-300 leading-relaxed text-s sm:text-sm">
@@ -68,7 +69,7 @@ export function Footer() {
               quality education accessible to underprivileged children and
               creating lasting positive change in our community.
             </p>
-            
+
             {/* Social Media Icons */}
             <div>
               <p className="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-2">
@@ -94,53 +95,53 @@ export function Footer() {
 
           {/* Quick Links & Programs - Side by side on mobile */}
           <div className="col-span-1 grid grid-cols-2 gap-5 sm:gap-6 lg:contents">
-          {/* Quick Links */}
-          <div>
-            <h3
-              className="text-base sm:text-lg font-bold mb-3.5 text-white relative inline-block"
-              style={{ fontFamily: "'Playfair Display', serif" }}
-            >
-              Quick Links
-              <span className="absolute -bottom-2 left-0 w-12 h-1 bg-(--ngo-orange) rounded-full" />
-            </h3>
-            <ul className="space-y-2.5">
-              {quickLinks.map((link) => (
-                <li key={link.href}>
-                  <Link
-                    href={link.href}
-                    className="text-gray-300 hover:text-(--ngo-orange) transition-all duration-200 text-sm sm:text-base py-0.5 flex items-center group"
-                  >
-                    <ArrowRight className="w-4 h-4 mr-2 opacity-0 -ml-6 group-hover:opacity-100 group-hover:ml-0 transition-all duration-300" />
-                    {link.label}
-                  </Link>
-                </li>
-              ))}
-            </ul>
-          </div>
+            {/* Quick Links */}
+            <div>
+              <h3
+                className="text-base sm:text-lg font-bold mb-3.5 text-white relative inline-block"
+                style={{ fontFamily: "'Playfair Display', serif" }}
+              >
+                Quick Links
+                <span className="absolute -bottom-2 left-0 w-12 h-1 bg-(--ngo-orange) rounded-full" />
+              </h3>
+              <ul className="space-y-2.5">
+                {quickLinks.map((link) => (
+                  <li key={link.href}>
+                    <Link
+                      href={link.href}
+                      className="text-gray-300 hover:text-(--ngo-orange) transition-all duration-200 text-sm sm:text-base py-0.5 flex items-center group"
+                    >
+                      <ArrowRight className="w-4 h-4 mr-2 opacity-0 -ml-6 group-hover:opacity-100 group-hover:ml-0 transition-all duration-300" />
+                      {link.label}
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            </div>
 
-          {/* Programs */}
-          <div>
-            <h3
-              className="text-base sm:text-lg font-bold mb-3.5 text-white relative inline-block"
-              style={{ fontFamily: "'Playfair Display', serif" }}
-            >
-              Our Programs
-              <span className="absolute -bottom-2 left-0 w-12 h-1 bg-(--ngo-orange) rounded-full" />
-            </h3>
-            <ul className="space-y-2.5">
-              {programs.map((link) => (
-                <li key={link.href}>
-                  <Link
-                    href={link.href}
-                    className="text-gray-300 hover:text-(--ngo-orange) transition-all duration-200 text-sm sm:text-base py-0.5 flex items-center group"
-                  >
-                    <ArrowRight className="w-4 h-4 mr-2 opacity-0 -ml-6 group-hover:opacity-100 group-hover:ml-0 transition-all duration-300" />
-                    {link.label}
-                  </Link>
-                </li>
-              ))}
-            </ul>
-          </div>
+            {/* Programs */}
+            <div>
+              <h3
+                className="text-base sm:text-lg font-bold mb-3.5 text-white relative inline-block"
+                style={{ fontFamily: "'Playfair Display', serif" }}
+              >
+                Our Programs
+                <span className="absolute -bottom-2 left-0 w-12 h-1 bg-(--ngo-orange) rounded-full" />
+              </h3>
+              <ul className="space-y-2.5">
+                {programs.map((link) => (
+                  <li key={link.href}>
+                    <Link
+                      href={link.href}
+                      className="text-gray-300 hover:text-(--ngo-orange) transition-all duration-200 text-sm sm:text-base py-0.5 flex items-center group"
+                    >
+                      <ArrowRight className="w-4 h-4 mr-2 opacity-0 -ml-6 group-hover:opacity-100 group-hover:ml-0 transition-all duration-300" />
+                      {link.label}
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            </div>
           </div>
 
           {/* Contact Information */}

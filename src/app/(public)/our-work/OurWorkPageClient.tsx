@@ -13,6 +13,7 @@ import {
     Heart,
     Clock,
     Calendar,
+    Phone,
 } from "lucide-react";
 import { PageImagesMap, getCarouselImages, getImageSrc } from "@/src/components/DynamicImage";
 import { useEffect, useState } from "react";
@@ -162,12 +163,12 @@ function ProgramDetail({
                                 </div>
                             ))}
                         </div>
-                        <div className="flex items-center gap-3 p-4 bg-(--ngo-cream) rounded-xl">
+                        {schedule && <div className="flex items-center gap-3 p-4 bg-(--ngo-cream) rounded-xl">
                             <Clock className="w-5 h-5 text-(--ngo-orange)" />
                             <span className="text-(--ngo-dark) font-medium">
                                 Schedule: {schedule}
                             </span>
-                        </div>
+                        </div>}
                     </motion.div>
                     <motion.div
                         initial={{ opacity: 0, x: reverse ? -50 : 50 }}
@@ -222,150 +223,64 @@ function ProgramDetail({
     );
 }
 
-function WeeklySchedule() {
-    const schedule = [
-        {
-            day: "Saturday",
-            activities: [
-                { time: "10:00 AM - 11:00 AM", activity: "Mathematics & Science" },
-                { time: "11:15 AM - 12:15 PM", activity: "English Language" },
-                { time: "12:30 PM - 1:00 PM", activity: "Arts & Crafts" },
-            ],
-        },
-        {
-            day: "Sunday",
-            activities: [
-                { time: "10:00 AM - 11:00 AM", activity: "Computer Basics" },
-                { time: "11:15 AM - 12:15 PM", activity: "Life Skills Session" },
-                { time: "12:30 PM - 1:00 PM", activity: "Games & Sports" },
-            ],
-        },
-    ];
-
-    return (
-        <section className="py-24 section-gradient">
-            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                <motion.div
-                    initial={{ opacity: 0, y: 30 }}
-                    whileInView={{ opacity: 1, y: 0 }}
-                    viewport={{ once: true }}
-                    transition={{ duration: 0.8 }}
-                    className="text-center mb-16"
-                >
-                    <span className="text-(--ngo-orange) font-semibold uppercase tracking-wider text-sm">
-                        Weekly Schedule
-                    </span>
-                    <h2
-                        className="text-4xl md:text-5xl font-bold text-(--ngo-dark) mt-2 mb-4"
-                        style={{ fontFamily: "'Playfair Display', serif" }}
-                    >
-                        Our Class Timings
-                    </h2>
-                    <p className="text-(--ngo-gray) text-lg max-w-2xl mx-auto">
-                        Join us every weekend for engaging learning sessions
-                    </p>
-                </motion.div>
-                <div className="grid md:grid-cols-2 gap-8 max-w-4xl mx-auto">
-                    {schedule.map((day, index) => (
-                        <motion.div
-                            key={day.day}
-                            initial={{ opacity: 0, y: 30 }}
-                            whileInView={{ opacity: 1, y: 0 }}
-                            viewport={{ once: true }}
-                            transition={{ duration: 0.5, delay: index * 0.1 }}
-                            className="bg-white rounded-2xl p-8 shadow-lg"
-                        >
-                            <div className="flex items-center gap-3 mb-6">
-                                <Calendar className="w-6 h-6 text-(--ngo-orange)" />
-                                <h3
-                                    className="text-2xl font-bold text-(--ngo-dark)"
-                                    style={{ fontFamily: "'Playfair Display', serif" }}
-                                >
-                                    {day.day}
-                                </h3>
-                            </div>
-                            <div className="space-y-4">
-                                {day.activities.map((item) => (
-                                    <div
-                                        key={item.time}
-                                        className="flex justify-between items-center p-3 bg-(--ngo-cream) rounded-xl"
-                                    >
-                                        <span className="text-(--ngo-gray) text-sm">
-                                            {item.time}
-                                        </span>
-                                        <span className="text-(--ngo-dark) font-medium">
-                                            {item.activity}
-                                        </span>
-                                    </div>
-                                ))}
-                            </div>
-                        </motion.div>
-                    ))}
-                </div>
-            </div>
-        </section>
-    );
-}
-
 function CTASection({ images }: { images: PageImagesMap }) {
     const ctaSrc = getImageSrc(images, "cta", "background", "");
+    const ctaAlt = images["cta:background"]?.alt
 
     return (
-        <section className="py-24 bg-(--ngo-dark) relative overflow-hidden">
-            {ctaSrc && (
-                <div className="absolute inset-0">
-                    <Image
-                        src={ctaSrc}
-                        alt="Background"
-                        fill
-                        className="object-cover opacity-20"
-                    />
+        <section className="py-8 sm:py-12 md:py-14 px-4 sm:px-6 lg:px-8">
+            <div className="relative overflow-hidden rounded-3xl sm:rounded-[40px] md:rounded-[50px] max-w-7xl mx-auto ">
+                <div className="absolute inset-0 bg-(--ngo-dark)">
+                    {ctaSrc && <><Image src={ctaSrc} alt={ctaAlt} fill className="object-cover" />
+                        <div className="hero-gradient absolute inset-0" />
+                        <div className="absolute inset-0 bg-linear-to-b from-black/70 via-black/45 to-black/30" /></>}
                 </div>
-            )}
-            <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center relative z-10">
-                <motion.div
-                    initial={{ opacity: 0, y: 30 }}
-                    whileInView={{ opacity: 1, y: 0 }}
-                    viewport={{ once: true }}
-                    transition={{ duration: 0.8 }}
-                >
-                    <h2
-                        className="text-3xl sm:text-4xl md:text-5xl font-bold text-white mb-6"
-                        style={{ fontFamily: "'Playfair Display', serif" }}
+                <div className="relative z-10 max-w-4xl mx-auto px-6 sm:px-8 lg:px-12 py-12 sm:py-14 md:py-16 text-center">
+                    <motion.div
+                        initial={{ opacity: 0, y: 30 }}
+                        whileInView={{ opacity: 1, y: 0 }}
+                        viewport={{ once: true }}
+                        transition={{ duration: 0.8 }}
                     >
-                        Help Us Expand Our Programs
-                    </h2>
-                    <p className="text-gray-400 text-lg mb-10 max-w-2xl mx-auto">
-                        Your support enables us to reach more children and create more
-                        impactful programs. Join us in making a difference.
-                    </p>
-                    <div className="flex flex-col sm:flex-row gap-4 justify-center">
-                        <Link
-                            href="/get-involved#donate"
-                            className="btn-primary flex items-center justify-center gap-2"
+                        <h2
+                            className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-white mb-4 sm:mb-6"
+                            style={{ fontFamily: "'Playfair Display', serif" }}
                         >
-                            <Heart className="w-5 h-5" />
-                            Support Our Programs
-                        </Link>
-                        <Link
-                            href="/get-involved#volunteer"
-                            className="btn-outline flex items-center justify-center gap-2"
-                        >
-                            <Users className="w-5 h-5" />
-                            Volunteer With Us
-                        </Link>
-                    </div>
-                </motion.div>
+                            Help Us Expand Our Work
+                        </h2>
+                        <p className="text-white/90 text-sm sm:text-base md:text-lg mb-8 sm:mb-10 max-w-2xl mx-auto">
+                            Your support enables us to reach more children and create more
+                            impactful programs. Join us in making a difference.
+                        </p>
+                        <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center items-center">
+                            <Link
+                                href="/get-involved#donate"
+                                className="btn-primary flex items-center justify-center gap-2 w-full sm:w-auto max-w-xs"
+                            >
+                                <Heart className="w-4 h-4 sm:w-5 sm:h-5" />
+                                Support Our Work
+                            </Link>
+                            <Link
+                                href="/get-involved#volunteer"
+                                className="btn-outline flex items-center justify-center gap-2 w-full sm:w-auto max-w-xs"
+                            >
+                                <Phone className="w-4 h-4 sm:w-5 sm:h-5" />
+                                Volunteer With Us
+                            </Link>
+                        </div>
+                    </motion.div>
+                </div>
             </div>
         </section>
     );
 }
 
-export default function ProgramsPageClient({ images }: { images: PageImagesMap }) {
+
+export default function OurWorkPageClient({ images }: { images: PageImagesMap }) {
     // Get program images from database or use fallbacks
     const programs: ProgramCard[] = [
         {
-            id: "education-&-tutoring",
+            id: "education & tutoring",
             section: "education",
             icon: BookOpen,
             title: "Education & Tutoring",
@@ -373,12 +288,12 @@ export default function ProgramsPageClient({ images }: { images: PageImagesMap }
                 "Our core educational program provides academic support to children in subjects like Mathematics, Science, English, and Hindi. We use innovative teaching methods to make learning engaging and effective.",
             features: [
                 "Regular classes in core subjects",
-                "Computer literacy and digital skills",
+                "Verbal Communication Skills Support",
                 "Exam preparation and study support",
-                "Personalized attention for struggling students",
+                "Personalized attention for senior students",
                 "Educational materials and resources provided",
             ],
-            schedule: "Saturday & Sunday, 10 AM - 12 PM",
+            schedule: "Monday - Sunday, 5 PM - 6 PM",
             images: images,
             color: "var(--ngo-orange)",
         },
@@ -390,13 +305,12 @@ export default function ProgramsPageClient({ images }: { images: PageImagesMap }
             description:
                 "We believe in holistic development, which is why our recreational programs focus on arts, music, sports, and cultural activities that nurture creativity and teamwork.",
             features: [
-                "Art and craft workshops",
-                "Music and dance sessions",
-                "Indoor and outdoor sports",
+                "Art and craft competitions and workshops",
+                "Music and dance competitions and workshops",
                 "Cultural celebrations and events",
                 "Team-building activities",
             ],
-            schedule: "Sunday, 12:30 PM - 1:30 PM",
+            schedule: "",
             images: images,
             color: "var(--ngo-green)",
         },
@@ -414,7 +328,7 @@ export default function ProgramsPageClient({ images }: { images: PageImagesMap }
                 "Environmental awareness",
                 "Leadership and confidence building",
             ],
-            schedule: "Alternate Sundays, 11 AM - 12 PM",
+            schedule: "",
             images: images,
             color: "var(--ngo-yellow)",
         },
@@ -424,15 +338,14 @@ export default function ProgramsPageClient({ images }: { images: PageImagesMap }
             icon: HandHeart,
             title: "Community Outreach",
             description:
-                "We extend our impact beyond the classroom through health camps, awareness drives, and community events that benefit the entire village.",
+                "We extend our impact beyond the classroom through health camps, donation drives, and community events that benefit the entire village.",
             features: [
                 "Health and hygiene camps",
                 "Awareness programs on education importance",
                 "Distribution of educational materials",
-                "Festival celebrations with families",
-                "Parent engagement sessions",
+                "Donation Drives organised time to time",
             ],
-            schedule: "Monthly events",
+            schedule: "",
             images: images,
             color: "#8b5cf6",
         },
@@ -451,7 +364,6 @@ export default function ProgramsPageClient({ images }: { images: PageImagesMap }
                     </div>
                 ))}
             </div>
-            <WeeklySchedule />
             <CTASection images={images} />
         </>
     );
