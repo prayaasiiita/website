@@ -1,6 +1,6 @@
 import { Metadata } from "next";
 import { getPageImages } from "@/src/lib/page-images";
-import ProgramsPageClient from "./ProgramsPageClient";
+import OurWorkPageClient from "./OurWorkPageClient";
 
 export const metadata: Metadata = {
   title: "Our Programs | Prayaas",
@@ -15,5 +15,5 @@ export const metadata: Metadata = {
 export default async function ProgramsPage() {
   const images = await getPageImages("programs");
 
-  return <ProgramsPageClient images={images} />;
+  return <OurWorkPageClient images={images} />;
 }

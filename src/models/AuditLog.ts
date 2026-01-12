@@ -1,11 +1,34 @@
 import mongoose from 'mongoose';
 
+// Type definitions for audit logging
+export type AuditAction =
+    | 'login'
+    | 'logout'
+    | 'create'
+    | 'update'
+    | 'delete'
+    | 'upload'
+    | 'password_change'
+    | 'password_reset_request'
+    | 'password_reset_complete'
+    | 'bulk_operation'
+    | 'unauthorized_access'
+    | 'api_error'
+    | 'form_submission'
+    | 'security_event';
+
+export type ActorType = 'admin' | 'user' | 'system' | 'anonymous';
+export type Severity = 'info' | 'warning' | 'error' | 'critical';
+
 export interface IAuditLog extends mongoose.Document {
-    action: string;
+    action: AuditAction;
     resource: string;
     resourceId?: string;
     adminId: string;
     adminEmail: string;
+    actorType: ActorType;
+    severity: Severity;
+    requestId?: string;
     ipAddress: string;
     userAgent?: string;
     location?: string;
@@ -22,6 +45,7 @@ export interface IAuditLog extends mongoose.Document {
         before?: unknown;
         after?: unknown;
     };
+    metadata?: Record<string, unknown>;
     status: 'success' | 'failure';
     errorMessage?: string;
     timestamp: Date;
@@ -41,13 +65,17 @@ const AuditLogSchema = new mongoose.Schema({
             'password_change',
             'password_reset_request',
             'password_reset_complete',
-            'bulk_operation'
+            'bulk_operation',
+            'unauthorized_access',
+            'api_error',
+            'form_submission',
+            'security_event'
         ]
     },
     resource: {
         type: String,
         required: true,
-        // e.g., 'volunteer', 'event', 'team', 'gallery', 'content', 'auth'
+        // e.g., 'volunteer', 'event', 'team', 'gallery', 'content', 'auth', 'contact_form'
     },
     resourceId: {
         type: String,
@@ -60,6 +88,19 @@ const AuditLogSchema = new mongoose.Schema({
     adminEmail: {
         type: String,
         required: true,
+    },
+    actorType: {
+        type: String,
+        enum: ['admin', 'user', 'system', 'anonymous'],
+        default: 'admin',
+    },
+    severity: {
+        type: String,
+        enum: ['info', 'warning', 'error', 'critical'],
+        default: 'info',
+    },
+    requestId: {
+        type: String,
     },
     ipAddress: {
         type: String,
@@ -85,6 +126,10 @@ const AuditLogSchema = new mongoose.Schema({
         before: mongoose.Schema.Types.Mixed,
         after: mongoose.Schema.Types.Mixed,
     },
+    metadata: {
+        type: mongoose.Schema.Types.Mixed,
+        // Additional context-specific data
+    },
     status: {
         type: String,
         enum: ['success', 'failure'],
@@ -103,6 +148,12 @@ const AuditLogSchema = new mongoose.Schema({
 AuditLogSchema.index({ adminId: 1, timestamp: -1 });
 AuditLogSchema.index({ resource: 1, timestamp: -1 });
 AuditLogSchema.index({ action: 1, timestamp: -1 });
+
+// New compound indexes for common filter combinations
+AuditLogSchema.index({ resource: 1, action: 1, timestamp: -1 });
+AuditLogSchema.index({ status: 1, timestamp: -1 });
+AuditLogSchema.index({ severity: 1, timestamp: -1 });
+AuditLogSchema.index({ actorType: 1, timestamp: -1 });
 
 // TTL index - automatically delete logs older than 90 days (configurable)
 AuditLogSchema.index(

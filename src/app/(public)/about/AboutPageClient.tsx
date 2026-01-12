@@ -112,7 +112,7 @@ function StorySection({ images }: { images: PageImagesMap }) {
                         </h2>
                         <p className="text-(--ngo-gray) text-lg leading-relaxed mb-6">
                             Prayaas was born from a simple yet powerful idea - that education
-                            can transform lives. In 2014, a group of passionate students at
+                            can transform lives. In 2006, a group of passionate students at
                             IIIT Allahabad noticed the stark contrast between the opportunities
                             available to them and those available to children in nearby villages.
                         </p>
@@ -125,7 +125,7 @@ function StorySection({ images }: { images: PageImagesMap }) {
                         </p>
                         <p className="text-(--ngo-gray) text-lg leading-relaxed">
                             Today, Prayaas stands as a testament to the power of youth-driven
-                            change, with over 150 active volunteers working tirelessly to make
+                            change, with all the volunteers working tirelessly to make
                             quality education accessible to all.
                         </p>
                     </motion.div>
@@ -667,47 +667,49 @@ function CTASection({ images }: { images: PageImagesMap }) {
     const ctaAlt = images["cta:background"]?.alt || FALLBACK_IMAGES.cta.alt;
 
     return (
-        <section className="relative overflow-hidden py-12 sm:py-16">
-            <div className="absolute inset-0">
-                <Image src={ctaSrc} alt={ctaAlt} fill className="object-cover" />
-                <div className="hero-gradient absolute inset-0" />
-                <div className="absolute inset-0 bg-linear-to-b from-black/70 via-black/45 to-black/30" />
-            </div>
-            <div className="relative z-10 max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-                <motion.div
-                    initial={{ opacity: 0, y: 30 }}
-                    whileInView={{ opacity: 1, y: 0 }}
-                    viewport={{ once: true }}
-                    transition={{ duration: 0.8 }}
-                >
-                    <h2
-                        className="text-3xl sm:text-4xl md:text-5xl font-bold text-white mb-6"
-                        style={{ fontFamily: "'Playfair Display', serif" }}
+        <section className="py-8 sm:py-12 md:py-14 px-4 sm:px-6 lg:px-8">
+            <div className="relative overflow-hidden rounded-3xl sm:rounded-[40px] md:rounded-[50px] max-w-7xl mx-auto ">
+                <div className="absolute inset-0">
+                    <Image src={ctaSrc} alt={ctaAlt} fill className="object-cover" />
+                    <div className="hero-gradient absolute inset-0" />
+                    <div className="absolute inset-0 bg-linear-to-b from-black/70 via-black/45 to-black/30" />
+                </div>
+                <div className="relative z-10 max-w-4xl mx-auto px-6 sm:px-8 lg:px-12 py-12 sm:py-14 md:py-16 text-center">
+                    <motion.div
+                        initial={{ opacity: 0, y: 30 }}
+                        whileInView={{ opacity: 1, y: 0 }}
+                        viewport={{ once: true }}
+                        transition={{ duration: 0.8 }}
                     >
-                        Join Our Mission
-                    </h2>
-                    <p className="text-white/90 text-lg mb-10 max-w-2xl mx-auto">
-                        Be a part of our story. Together, we can create lasting change in the
+                        <h2
+                            className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-white mb-4 sm:mb-6"
+                            style={{ fontFamily: "'Playfair Display', serif" }}
+                        >
+                            Join Our Mission
+                        </h2>
+                        <p className="text-white/90 text-sm sm:text-base md:text-lg mb-8 sm:mb-10 max-w-2xl mx-auto">
+                            Be a part of our story. Together, we can create lasting change in the
                         lives of children who need it most.
-                    </p>
-                    <div className="flex flex-col sm:flex-row gap-4 justify-center">
-                        <Link
-                            href="/get-involved#donate"
-                            className="btn-primary flex items-center justify-center gap-2 w-full sm:w-auto"
-                        >
-                            <Heart className="w-5 h-5" />
-                            Donate Now
-                        </Link>
-                        <Link
-                            href="/contact-us"
-                            className="btn-outline flex items-center justify-center gap-2 w-full sm:w-auto"
-                        >
-                            <Phone className="w-5 h-5" />
-                            Get in Touch
-                            <ArrowRight className="w-5 h-5" />
-                        </Link>
-                    </div>
-                </motion.div>
+                        </p>
+                        <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center items-center">
+                            <Link
+                                href="/get-involved#donate"
+                                className="btn-primary flex items-center justify-center gap-2 w-full sm:w-auto max-w-xs"
+                            >
+                                <Heart className="w-4 h-4 sm:w-5 sm:h-5" />
+                                Donate Now
+                            </Link>
+                            <Link
+                                href="/get-involved#volunteer"
+                                className="btn-outline flex items-center justify-center gap-2 w-full sm:w-auto max-w-xs"
+                            >
+                                <Phone className="w-4 h-4 sm:w-5 sm:h-5" />
+                                Get in Touch
+                                <ArrowRight className="w-5 h-5" />
+                            </Link>
+                        </div>
+                    </motion.div>
+                </div>
             </div>
         </section>
     );

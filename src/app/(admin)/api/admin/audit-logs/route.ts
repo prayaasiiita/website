@@ -1,13 +1,13 @@
 import { NextRequest, NextResponse } from 'next/server';
 import dbConnect from '@/src/lib/mongodb';
-import { verifyAuth } from '@/src/lib/auth';
+import { requirePermission } from '@/src/lib/auth';
 import { getAuditLogs } from '@/src/lib/audit';
 
 export async function GET(request: NextRequest) {
     try {
-        // Verify authentication
-        const adminPayload = await verifyAuth(request);
-        if (!adminPayload) {
+        // Verify authentication and permission
+        const authResult = await requirePermission(request, 'view_audit_logs');
+        if ('error' in authResult) {
             return NextResponse.json(
                 { error: 'Unauthorized', logs: [], total: 0, page: 1, totalPages: 0 },
                 { status: 401 }
@@ -21,6 +21,9 @@ export async function GET(request: NextRequest) {
         const adminId = searchParams.get('adminId');
         const resource = searchParams.get('resource');
         const action = searchParams.get('action');
+        const actorType = searchParams.get('actorType');
+        const severity = searchParams.get('severity');
+        const status = searchParams.get('status');
         const startDate = searchParams.get('startDate') ? new Date(searchParams.get('startDate')!) : undefined;
         const endDate = searchParams.get('endDate') ? new Date(searchParams.get('endDate')!) : undefined;
         const page = parseInt(searchParams.get('page') || '1');
@@ -31,6 +34,9 @@ export async function GET(request: NextRequest) {
             adminId: adminId || undefined,
             resource: resource || undefined,
             action: action || undefined,
+            actorType: actorType || undefined,
+            severity: severity || undefined,
+            status: status || undefined,
             startDate,
             endDate,
             limit,
