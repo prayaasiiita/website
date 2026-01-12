@@ -16,7 +16,15 @@ import {
   Shield,
   MessageSquare,
   Sparkles,
+  UserCog,
+  ShieldAlert,
 } from "lucide-react";
+
+interface User {
+  username?: string;
+  role?: string;
+  permissions?: string[];
+}
 
 export default function DashboardLayout({
   children,
@@ -26,7 +34,7 @@ export default function DashboardLayout({
   const router = useRouter();
   const pathname = usePathname();
   const [loading, setLoading] = useState(true);
-  const [user, setUser] = useState<{ username?: string } | null>(null);
+  const [user, setUser] = useState<User | null>(null);
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
   useEffect(() => {
@@ -67,6 +75,8 @@ export default function DashboardLayout({
       </div>
     );
   }
+
+  const isSuperAdmin = user?.role === "super_admin";
 
   const navItems = [
     {
@@ -126,6 +136,20 @@ export default function DashboardLayout({
     },
   ];
 
+  // Super Admin only nav items
+  const superAdminNavItems = [
+    {
+      name: "Manage Admins",
+      href: "/admin/dashboard/admins",
+      icon: UserCog,
+    },
+    {
+      name: "Security",
+      href: "/admin/dashboard/security",
+      icon: ShieldAlert,
+    },
+  ];
+
   return (
     <div className="min-h-screen bg-gray-50">
       <div className="md:hidden fixed top-0 left-0 right-0 bg-white border-b border-gray-200 px-4 py-3 z-50">
@@ -150,6 +174,11 @@ export default function DashboardLayout({
           </h1>
           <p className="text-sm text-(--ngo-gray) mt-1">
             Welcome, {user?.username}
+            {isSuperAdmin && (
+              <span className="ml-2 px-2 py-0.5 text-xs bg-purple-100 text-purple-700 rounded-full">
+                Super Admin
+              </span>
+            )}
           </p>
         </div>
 
@@ -162,8 +191,8 @@ export default function DashboardLayout({
                 href={item.href}
                 onClick={() => setSidebarOpen(false)}
                 className={`flex items-center gap-3 px-4 py-3 rounded-xl transition-all ${isActive
-                    ? "bg-(--ngo-orange) text-white"
-                    : "text-(--ngo-gray) hover:bg-gray-100"
+                  ? "bg-(--ngo-orange) text-white"
+                  : "text-(--ngo-gray) hover:bg-gray-100"
                   }`}
               >
                 <item.icon className="w-5 h-5" />
@@ -171,6 +200,34 @@ export default function DashboardLayout({
               </Link>
             );
           })}
+
+          {/* Super Admin Section */}
+          {isSuperAdmin && (
+            <>
+              <div className="pt-4 pb-2">
+                <div className="px-4 text-xs font-semibold text-gray-400 uppercase tracking-wider">
+                  Super Admin
+                </div>
+              </div>
+              {superAdminNavItems.map((item) => {
+                const isActive = pathname === item.href;
+                return (
+                  <Link
+                    key={item.href}
+                    href={item.href}
+                    onClick={() => setSidebarOpen(false)}
+                    className={`flex items-center gap-3 px-4 py-3 rounded-xl transition-all ${isActive
+                      ? "bg-purple-600 text-white"
+                      : "text-purple-700 hover:bg-purple-50"
+                      }`}
+                  >
+                    <item.icon className="w-5 h-5" />
+                    <span className="font-medium">{item.name}</span>
+                  </Link>
+                );
+              })}
+            </>
+          )}
         </nav>
 
         <div className="absolute bottom-0 left-0 right-0 p-4 border-t border-gray-200 bg-white">
@@ -197,3 +254,4 @@ export default function DashboardLayout({
     </div>
   );
 }
+
