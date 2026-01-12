@@ -2,16 +2,16 @@ import { NextRequest, NextResponse } from 'next/server';
 import dbConnect from '@/src/lib/mongodb';
 import Tag from '@/src/models/Tag';
 import { tagCreateSchema } from '@/src/lib/validations/empowerment';
-import { verifyToken } from '@/src/lib/auth';
+import { verifyToken, requirePermission } from '@/src/lib/auth';
 import { revalidatePublicTags, TAGS } from '@/src/lib/revalidate-paths';
 import { createAuditLog } from '@/src/lib/audit';
 import { checkRateLimit } from '@/src/lib/rate-limit';
 import { sanitizeString } from '@/src/lib/security';
 
 function getIpAddress(req: NextRequest): string {
-  return req.headers.get('x-forwarded-for')?.split(',')[0] || 
-         req.headers.get('x-real-ip') || 
-         'unknown';
+  return req.headers.get('x-forwarded-for')?.split(',')[0] ||
+    req.headers.get('x-real-ip') ||
+    'unknown';
 }
 
 function isAuthed(req: NextRequest) {
@@ -59,14 +59,10 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    if (!isAuthed(request)) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
-    }
-
-    const admin = getAdminFromToken(request);
-    if (!admin) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
-    }
+    // Permission check
+    const authResult = await requirePermission(request, 'manage_tags');
+    if ('error' in authResult) return authResult.error;
+    const admin = authResult.admin;
 
     const body = await request.json();
     const parsed = tagCreateSchema.safeParse(body);

@@ -100,6 +100,11 @@ export default function DashboardLayout({
       icon: FileText,
     },
     {
+      name: "Site Settings",
+      href: "/admin/dashboard/content/site-settings",
+      icon: FileText,
+    },
+    {
       name: "Empowerments",
       href: "/admin/dashboard/empowerments",
       icon: Sparkles,
@@ -136,9 +141,8 @@ export default function DashboardLayout({
       </div>
 
       <aside
-        className={`fixed top-0 left-0 h-full bg-white border-r border-gray-200 w-64 transition-transform duration-300 z-40 ${
-          sidebarOpen ? "translate-x-0" : "-translate-x-full"
-        } md:translate-x-0`}
+        className={`fixed top-0 left-0 h-full bg-white border-r border-gray-200 w-64 transition-transform duration-300 z-40 ${sidebarOpen ? "translate-x-0" : "-translate-x-full"
+          } md:translate-x-0`}
       >
         <div className="p-6 border-b border-gray-200">
           <h1 className="text-2xl font-bold text-(--ngo-dark)">
@@ -157,11 +161,10 @@ export default function DashboardLayout({
                 key={item.href}
                 href={item.href}
                 onClick={() => setSidebarOpen(false)}
-                className={`flex items-center gap-3 px-4 py-3 rounded-xl transition-all ${
-                  isActive
+                className={`flex items-center gap-3 px-4 py-3 rounded-xl transition-all ${isActive
                     ? "bg-(--ngo-orange) text-white"
                     : "text-(--ngo-gray) hover:bg-gray-100"
-                }`}
+                  }`}
               >
                 <item.icon className="w-5 h-5" />
                 <span className="font-medium">{item.name}</span>

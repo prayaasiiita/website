@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { motion, useInView } from "framer-motion";
@@ -9,13 +9,9 @@ import {
     Heart,
     Users,
     BookOpen,
-    Palette,
-    Lightbulb,
-    HandHeart,
     ArrowRight,
     Calendar,
     Phone,
-    HelpingHand,
 } from "lucide-react";
 import PhotoGridSection from "@/src/components/PhotoGridSection";
 import { PageImagesMap, getImageSrc, getCarouselImages } from "@/src/components/DynamicImage";
@@ -517,6 +513,28 @@ function TestimonialsSection() {
         return () => window.removeEventListener('resize', calculateDimensions);
     }, [items.length]);
 
+    const handlePrev = () => {
+        if (isTransitioning || totalItems === 0) return;
+
+        setIsAutoPlay(false);
+        setIsTransitioning(true);
+        setCurrentIndex((prev) => prev - 1);
+
+        if (autoPlayTimeoutRef.current) clearTimeout(autoPlayTimeoutRef.current);
+        autoPlayTimeoutRef.current = setTimeout(() => setIsAutoPlay(true), 5000);
+    };
+
+    const handleNext = useCallback(() => {
+        if (isTransitioning || totalItems === 0) return;
+
+        setIsAutoPlay(false);
+        setIsTransitioning(true);
+        setCurrentIndex((prev) => prev + 1);
+
+        if (autoPlayTimeoutRef.current) clearTimeout(autoPlayTimeoutRef.current);
+        autoPlayTimeoutRef.current = setTimeout(() => setIsAutoPlay(true), 5000);
+    }, [isTransitioning, totalItems]);
+
     // Auto-play carousel - infinite loop
     useEffect(() => {
         if (!isAutoPlay || totalItems === 0 || isTransitioning) return;
@@ -530,36 +548,14 @@ function TestimonialsSection() {
         return () => {
             if (autoPlayIntervalRef.current) clearInterval(autoPlayIntervalRef.current);
         };
-    }, [isAutoPlay, totalItems, isTransitioning]);
-
-    const handlePrev = () => {
-        if (isTransitioning || totalItems === 0) return;
-
-        setIsAutoPlay(false);
-        setIsTransitioning(true);
-        setCurrentIndex((prev) => prev - 1);
-
-        if (autoPlayTimeoutRef.current) clearTimeout(autoPlayTimeoutRef.current);
-        autoPlayTimeoutRef.current = setTimeout(() => setIsAutoPlay(true), 5000);
-    };
-
-    const handleNext = () => {
-        if (isTransitioning || totalItems === 0) return;
-
-        setIsAutoPlay(false);
-        setIsTransitioning(true);
-        setCurrentIndex((prev) => prev + 1);
-
-        if (autoPlayTimeoutRef.current) clearTimeout(autoPlayTimeoutRef.current);
-        autoPlayTimeoutRef.current = setTimeout(() => setIsAutoPlay(true), 5000);
-    };
+    }, [isAutoPlay, totalItems, isTransitioning, handleNext]);
 
     // Handle transition end - reset position for infinite loop
     const handleTransitionEnd = () => {
         setIsTransitioning(false);
 
         // If we've gone past the end, jump to the real first item
-        if (currentIndex >= totalItems-1) {
+        if (currentIndex >= totalItems - 1) {
             setCurrentIndex(0);
         }
         // If we've gone before the start, jump to the real last item
@@ -632,7 +628,7 @@ function TestimonialsSection() {
                             }}
                             onTransitionEnd={handleTransitionEnd}
                         >
-                            {extendedItems.map((item, index) => (
+                            {extendedItems.map((item) => (
                                 <div
                                     key={'_cloneId' in item ? item._cloneId : item._id}
                                     className="shrink-0 h-full"

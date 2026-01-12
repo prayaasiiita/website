@@ -9,10 +9,8 @@ import {
     Lightbulb,
     HandHeart,
     CheckCircle,
-    Users,
     Heart,
     Clock,
-    Calendar,
     Phone,
 } from "lucide-react";
 import { PageImagesMap, getCarouselImages, getImageSrc } from "@/src/components/DynamicImage";

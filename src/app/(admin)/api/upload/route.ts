@@ -1,21 +1,14 @@
 import { NextRequest, NextResponse } from 'next/server';
 import cloudinary, { CLOUDINARY_FOLDER } from '@/src/lib/cloudinary';
-import { verifyToken } from '@/src/lib/auth';
+import { requirePermission } from '@/src/lib/auth';
+import { createAuditLog } from '@/src/lib/audit';
 
-// Helper to verify admin authentication
-function verifyAdmin(request: NextRequest) {
-    const token = request.cookies.get('admin_token')?.value;
-    if (!token) return null;
-    return verifyToken(token);
-}
-
-// POST - Upload image to Cloudinary
+// POST - Upload image to Cloudinary (requires manage_uploads permission)
 export async function POST(request: NextRequest) {
     try {
-        const payload = verifyAdmin(request);
-        if (!payload) {
-            return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
-        }
+        const authResult = await requirePermission(request, 'manage_uploads');
+        if ('error' in authResult) return authResult.error;
+        const adminPayload = authResult.admin;
 
         const formData = await request.formData();
         const file = formData.get('file') as File | null;
@@ -58,6 +51,21 @@ export async function POST(request: NextRequest) {
             ],
         });
 
+        // Audit log (non-blocking)
+        createAuditLog({
+            action: 'upload',
+            resource: 'image',
+            resourceId: result.public_id,
+            admin: adminPayload,
+            request,
+            metadata: {
+                folder,
+                url: result.secure_url,
+                size: file.size,
+                type: file.type,
+            },
+        });
+
         return NextResponse.json(
             {
                 message: 'Image uploaded successfully',
@@ -77,13 +85,12 @@ export async function POST(request: NextRequest) {
     }
 }
 
-// DELETE - Delete image from Cloudinary
+// DELETE - Delete image from Cloudinary (requires manage_uploads permission)
 export async function DELETE(request: NextRequest) {
     try {
-        const payload = verifyAdmin(request);
-        if (!payload) {
-            return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
-        }
+        const authResult = await requirePermission(request, 'manage_uploads');
+        if ('error' in authResult) return authResult.error;
+        const adminPayload = authResult.admin;
 
         const { searchParams } = new URL(request.url);
         const publicId = searchParams.get('publicId');
@@ -96,6 +103,16 @@ export async function DELETE(request: NextRequest) {
         }
 
         await cloudinary.uploader.destroy(publicId);
+
+        // Audit log (non-blocking)
+        createAuditLog({
+            action: 'delete',
+            resource: 'image',
+            resourceId: publicId,
+            admin: adminPayload,
+            request,
+            severity: 'warning',
+        });
 
         return NextResponse.json(
             { message: 'Image deleted successfully' },

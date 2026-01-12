@@ -13,6 +13,7 @@ export const TAGS = {
     PAGE_IMAGES: "page-images",
     EMPOWERMENTS: "empowerments",
     TAGS: "tags",
+    SITE_SETTINGS: "site-settings",
 };
 
 /**

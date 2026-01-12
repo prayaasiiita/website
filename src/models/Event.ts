@@ -40,4 +40,8 @@ const EventSchema = new mongoose.Schema<IEvent>(
   }
 );
 
+// Indexes for efficient queries
+EventSchema.index({ type: 1, date: -1 }); // For filtering by type and sorting by date
+EventSchema.index({ date: -1 }); // For sorting all events by date
+
 export default mongoose.models.Event || mongoose.model<IEvent>('Event', EventSchema);

@@ -30,6 +30,8 @@ export async function GET(request: NextRequest) {
           id: payload.userId,
           username: payload.username,
           email: payload.email,
+          role: payload.role,
+          permissions: payload.permissions,
         },
       },
       { status: 200, headers: noStoreHeaders }

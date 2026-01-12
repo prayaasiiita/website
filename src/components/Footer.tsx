@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { useEffect, useState } from "react";
 import {
   Mail,
   Phone,
@@ -16,7 +17,33 @@ import {
 import { links } from "@/details";
 import Image from "next/image";
 
+interface SiteSettings {
+  phone: string | null;
+  phoneVisible: boolean;
+  email: string | null;
+  emailVisible: boolean;
+  address: string | null;
+  addressVisible: boolean;
+}
+
 export function Footer() {
+  const [settings, setSettings] = useState<SiteSettings | null>(null);
+
+  useEffect(() => {
+    async function fetchSettings() {
+      try {
+        const res = await fetch("/api/site-settings");
+        if (res.ok) {
+          const data = await res.json();
+          setSettings(data.settings);
+        }
+      } catch (err) {
+        console.error("Failed to fetch site settings:", err);
+      }
+    }
+    fetchSettings();
+  }, []);
+
   const quickLinks = [
     { href: "/about", label: "About Us" },
     { href: "/our-work", label: "Our Programs" },
@@ -41,6 +68,15 @@ export function Footer() {
     { href: links.linkedIn, icon: Linkedin, label: "LinkedIn", color: "hover:bg-[#0077B5]" },
     { href: links.youtube, icon: Youtube, label: "YouTube", color: "hover:bg-[#FF0000]" },
   ];
+
+  // Use fetched settings or fallback to defaults
+  const displayAddress = settings?.address ?? "IIIT Allahabad, Jhalwa, Prayagraj, Uttar Pradesh 211015, India";
+  const displayEmail = settings?.email ?? "prayaas@iiita.ac.in";
+  const displayPhone = settings?.phone ?? "";
+
+  const showAddress = settings?.addressVisible ?? true;
+  const showEmail = settings?.emailVisible ?? true;
+  const showPhone = settings?.phoneVisible ?? true;
 
   return (
     <footer className="relative bg-linear-to-br from-[#1a1a2e] via-[#16213e] to-[#0f1419] text-white">
@@ -154,36 +190,42 @@ export function Footer() {
               <span className="absolute -bottom-2 left-0 w-12 h-1 bg-(--ngo-orange) rounded-full" />
             </h3>
             <ul className="space-y-1.5">
-              <li className="flex items-start gap-2.5 group">
-                <div className="w-8 h-8 rounded-lg bg-(--ngo-orange)/10 flex items-center justify-center shrink-0 group-hover:bg-(--ngo-orange)/20 transition-colors">
-                  <MapPin className="w-4 h-4 text-(--ngo-orange)" />
-                </div>
-                <span className="text-gray-300 text-sm sm:text-base leading-relaxed pt-0.5">
-                  IIIT Allahabad, Jhalwa, Prayagraj, Uttar Pradesh 211015, India
-                </span>
-              </li>
-              <li className="flex items-center gap-2.5 group">
-                <div className="w-8 h-8 rounded-lg bg-(--ngo-orange)/10 flex items-center justify-center shrink-0 group-hover:bg-(--ngo-orange)/20 transition-colors">
-                  <Mail className="w-4 h-4 text-(--ngo-orange)" />
-                </div>
-                <a
-                  href="mailto:prayaas@iiita.ac.in"
-                  className="text-gray-300 hover:text-(--ngo-orange) transition-colors text-sm sm:text-base"
-                >
-                  prayaas@iiita.ac.in
-                </a>
-              </li>
-              <li className="flex items-center gap-2.5 group">
-                <div className="w-8 h-8 rounded-lg bg-(--ngo-orange)/10 flex items-center justify-center shrink-0 group-hover:bg-(--ngo-orange)/20 transition-colors">
-                  <Phone className="w-4 h-4 text-(--ngo-orange)" />
-                </div>
-                <a
-                  href="tel:+919876543210"
-                  className="text-gray-300 hover:text-(--ngo-orange) transition-colors text-sm sm:text-base"
-                >
-                  +91 98765 43210
-                </a>
-              </li>
+              {showAddress && displayAddress && (
+                <li className="flex items-start gap-2.5 group">
+                  <div className="w-8 h-8 rounded-lg bg-(--ngo-orange)/10 flex items-center justify-center shrink-0 group-hover:bg-(--ngo-orange)/20 transition-colors">
+                    <MapPin className="w-4 h-4 text-(--ngo-orange)" />
+                  </div>
+                  <span className="text-gray-300 text-sm sm:text-base leading-relaxed pt-0.5">
+                    {displayAddress}
+                  </span>
+                </li>
+              )}
+              {showEmail && displayEmail && (
+                <li className="flex items-center gap-2.5 group">
+                  <div className="w-8 h-8 rounded-lg bg-(--ngo-orange)/10 flex items-center justify-center shrink-0 group-hover:bg-(--ngo-orange)/20 transition-colors">
+                    <Mail className="w-4 h-4 text-(--ngo-orange)" />
+                  </div>
+                  <a
+                    href={`mailto:${displayEmail}`}
+                    className="text-gray-300 hover:text-(--ngo-orange) transition-colors text-sm sm:text-base"
+                  >
+                    {displayEmail}
+                  </a>
+                </li>
+              )}
+              {showPhone && displayPhone && (
+                <li className="flex items-center gap-2.5 group">
+                  <div className="w-8 h-8 rounded-lg bg-(--ngo-orange)/10 flex items-center justify-center shrink-0 group-hover:bg-(--ngo-orange)/20 transition-colors">
+                    <Phone className="w-4 h-4 text-(--ngo-orange)" />
+                  </div>
+                  <a
+                    href={`tel:${displayPhone.replace(/\s/g, '')}`}
+                    className="text-gray-300 hover:text-(--ngo-orange) transition-colors text-sm sm:text-base"
+                  >
+                    {displayPhone}
+                  </a>
+                </li>
+              )}
             </ul>
           </div>
         </div>

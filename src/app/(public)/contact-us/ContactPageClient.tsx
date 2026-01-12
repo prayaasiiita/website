@@ -74,40 +74,73 @@ function PageHero({ images }: { images: PageImagesMap }) {
     );
 }
 
-function ContactInfoSection() {
-    const contactInfo = [
-        {
+interface SiteSettingsProps {
+    phone: string | null;
+    phoneVisible: boolean;
+    email: string | null;
+    emailVisible: boolean;
+    address: string | null;
+    addressVisible: boolean;
+}
+
+function ContactInfoSection({ siteSettings }: { siteSettings: SiteSettingsProps | null }) {
+    // Build contact info array dynamically based on visibility settings
+    const contactInfo: {
+        icon: typeof MapPin;
+        title: string;
+        details: string[];
+        color: string;
+        url?: string;
+    }[] = [];
+
+    // Address
+    if (siteSettings?.addressVisible !== false) {
+        const addressParts = (siteSettings?.address || "IIIT Allahabad, Jhalwa, Prayagraj, Uttar Pradesh 211015, India").split(", ");
+        contactInfo.push({
             icon: MapPin,
             title: "Our Location",
-            details: ["IIIT Allahabad", "Jhalwa, Prayagraj", "Uttar Pradesh 211015, India"],
+            details: addressParts.length > 2
+                ? [addressParts.slice(0, 2).join(", "), addressParts.slice(2).join(", ")]
+                : [siteSettings?.address || "IIIT Allahabad, Jhalwa, Prayagraj, Uttar Pradesh 211015, India"],
             color: "#e85a4f",
             url: "/contact-us#location"
-        },
-        {
+        });
+    }
+
+    // Email
+    if (siteSettings?.emailVisible !== false) {
+        const email = siteSettings?.email || "prayaas@iiita.ac.in";
+        contactInfo.push({
             icon: Mail,
             title: "Email Us",
-            details: ["prayaas@iiita.ac.in"],
+            details: [email],
             color: "#2d6a4f",
-            url: "mailto:prayaas@iiita.ac.in"
-        },
-        {
+            url: `mailto:${email}`
+        });
+    }
+
+    // Phone
+    if (siteSettings?.phoneVisible !== false) {
+        contactInfo.push({
             icon: Phone,
             title: "Call Us",
-            details: ["+91 98765 43210"],
+            details: [siteSettings?.phone || ""],
             color: "#eec643",
-        },
-        {
-            icon: Clock,
-            title: "Classes Hours",
-            details: ["Classes: Mon-Sun 5 AM - 6 PM"],
-            color: "#8b5cf6",
-        },
-    ];
+        });
+    }
+
+    // Class Hours (always visible)
+    contactInfo.push({
+        icon: Clock,
+        title: "Classes Hours",
+        details: ["Classes: Mon-Sun 5 AM - 6 PM"],
+        color: "#8b5cf6",
+    });
 
     return (
         <section className="py-12 bg-white">
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-8">
+                <div className={`grid sm:grid-cols-2 lg:grid-cols-${contactInfo.length} gap-8`}>
                     {contactInfo.map((info, index) => (
                         <motion.div
                             key={info.title}
@@ -583,11 +616,11 @@ function MapSection() {
     );
 }
 
-export default function ContactPageClient({ images }: { images: PageImagesMap }) {
+export default function ContactPageClient({ images, siteSettings }: { images: PageImagesMap; siteSettings: SiteSettingsProps | null }) {
     return (
         <>
             <PageHero images={images} />
-            <ContactInfoSection />
+            <ContactInfoSection siteSettings={siteSettings} />
             <ContactFormSection />
             <MapSection />
         </>

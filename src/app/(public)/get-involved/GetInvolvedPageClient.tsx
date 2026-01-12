@@ -59,7 +59,7 @@ function PageHero({ images }: { images: PageImagesMap }) {
     );
 }
 
-function DonateSection({ images }: { images: PageImagesMap }) {
+function DonateSection() {
     const donationTiers = [
         {
             amount: "₹500",
@@ -208,7 +208,7 @@ function DonateSection({ images }: { images: PageImagesMap }) {
     );
 }
 
-function VolunteerSection({ images }: { images: PageImagesMap }) {
+function VolunteerSection() {
     const roles = [
         {
             title: "Teaching Volunteer",
@@ -387,7 +387,7 @@ function VolunteerSection({ images }: { images: PageImagesMap }) {
     );
 }
 
-function EventsSection({ images }: { images: PageImagesMap }) {
+function EventsSection() {
     const events = [
         {
             title: "Annual Day Celebration",
@@ -548,9 +548,9 @@ export default function GetInvolvedPageClient({ images }: GetInvolvedPageClientP
     return (
         <>
             <PageHero images={images} />
-            <DonateSection images={images} />
-            <VolunteerSection images={images} />
-            <EventsSection images={images} />
+            <DonateSection />
+            <VolunteerSection />
+            <EventsSection />
             <CTASection images={images} />
         </>
     );

@@ -1,15 +1,9 @@
 import { NextRequest, NextResponse } from 'next/server';
 import dbConnect from '@/src/lib/mongodb';
 import TeamGroup from '@/src/models/TeamGroup';
-import { verifyToken } from '@/src/lib/auth';
+import { requirePermission } from '@/src/lib/auth';
 import { revalidatePublicTags, TAGS } from '@/src/lib/revalidate-paths';
-
-// Helper to verify admin authentication
-function verifyAdmin(request: NextRequest) {
-  const token = request.cookies.get('admin_token')?.value;
-  if (!token) return null;
-  return verifyToken(token);
-}
+import { createAuditLog } from '@/src/lib/audit';
 
 // GET - Fetch a single team group by ID
 export async function GET(
@@ -20,7 +14,7 @@ export async function GET(
     await dbConnect();
 
     const { id } = await params;
-    const group = await TeamGroup.findById(id);
+    const group = await TeamGroup.findById(id).lean();
 
     if (!group) {
       return NextResponse.json({ error: 'Team group not found' }, { status: 404 });
@@ -36,16 +30,15 @@ export async function GET(
   }
 }
 
-// PUT - Update a team group (Admin only)
+// PUT - Update a team group (requires manage_team permission)
 export async function PUT(
   request: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    const payload = verifyAdmin(request);
-    if (!payload) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
-    }
+    const authResult = await requirePermission(request, 'manage_team');
+    if ('error' in authResult) return authResult.error;
+    const adminPayload = authResult.admin;
 
     await dbConnect();
 
@@ -57,6 +50,13 @@ export async function PUT(
     if (!group) {
       return NextResponse.json({ error: 'Team group not found' }, { status: 404 });
     }
+
+    // Capture before state
+    const beforeState = {
+      name: group.name,
+      type: group.type,
+      isVisible: group.isVisible,
+    };
 
     // Update fields if provided
     if (name !== undefined) {
@@ -74,6 +74,19 @@ export async function PUT(
 
     await group.save();
 
+    // Audit log (non-blocking)
+    createAuditLog({
+      action: 'update',
+      resource: 'team_group',
+      resourceId: id,
+      admin: adminPayload,
+      request,
+      changes: {
+        before: beforeState,
+        after: { name: group.name, type: group.type, isVisible: group.isVisible },
+      },
+    });
+
     revalidatePublicTags([TAGS.TEAM, TAGS.PUBLIC]);
     return NextResponse.json(
       { message: 'Team group updated successfully', group },
@@ -88,16 +101,15 @@ export async function PUT(
   }
 }
 
-// DELETE - Delete a team group (Admin only)
+// DELETE - Delete a team group (requires manage_team permission)
 export async function DELETE(
   request: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    const payload = verifyAdmin(request);
-    if (!payload) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
-    }
+    const authResult = await requirePermission(request, 'manage_team');
+    if ('error' in authResult) return authResult.error;
+    const adminPayload = authResult.admin;
 
     await dbConnect();
 
@@ -107,6 +119,20 @@ export async function DELETE(
     if (!group) {
       return NextResponse.json({ error: 'Team group not found' }, { status: 404 });
     }
+
+    // Audit log (non-blocking)
+    createAuditLog({
+      action: 'delete',
+      resource: 'team_group',
+      resourceId: id,
+      admin: adminPayload,
+      request,
+      severity: 'warning',
+      changes: {
+        before: { name: group.name, type: group.type },
+        after: null,
+      },
+    });
 
     revalidatePublicTags([TAGS.TEAM, TAGS.PUBLIC]);
     return NextResponse.json(
