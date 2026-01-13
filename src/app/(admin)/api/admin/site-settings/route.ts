@@ -6,7 +6,7 @@ import { revalidatePublicTags, TAGS } from '@/src/lib/revalidate-paths';
 import { createAuditLog } from '@/src/lib/audit';
 
 // Phone validation regex (supports various international formats)
-const PHONE_REGEX = /^[+]?[(]?[0-9]{1,4}[)]?[-\\s./0-9]*$/;
+const PHONE_REGEX = /^[+]?[(]?[0-9]{1,4}[)]?[-\s./0-9]*$/;
 
 // GET - Fetch current site settings (admin only)
 export async function GET(request: NextRequest) {
@@ -36,9 +36,7 @@ export async function PUT(request: NextRequest) {
     try {
         const authResult = await requirePermission(request, 'manage_settings');
         if ('error' in authResult) return authResult.error;
-
         const adminPayload = authResult.admin;
-
         const body = await request.json();
         const { phone, phoneVisible, email, emailVisible, address, addressVisible } = body;
 

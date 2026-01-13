@@ -1,8 +1,17 @@
+interface HelpingHandSvgProps {
+    className?: string;
+    style?: React.CSSProperties;
+}
 
-
-export function HelpingHandSvg() {
+export function HelpingHandSvg({ className, style }: HelpingHandSvgProps) {
     return (
-        <svg fill="#000000" viewBox="0 0 32 32" width={48} height={48} xmlns="http://www.w3.org/2000/svg">
+        <svg
+            fill="currentColor"
+            viewBox="0 0 32 32"
+            xmlns="http://www.w3.org/2000/svg"
+            className={className}
+            style={style}
+        >
             <g id="SVGRepo_bgCarrier" strokeWidth="0"></g>
             <g id="SVGRepo_tracerCarrier" strokeLinecap="round" strokeLinejoin="round"></g>
             <g id="SVGRepo_iconCarrier">

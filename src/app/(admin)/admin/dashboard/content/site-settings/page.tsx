@@ -111,8 +111,8 @@ export default function SiteSettingsPage() {
                     onClick={handleSave}
                     disabled={saving || !hasChanges}
                     className={`flex items-center gap-2 px-6 py-3 rounded-xl font-semibold transition-all ${hasChanges
-                            ? "bg-(--ngo-orange) text-white hover:bg-(--ngo-orange-dark)"
-                            : "bg-gray-200 text-gray-500 cursor-not-allowed"
+                        ? "bg-(--ngo-orange) text-white hover:bg-(--ngo-orange-dark)"
+                        : "bg-gray-200 text-gray-500 cursor-not-allowed"
                         }`}
                 >
                     {saving ? (
@@ -154,8 +154,8 @@ export default function SiteSettingsPage() {
                         <button
                             onClick={() => handleChange("phoneVisible", !settings.phoneVisible)}
                             className={`flex items-center gap-2 px-4 py-2 rounded-lg transition-all ${settings.phoneVisible
-                                    ? "bg-green-100 text-green-700"
-                                    : "bg-gray-100 text-gray-500"
+                                ? "bg-green-100 text-green-700"
+                                : "bg-gray-100 text-gray-500"
                                 }`}
                         >
                             {settings.phoneVisible ? (
@@ -201,8 +201,8 @@ export default function SiteSettingsPage() {
                         <button
                             onClick={() => handleChange("emailVisible", !settings.emailVisible)}
                             className={`flex items-center gap-2 px-4 py-2 rounded-lg transition-all ${settings.emailVisible
-                                    ? "bg-green-100 text-green-700"
-                                    : "bg-gray-100 text-gray-500"
+                                ? "bg-green-100 text-green-700"
+                                : "bg-gray-100 text-gray-500"
                                 }`}
                         >
                             {settings.emailVisible ? (
@@ -248,8 +248,8 @@ export default function SiteSettingsPage() {
                         <button
                             onClick={() => handleChange("addressVisible", !settings.addressVisible)}
                             className={`flex items-center gap-2 px-4 py-2 rounded-lg transition-all ${settings.addressVisible
-                                    ? "bg-green-100 text-green-700"
-                                    : "bg-gray-100 text-gray-500"
+                                ? "bg-green-100 text-green-700"
+                                : "bg-gray-100 text-gray-500"
                                 }`}
                         >
                             {settings.addressVisible ? (
