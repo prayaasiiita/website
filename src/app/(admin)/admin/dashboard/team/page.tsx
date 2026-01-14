@@ -152,9 +152,9 @@ function SortableGroupItem({
                 </div>
                 <div className="flex-1 cursor-pointer" onClick={onToggle}>
                     <div className="flex items-center gap-2">
-                        <h3 className="font-semibold text-[--ngo-dark]">
+                        <h4 className="font-semibold text-[--ngo-dark]">
                             {group.name}
-                        </h3>
+                        </h4>
                         <span
                             className={`text-xs px-2 py-0.5 rounded-full ${group.type === "leadership"
                                 ? "bg-purple-100 text-purple-700"
@@ -288,7 +288,7 @@ function SortableMemberItem({
         <div
             ref={setNodeRef}
             style={style}
-            className={`flex items-center gap-4 p-3 rounded-lg ${member.isVisible
+            className={`flex items-center gap-2 sm:gap-4 p-2 sm:p-3 rounded-lg ${member.isVisible
                 ? "bg-white border border-gray-200"
                 : "bg-gray-100 border border-gray-300"
                 }`}
@@ -300,7 +300,7 @@ function SortableMemberItem({
             >
                 <GripVertical className="w-4 h-4 text-gray-400" />
             </div>
-            <div className="relative w-10 h-10 rounded-full bg-linear-to-br from-[--ngo-orange]/20 to-[--ngo-green]/20 flex items-center justify-center overflow-hidden">
+            <div className="relative w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-linear-to-br from-[--ngo-orange]/20 to-[--ngo-green]/20 flex items-center justify-center overflow-hidden">
                 {member.image ? (
                     <Image
                         src={member.image}
@@ -330,7 +330,7 @@ function SortableMemberItem({
                     {member.rollNo && ` • ${member.rollNo}`}
                 </p>
             </div>
-            <div className="flex items-center gap-1">
+            <div className="flex items-center gap-1 flex-shrink-0">
                 <Button
                     variant="ghost"
                     size="sm"
@@ -409,6 +409,9 @@ export default function TeamManagementPage() {
     // Expanded groups state
     const [expandedGroups, setExpandedGroups] = useState<Set<string>>(new Set());
 
+    // Global processing state for blocking overlay
+    const [isProcessing, setIsProcessing] = useState(false);
+
     // Drag and drop sensors
     const sensors = useSensors(
         useSensor(PointerSensor),
@@ -420,9 +423,20 @@ export default function TeamManagementPage() {
     const fetchGroups = useCallback(async () => {
         try {
             setLoading(true);
-            const res = await fetch("/api/team?includeHidden=true");
+            const res = await fetch("/api/team?includeHidden=true", {
+                headers: { "Cache-Control": "no-cache", "Pragma": "no-cache" }
+            });
             if (!res.ok) throw new Error("Failed to fetch team groups");
-            const data = await res.json();
+
+            const text = await res.text();
+            let data;
+            try {
+                data = JSON.parse(text);
+            } catch (e) {
+                console.error("Failed to parse team data:", text.substring(0, 200));
+                throw new Error("Invalid server response");
+            }
+
             setGroups(data.groups);
             // Expand all groups by default
             setExpandedGroups(new Set(data.groups.map((g: TeamGroup) => g._id)));
@@ -554,6 +568,7 @@ export default function TeamManagementPage() {
         }
 
         setGroupSaving(true);
+        setIsProcessing(true);
         try {
             const url = editingGroup ? `/api/team/${editingGroup._id}` : "/api/team";
             const method = editingGroup ? "PUT" : "POST";
@@ -565,16 +580,25 @@ export default function TeamManagementPage() {
             });
 
             if (!res.ok) {
-                const data = await res.json();
-                throw new Error(data.error || "Failed to save group");
+                const text = await res.text();
+                try {
+                    const data = JSON.parse(text);
+                    throw new Error(data.error || "Failed to save group");
+                } catch (e) {
+                    if (e instanceof Error && e.message !== "Unexpected token <") throw e; // Re-throw if it wasn't a parse error originating from us... wait, logic is simpler:
+                    console.error("Failed to parse save group error:", text.substring(0, 200));
+                    throw new Error("Failed to save group: Server Error");
+                }
             }
 
             await fetchGroups();
             setGroupModalOpen(false);
         } catch (err) {
             setError(err instanceof Error ? err.message : "Failed to save group");
+            setGroupModalOpen(false);
         } finally {
             setGroupSaving(false);
+            setIsProcessing(false);
         }
     };
 
@@ -599,6 +623,14 @@ export default function TeamManagementPage() {
     };
 
     const toggleGroupVisibility = async (group: TeamGroup) => {
+        setIsProcessing(true);
+        // Optimistic update
+        setGroups((prev) =>
+            prev.map((g) =>
+                g._id === group._id ? { ...g, isVisible: !g.isVisible } : g
+            )
+        );
+
         try {
             const res = await fetch(`/api/team/${group._id}`, {
                 method: "PUT",
@@ -608,11 +640,20 @@ export default function TeamManagementPage() {
 
             if (!res.ok) throw new Error("Failed to update visibility");
 
-            await fetchGroups();
+            // We can optionally refetch to ensure consistency, but optimistic update handles the UI
+            // await fetchGroups(); 
         } catch (err) {
+            // Revert optimistic update
+            setGroups((prev) =>
+                prev.map((g) =>
+                    g._id === group._id ? { ...g, isVisible: group.isVisible } : g
+                )
+            );
             setError(
                 err instanceof Error ? err.message : "Failed to update visibility"
             );
+        } finally {
+            setIsProcessing(false);
         }
     };
 
@@ -655,6 +696,7 @@ export default function TeamManagementPage() {
         if (!selectedGroupId) return;
 
         setMemberSaving(true);
+        setIsProcessing(true);
         try {
             const url = editingMember
                 ? `/api/team/${selectedGroupId}/members/${editingMember._id}`
@@ -668,8 +710,14 @@ export default function TeamManagementPage() {
             });
 
             if (!res.ok) {
-                const data = await res.json();
-                throw new Error(data.error || "Failed to save member");
+                const text = await res.text();
+                try {
+                    const data = JSON.parse(text);
+                    throw new Error(data.error || "Failed to save member");
+                } catch (e) {
+                    console.error("Failed to parse save member error:", text.substring(0, 200));
+                    throw new Error("Failed to save member: Server Error");
+                }
             }
 
             await fetchGroups();
@@ -679,6 +727,7 @@ export default function TeamManagementPage() {
             setError(err instanceof Error ? err.message : "Failed to save member");
         } finally {
             setMemberSaving(false);
+            setIsProcessing(false);
         }
     };
 
@@ -686,6 +735,7 @@ export default function TeamManagementPage() {
         if (!deleteMember) return;
 
         setDeleting(true);
+        setIsProcessing(true);
         try {
             const res = await fetch(
                 `/api/team/${deleteMember.groupId}/members/${deleteMember.memberId}`,
@@ -700,10 +750,25 @@ export default function TeamManagementPage() {
             setError(err instanceof Error ? err.message : "Failed to remove member");
         } finally {
             setDeleting(false);
+            setIsProcessing(false);
         }
     };
 
     const toggleMemberVisibility = async (groupId: string, member: TeamMember) => {
+        setIsProcessing(true);
+        // Optimistic update
+        setGroups((prev) =>
+            prev.map((g) => {
+                if (g._id !== groupId) return g;
+                return {
+                    ...g,
+                    members: g.members.map((m) =>
+                        m._id === member._id ? { ...m, isVisible: !m.isVisible } : m
+                    ),
+                };
+            })
+        );
+
         try {
             const res = await fetch(`/api/team/${groupId}/members/${member._id}`, {
                 method: "PUT",
@@ -713,11 +778,26 @@ export default function TeamManagementPage() {
 
             if (!res.ok) throw new Error("Failed to update visibility");
 
-            await fetchGroups();
+            // We can optionally refetch, but let's trust the optimistic update for immediate feedback
+            // await fetchGroups();
         } catch (err) {
+            // Revert optimistic update
+            setGroups((prev) =>
+                prev.map((g) => {
+                    if (g._id !== groupId) return g;
+                    return {
+                        ...g,
+                        members: g.members.map((m) =>
+                            m._id === member._id ? { ...m, isVisible: member.isVisible } : m
+                        ),
+                    };
+                })
+            );
             setError(
                 err instanceof Error ? err.message : "Failed to update visibility"
             );
+        } finally {
+            setIsProcessing(false);
         }
     };
 
@@ -734,6 +814,7 @@ export default function TeamManagementPage() {
 
         // Send reorder to API
         try {
+            setIsProcessing(true);
             const groupOrders = newGroups.map((g, idx) => ({
                 groupId: g._id,
                 order: idx,
@@ -749,6 +830,8 @@ export default function TeamManagementPage() {
         } catch (err) {
             setError(err instanceof Error ? err.message : "Failed to reorder groups");
             await fetchGroups(); // Revert on failure
+        } finally {
+            setIsProcessing(false);
         }
     };
 
@@ -773,6 +856,7 @@ export default function TeamManagementPage() {
 
         // Send reorder to API
         try {
+            setIsProcessing(true);
             const memberOrders = newMembers.map((m, idx) => ({
                 memberId: m._id,
                 order: idx,
@@ -788,6 +872,8 @@ export default function TeamManagementPage() {
         } catch (err) {
             setError(err instanceof Error ? err.message : "Failed to reorder members");
             await fetchGroups(); // Revert on failure
+        } finally {
+            setIsProcessing(false);
         }
     };
 
@@ -953,18 +1039,18 @@ export default function TeamManagementPage() {
     }
 
     return (
-        <div className="space-y-6">
+        <div className="space-y-4 md:space-y-6">
             {/* Header */}
-            <div className="flex items-center justify-between">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                 <div>
-                    <h1 className="text-2xl font-bold text-[--ngo-dark]">
+                    <h1 className="text-xl md:text-2xl font-bold text-[--ngo-dark]">
                         Team Management
                     </h1>
-                    <p className="text-[--ngo-gray] mt-1">
+                    <p className="text-[--ngo-gray] text-sm md:text-base mt-1">
                         Manage team groups and members displayed on the About page
                     </p>
                 </div>
-                <Button onClick={() => openGroupModal()} className="gap-2">
+                <Button onClick={() => openGroupModal()} className="gap-2 w-full sm:w-auto touch-manipulation">
                     <Plus className="w-4 h-4" />
                     Add Group
                 </Button>
@@ -988,7 +1074,7 @@ export default function TeamManagementPage() {
                 {groups.length === 0 ? (
                     <div className="text-center py-12 bg-white rounded-lg border border-gray-200">
                         <Users className="w-12 h-12 mx-auto text-gray-400 mb-4" />
-                        <h3 className="text-lg font-medium text-gray-900">No team groups</h3>
+                        <h4 className="text-lg font-medium text-gray-900">No team groups</h4>
                         <p className="text-gray-500 mt-1">
                             Get started by creating your first team group.
                         </p>
@@ -1355,7 +1441,7 @@ export default function TeamManagementPage() {
                 open={!!deleteGroupId}
                 onOpenChange={() => setDeleteGroupId(null)}
             >
-                <AlertDialogContent>
+                <AlertDialogContent className="max-w-md!">
                     <AlertDialogHeader>
                         <AlertDialogTitle>Delete Team Group?</AlertDialogTitle>
                         <AlertDialogDescription>
@@ -1384,7 +1470,7 @@ export default function TeamManagementPage() {
                 open={!!deleteMember}
                 onOpenChange={() => setDeleteMember(null)}
             >
-                <AlertDialogContent>
+                <AlertDialogContent className="max-w-md!">
                     <AlertDialogHeader>
                         <AlertDialogTitle>Remove Team Member?</AlertDialogTitle>
                         <AlertDialogDescription>

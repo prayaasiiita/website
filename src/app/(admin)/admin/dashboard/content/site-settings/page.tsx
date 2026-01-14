@@ -147,7 +147,7 @@ export default function SiteSettingsPage() {
                                 <Phone className="w-5 h-5 text-(--ngo-orange)" />
                             </div>
                             <div>
-                                <h3 className="font-semibold text-(--ngo-dark)">Phone Number</h3>
+                                <h4 className="font-semibold text-(--ngo-dark)">Phone Number</h4>
                                 <p className="text-sm text-(--ngo-gray)">Contact phone displayed in Footer and Contact page</p>
                             </div>
                         </div>
@@ -194,7 +194,7 @@ export default function SiteSettingsPage() {
                                 <Mail className="w-5 h-5 text-(--ngo-green)" />
                             </div>
                             <div>
-                                <h3 className="font-semibold text-(--ngo-dark)">Email Address</h3>
+                                <h4 className="font-semibold text-(--ngo-dark)">Email Address</h4>
                                 <p className="text-sm text-(--ngo-gray)">Contact email displayed in Footer and Contact page</p>
                             </div>
                         </div>
@@ -241,7 +241,7 @@ export default function SiteSettingsPage() {
                                 <MapPin className="w-5 h-5 text-(--ngo-yellow)" />
                             </div>
                             <div>
-                                <h3 className="font-semibold text-(--ngo-dark)">Address</h3>
+                                <h4 className="font-semibold text-(--ngo-dark)">Address</h4>
                                 <p className="text-sm text-(--ngo-gray)">Physical address displayed in Footer and Contact page</p>
                             </div>
                         </div>
@@ -282,10 +282,10 @@ export default function SiteSettingsPage() {
 
                 {/* Preview */}
                 <div className="bg-gray-50 rounded-2xl p-6 border border-gray-200">
-                    <h3 className="font-semibold text-(--ngo-dark) mb-4 flex items-center gap-2">
+                    <h4 className="font-semibold text-(--ngo-dark) mb-4 flex items-center gap-2">
                         <CheckCircle className="w-5 h-5 text-(--ngo-green)" />
                         Preview (Visible to Public)
-                    </h3>
+                    </h4>
                     <div className="space-y-3">
                         {settings.phoneVisible && settings.phone && (
                             <div className="flex items-center gap-2 text-(--ngo-gray)">
