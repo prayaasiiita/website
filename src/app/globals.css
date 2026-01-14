@@ -86,6 +86,22 @@
     --ngo-cream: #f8f5f2;
     --ngo-dark: #1a1a2e;
     --ngo-gray: #64748b;
+
+    /* Orbit colors for ValuesSection */
+    --color-orbit-1: #f97316;
+    --color-orbit-2: #eab308;
+    --color-orbit-3: #22c55e;
+    --color-orbit-4: #06b6d4;
+    --color-orbit-5: #3b82f6;
+    --color-orbit-6: #8b5cf6;
+    --color-orbit-7: #ec4899;
+    --color-orbit-1-active: #ea580c;
+    --color-orbit-2-active: #ca8a04;
+    --color-orbit-3-active: #16a34a;
+    --color-orbit-4-active: #0891b2;
+    --color-orbit-5-active: #2563eb;
+    --color-orbit-6-active: #7c3aed;
+    --color-orbit-7-active: #db2777;
 }
 
 .dark {
@@ -128,7 +144,7 @@
     }
 
     html {
-        overflow-x: hidden;
+        overflow-x: clip;
         width: 100%;
         max-width: 100vw;
     }
@@ -138,7 +154,7 @@
         font-family: 'Source Sans 3', sans-serif;
         -webkit-font-smoothing: antialiased;
         -moz-osx-font-smoothing: grayscale;
-        overflow-x: hidden;
+        overflow-x: clip;
         width: 100%;
         max-width: 100vw;
         position: relative;
@@ -188,18 +204,19 @@
 
 html {
     scroll-behavior: smooth;
-    overflow-x: hidden;
+    overflow-x: clip;
     width: 100%;
     max-width: 100vw;
 }
 
 /* Prevent any element from causing horizontal scroll */
-section, main {
+section,
+main {
     max-width: 100vw;
 }
 
 /* Only apply to direct children of body to avoid overriding intentional constraints */
-body > div {
+body>div {
     max-width: 100vw;
 }
 
@@ -391,8 +408,136 @@ body > div {
     .pb-safe {
         padding-bottom: max(1.5rem, env(safe-area-inset-bottom));
     }
-    
+
     .pt-safe {
         padding-top: max(1rem, env(safe-area-inset-top));
     }
+}
+
+
+/* Orbit animation - responsive CSS custom properties */
+.orbit-child {
+    /* Default (mobile) sizes - reduced radius for mobile */
+    --radius: 150px;
+    --orbit-size: 70px;
+    position: absolute;
+    height: var(--orbit-size);
+    width: var(--orbit-size);
+    color: white;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 600;
+    font-size: 10px;
+    cursor: pointer;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    transform: rotate(var(--angle)) translate(var(--radius)) rotate(calc(var(--angle) * -1));
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    border: 3px solid transparent;
+}
+
+.orbit-child:hover {
+    transform: rotate(var(--angle)) translate(var(--radius)) rotate(calc(var(--angle) * -1)) scale(1.1);
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.25);
+}
+
+.orbit-child.active {
+    border: 3px solid var(--ngo-dark);
+    transform: rotate(var(--angle)) translate(var(--radius)) rotate(calc(var(--angle) * -1)) scale(1.15);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+}
+
+/* Small screens (sm: 640px+) */
+@media (min-width: 640px) {
+    .orbit-child {
+        --radius: 180px;
+        --orbit-size: 75px;
+        font-size: 11px;
+    }
+}
+
+/* Medium screens (md: 768px+) */
+@media (min-width: 768px) {
+    .orbit-child {
+        --radius: 220px;
+        --orbit-size: 85px;
+        font-size: 12px;
+    }
+}
+
+/* Large screens (lg: 1024px+) */
+@media (min-width: 1024px) {
+    .orbit-child {
+        --radius: 280px;
+        --orbit-size: 95px;
+        font-size: 13px;
+    }
+}
+
+/* Extra large screens (xl: 1280px+) */
+@media (min-width: 1280px) {
+    .orbit-child {
+        --radius: 300px;
+        --orbit-size: 100px;
+        font-size: 14px;
+    }
+}
+
+/* Orbit colors - using color-mix for 20% opacity */
+.orbit-child:nth-of-type(1) {
+    background-color: color-mix(in srgb, var(--color-orbit-1) 20%, transparent);
+}
+
+.orbit-child:nth-of-type(2) {
+    background-color: color-mix(in srgb, var(--color-orbit-2) 20%, transparent);
+}
+
+.orbit-child:nth-of-type(3) {
+    background-color: color-mix(in srgb, var(--color-orbit-3) 20%, transparent);
+}
+
+.orbit-child:nth-of-type(4) {
+    background-color: color-mix(in srgb, var(--color-orbit-4) 20%, transparent);
+}
+
+.orbit-child:nth-of-type(5) {
+    background-color: color-mix(in srgb, var(--color-orbit-5) 20%, transparent);
+}
+
+.orbit-child:nth-of-type(6) {
+    background-color: color-mix(in srgb, var(--color-orbit-6) 20%, transparent);
+}
+
+.orbit-child:nth-of-type(7) {
+    background-color: color-mix(in srgb, var(--color-orbit-7) 20%, transparent);
+}
+
+/* Active state colors */
+.orbit-child:nth-of-type(1).active {
+    background-color: var(--color-orbit-1-active);
+}
+
+.orbit-child:nth-of-type(2).active {
+    background-color: var(--color-orbit-2-active);
+}
+
+.orbit-child:nth-of-type(3).active {
+    background-color: var(--color-orbit-3-active);
+}
+
+.orbit-child:nth-of-type(4).active {
+    background-color: var(--color-orbit-4-active);
+}
+
+.orbit-child:nth-of-type(5).active {
+    background-color: var(--color-orbit-5-active);
+}
+
+.orbit-child:nth-of-type(6).active {
+    background-color: var(--color-orbit-6-active);
+}
+
+.orbit-child:nth-of-type(7).active {
+    background-color: var(--color-orbit-7-active);
 }

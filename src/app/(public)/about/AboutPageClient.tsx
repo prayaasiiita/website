@@ -20,8 +20,10 @@ import {
     Phone,
 } from "lucide-react";
 import SpotlightCard from "@/src/components/SpotlightCard";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { PageImagesMap, getImageSrc, getCarouselImages } from "@/src/components/DynamicImage";
+import { HelpingHandSvg } from "@/src/components/svg/HelpingHandSvg";
+import { PyramidSvg } from "@/src/components/svg/PyramidSvg";
 
 // Default fallback images
 const FALLBACK_IMAGES = {
@@ -247,118 +249,272 @@ function MissionVisionSection() {
     );
 }
 
+// Principle data for ValuesSection - defined outside component to prevent recreation
+const PRINCIPLES = [
+    {
+        icon: HelpingHandSvg,
+        title: "Responsibility",
+        description:
+            "Every individual must realise that responsibility is the very fundamental basis of the functioning of the system",
+        color: "#e85a4f",
+    },
+    {
+        icon: BookOpen,
+        title: "Discipline",
+        description:
+            "The main focus of teaching besides learning must be in discipline.",
+        color: "#2d6a4f",
+    },
+    {
+        icon: Sparkles,
+        title: "Creativity",
+        description:
+            "Besides learning, it is absolutely necessary to instill the sparks of creativity in the students.",
+        color: "#eec643",
+    },
+    {
+        icon: Clock5,
+        title: "Punctuality",
+        description:
+            "Punctuality in all aspects is the basis of smooth functioning of the organization.",
+        color: "#8b5cf6",
+    },
+    {
+        icon: Music4,
+        title: "Joy",
+        description:
+            "It is necessary to always enjoy & have fun with what one is doing and to not consider it burden.",
+        color: "#ec4899",
+    },
+    {
+        icon: Sun,
+        title: "Happiness",
+        description:
+            "Happiness & Living in the moment must be the very nature of one and all.",
+        color: "#fbbf24",
+    },
+    {
+        icon: PyramidSvg,
+        title: "Priorities",
+        description:
+            "Priorities must be set straight first Studies then Prayaas.",
+        color: "#14b8a6",
+    },
+];
+
+// Orbit angles for positioning elements around the center
+const ORBIT_ANGLES = [-225, -180, -135, -90, -45, 0, 45] as const;
+
 function ValuesSection() {
-    const values = [
-        {
-            icon: Handshake,
-            title: "Responsibility",
-            description:
-                "Every individual must realise that responsibility is the very fundamental basis of the functioning of the system",
-            color: "#e85a4f",
-        },
-        {
-            icon: BookOpen,
-            title: "Discipline",
-            description:
-                "The main focus of teaching besides learning must be in discipline.",
-            color: "#2d6a4f",
-        },
-        {
-            icon: Sparkles,
-            title: "Creativity",
-            description:
-                "Besides learning, it is absolutely necessary to instill the sparks of creativity in the students.",
-            color: "#eec643",
-        },
-        {
-            icon: Clock5,
-            title: "Punctuality",
-            description:
-                "Punctuality in all aspects is the basis of smooth functioning of the organization.",
-            color: "#8b5cf6",
-        },
-        {
-            icon: Music4,
-            title: "Joy",
-            description:
-                "It is necessary to always enjoy & have fun with what one is doing and to not consider it burden.",
-            color: "#ec4899",
-        },
-        {
-            icon: Sun,
-            title: "Happiness",
-            description:
-                "Happiness & Living in the moment must be the very nature of one and all.",
-            color: "#fbbf24",
-        },
-        {
-            icon: Target,
-            title: "Priorities",
-            description:
-                "Priorities must be set straight first Studies then Prayaas.",
-            color: "#14b8a6",
-        },
-    ];
+    const [stage, setStage] = useState(0);
+    const containerRef = useRef<HTMLDivElement>(null);
+    const rafIdRef = useRef<number | null>(null);
+    const stageRef = useRef(stage);
+
+    // Keep stageRef in sync with stage state
+    useEffect(() => {
+        stageRef.current = stage;
+    }, [stage]);
+
+    useEffect(() => {
+        const handleScroll = () => {
+            // Cancel any pending animation frame to throttle updates
+            if (rafIdRef.current !== null) {
+                cancelAnimationFrame(rafIdRef.current);
+            }
+
+            rafIdRef.current = requestAnimationFrame(() => {
+                if (!containerRef.current) return;
+
+                const { top, height } = containerRef.current.getBoundingClientRect();
+
+                // Skip if container hasn't been reached yet
+                if (top > 0) return;
+
+                const scrollMovedPercent = (-top / height) * 100;
+                const scrollDuration = 10; // Each stage takes 10% of the scroll
+
+                // Calculate new stage based on scroll position
+                const newStage = Math.min(
+                    Math.floor(scrollMovedPercent / scrollDuration),
+                    PRINCIPLES.length - 1
+                );
+
+                // Only update state if stage changed (use ref to avoid stale closure)
+                if (newStage >= 0 && newStage !== stageRef.current) {
+                    setStage(newStage);
+                }
+            });
+        };
+
+        window.addEventListener('scroll', handleScroll, { passive: true });
+
+        // Run once on mount to set initial state
+        handleScroll();
+
+        return () => {
+            window.removeEventListener('scroll', handleScroll);
+            if (rafIdRef.current !== null) {
+                cancelAnimationFrame(rafIdRef.current);
+            }
+        };
+    }, []); // Empty dependency - only run once on mount
+
+    const handleOrbitClick = (index: number) => {
+        if (!containerRef.current) return;
+
+        const rect = containerRef.current.getBoundingClientRect();
+        const scrollDuration = 0.1; // 10% per stage
+        const targetScrollOffset = scrollDuration * index * rect.height + 1;
+
+        window.scrollTo({
+            top: rect.top + window.scrollY + targetScrollOffset,
+            behavior: "smooth"
+        });
+    };
 
     return (
-        <section className="py-24 bg-white">
-            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                <motion.div
-                    initial={{ opacity: 0, y: 30 }}
-                    whileInView={{ opacity: 1, y: 0 }}
-                    viewport={{ once: true }}
-                    transition={{ duration: 0.8 }}
-                    className="text-center mb-16"
+        <section
+            className="relative w-full h-[300vh] bg-white"
+            ref={containerRef}
+            aria-label="Our Core Values"
+        >
+            {/* Section Header - hidden on mobile, visible on tablet+ */}
+            <div className="md:block text-center pt-16 pb-4">
+                <span className="text-(--ngo-orange) font-semibold uppercase tracking-wider text-sm">
+                    What We Stand For
+                </span>
+                <h2
+                    className="text-4xl lg:text-5xl font-bold text-(--ngo-dark) mt-2"
+                    style={{ fontFamily: "'Playfair Display', serif" }}
                 >
-                    <span className="text-(--ngo-orange) font-semibold uppercase tracking-wider text-sm">
-                        What We Stand For
-                    </span>
-                    <h2
-                        className="text-4xl md:text-5xl font-bold text-(--ngo-dark) mt-2 mb-4"
-                        style={{ fontFamily: "'Playfair Display', serif" }}
-                    >
-                        Our Principles
-                    </h2>
-                    <p className="text-(--ngo-gray) text-lg max-w-2xl mx-auto">
-                        These 7 principles guide everything we do at Prayaas
-                    </p>
-                </motion.div>
+                    Our Principles
+                </h2>
+                <p className="text-(--ngo-gray) text-base lg:text-lg mt-2 max-w-xl mx-auto px-4">
+                    These 7 principles guide everything we do at Prayaas
+                </p>
+            </div>
+
+            {/* Sticky orbit container - fills viewport below navbar */}
+            <div className="w-full h-[calc(100vh-56px)] md:h-[calc(100vh-80px)] flex justify-center items-center pt-10 md:pt-16 bg-white sticky top-14 md:top-20">
+                {/* Decorative rings */}
                 <div
-                    className="grid gap-8 justify-center"
-                    style={{ gridTemplateColumns: "repeat(auto-fit, minmax(260px, 1fr))" }}
-                >
-                    {values.map((value, index) => (
-                        <motion.div
-                            key={value.title}
-                            initial={{ opacity: 0, y: 30 }}
-                            whileInView={{ opacity: 1, y: 0 }}
-                            viewport={{ once: true }}
-                            transition={{ duration: 0.5, delay: index * 0.1 }}
-                            className="h-full"
+                    className="absolute rounded-full border-2 border-dashed opacity-20 transition-all duration-500"
+                    style={{
+                        width: 'calc(var(--radius, 160px) * 2 + 40px)',
+                        height: 'calc(var(--radius, 160px) * 2 + 40px)',
+                        borderColor: PRINCIPLES[stage].color
+                    }}
+                />
+
+                {/* Orbit elements */}
+                {ORBIT_ANGLES.map((angle, i) => {
+                    const Icon = PRINCIPLES[i].icon;
+                    const isActive = i === stage;
+                    return (
+                        <button
+                            key={`orbit-${i}`}
+                            type="button"
+                            onClick={() => handleOrbitClick(i)}
+                            onKeyDown={(e) => {
+                                if (e.key === 'Enter' || e.key === ' ') {
+                                    e.preventDefault();
+                                    handleOrbitClick(i);
+                                }
+                            }}
+                            className={`orbit-child ${isActive ? "active" : ""}`}
+                            style={{
+                                '--angle': `${angle}deg`,
+                                backgroundColor: isActive ? PRINCIPLES[i].color : `${PRINCIPLES[i].color}15`
+                            } as React.CSSProperties}
+                            aria-label={`View ${PRINCIPLES[i].title}`}
+                            aria-pressed={isActive}
                         >
-                            <SpotlightCard
-                                className="h-full bg-white border-transparent text-(--ngo-dark) shadow-lg card-hover"
-                                spotlightColor="rgba(234, 179, 8, 0.22)"
+                            <Icon
+                                className="w-6 h-6 md:w-7 md:h-7 transition-all duration-300"
+                                style={{ color: isActive ? '#ffffff' : PRINCIPLES[i].color }}
+                            />
+                        </button>
+                    );
+                })}
+
+                {/* Center content display - responsive sizing */}
+                <motion.div
+                    key={stage}
+                    initial={{ opacity: 0, scale: 0.95 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    transition={{ duration: 0.3, ease: "easeOut" }}
+                    className="flex flex-col gap-1 sm:gap-2 md:gap-3 justify-center items-center h-52 w-52 sm:h-64 sm:w-64 md:h-85 md:w-85 lg:h-100 lg:w-100 xl:h-110 xl:w-110 rounded-full bg-white z-10 shadow-2xl overflow-hidden"
+                    style={{
+                        boxShadow: `0 25px 50px -12px ${PRINCIPLES[stage].color}30, 0 0 0 1px ${PRINCIPLES[stage].color}20`
+                    }}
+                    role="region"
+                    aria-live="polite"
+                    aria-atomic="true"
+                >
+                    {/* Icon with colored background */}
+                    {(() => {
+                        const Icon = PRINCIPLES[stage].icon;
+                        return (
+                            <motion.div
+                                initial={{ scale: 0.8, opacity: 0 }}
+                                animate={{ scale: 1, opacity: 1 }}
+                                transition={{ duration: 0.3, delay: 0.1 }}
+                                className="w-10 h-10 sm:w-14 sm:h-14 md:w-18 md:h-18 rounded-xl sm:rounded-2xl flex items-center justify-center shadow-md sm:shadow-lg"
+                                style={{ backgroundColor: `${PRINCIPLES[stage].color}20` }}
                             >
-                                <div
-                                    className="w-14 h-14 rounded-2xl mb-6 flex items-center justify-center"
-                                    style={{ backgroundColor: `${value.color}20` }}
-                                >
-                                    <value.icon className="w-7 h-7" style={{ color: value.color }} />
-                                </div>
-                                <h3
-                                    className="text-xl font-bold text-(--ngo-dark) mb-3"
-                                    style={{ fontFamily: "'Playfair Display', serif" }}
-                                >
-                                    {value.title}
-                                </h3>
-                                <p className="text-(--ngo-gray) leading-relaxed">
-                                    {value.description}
-                                </p>
-                            </SpotlightCard>
-                        </motion.div>
+                                <Icon
+                                    className="w-5 h-5 sm:w-7 sm:h-7 md:w-9 md:h-9"
+                                    style={{ color: PRINCIPLES[stage].color }}
+                                />
+                            </motion.div>
+                        );
+                    })()}
+
+                    <motion.h3
+                        initial={{ y: 10, opacity: 0 }}
+                        animate={{ y: 0, opacity: 1 }}
+                        transition={{ duration: 0.3, delay: 0.15 }}
+                        className="w-full text-base sm:text-xl md:text-2xl lg:text-3xl font-bold text-center px-2 sm:px-4"
+                        style={{
+                            fontFamily: "'Playfair Display', serif",
+                            color: "black"
+                        }}
+                    >
+                        {PRINCIPLES[stage].title}
+                    </motion.h3>
+
+                    <motion.p
+                        initial={{ y: 10, opacity: 0 }}
+                        animate={{ y: 0, opacity: 1 }}
+                        transition={{ duration: 0.3, delay: 0.2 }}
+                        className="text-[10px] sm:text-xs md:text-sm lg:text-base px-2 sm:px-4 md:px-6 w-full text-center text-(--ngo-gray) leading-snug sm:leading-relaxed line-clamp-3 sm:line-clamp-4"
+                    >
+                        {PRINCIPLES[stage].description}
+                    </motion.p>
+
+                    {/* Stage indicator dots
+                <motion.div
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    transition={{ duration: 0.3, delay: 0.25 }}
+                    className="flex gap-1.5 sm:gap-2 mt-2"
+                >
+                    {PRINCIPLES.map((principle, i) => (
+                        <button
+                            key={`dot-${i}`}
+                            type="button"
+                            onClick={() => handleOrbitClick(i)}
+                            className="w-2 h-2 sm:w-2.5 sm:h-2.5 rounded-full transition-all duration-300 hover:scale-125"
+                            style={{
+                                backgroundColor: i === stage ? principle.color : `${principle.color}30`,
+                                transform: i === stage ? 'scale(1.3)' : 'scale(1)'
+                            }}
+                            aria-label={`Go to ${principle.title}`}
+                        />
                     ))}
-                </div>
+                </motion.div> */}
+                </motion.div>
             </div>
         </section>
     );
@@ -689,7 +845,7 @@ function CTASection({ images }: { images: PageImagesMap }) {
                         </h2>
                         <p className="text-white/90 text-sm sm:text-base md:text-lg mb-8 sm:mb-10 max-w-2xl mx-auto">
                             Be a part of our story. Together, we can create lasting change in the
-                        lives of children who need it most.
+                            lives of children who need it most.
                         </p>
                         <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center items-center">
                             <Link

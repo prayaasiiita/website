@@ -111,8 +111,8 @@ export default function SiteSettingsPage() {
                     onClick={handleSave}
                     disabled={saving || !hasChanges}
                     className={`flex items-center gap-2 px-6 py-3 rounded-xl font-semibold transition-all ${hasChanges
-                            ? "bg-(--ngo-orange) text-white hover:bg-(--ngo-orange-dark)"
-                            : "bg-gray-200 text-gray-500 cursor-not-allowed"
+                        ? "bg-(--ngo-orange) text-white hover:bg-(--ngo-orange-dark)"
+                        : "bg-gray-200 text-gray-500 cursor-not-allowed"
                         }`}
                 >
                     {saving ? (
@@ -147,15 +147,15 @@ export default function SiteSettingsPage() {
                                 <Phone className="w-5 h-5 text-(--ngo-orange)" />
                             </div>
                             <div>
-                                <h3 className="font-semibold text-(--ngo-dark)">Phone Number</h3>
+                                <h4 className="font-semibold text-(--ngo-dark)">Phone Number</h4>
                                 <p className="text-sm text-(--ngo-gray)">Contact phone displayed in Footer and Contact page</p>
                             </div>
                         </div>
                         <button
                             onClick={() => handleChange("phoneVisible", !settings.phoneVisible)}
                             className={`flex items-center gap-2 px-4 py-2 rounded-lg transition-all ${settings.phoneVisible
-                                    ? "bg-green-100 text-green-700"
-                                    : "bg-gray-100 text-gray-500"
+                                ? "bg-green-100 text-green-700"
+                                : "bg-gray-100 text-gray-500"
                                 }`}
                         >
                             {settings.phoneVisible ? (
@@ -194,15 +194,15 @@ export default function SiteSettingsPage() {
                                 <Mail className="w-5 h-5 text-(--ngo-green)" />
                             </div>
                             <div>
-                                <h3 className="font-semibold text-(--ngo-dark)">Email Address</h3>
+                                <h4 className="font-semibold text-(--ngo-dark)">Email Address</h4>
                                 <p className="text-sm text-(--ngo-gray)">Contact email displayed in Footer and Contact page</p>
                             </div>
                         </div>
                         <button
                             onClick={() => handleChange("emailVisible", !settings.emailVisible)}
                             className={`flex items-center gap-2 px-4 py-2 rounded-lg transition-all ${settings.emailVisible
-                                    ? "bg-green-100 text-green-700"
-                                    : "bg-gray-100 text-gray-500"
+                                ? "bg-green-100 text-green-700"
+                                : "bg-gray-100 text-gray-500"
                                 }`}
                         >
                             {settings.emailVisible ? (
@@ -241,15 +241,15 @@ export default function SiteSettingsPage() {
                                 <MapPin className="w-5 h-5 text-(--ngo-yellow)" />
                             </div>
                             <div>
-                                <h3 className="font-semibold text-(--ngo-dark)">Address</h3>
+                                <h4 className="font-semibold text-(--ngo-dark)">Address</h4>
                                 <p className="text-sm text-(--ngo-gray)">Physical address displayed in Footer and Contact page</p>
                             </div>
                         </div>
                         <button
                             onClick={() => handleChange("addressVisible", !settings.addressVisible)}
                             className={`flex items-center gap-2 px-4 py-2 rounded-lg transition-all ${settings.addressVisible
-                                    ? "bg-green-100 text-green-700"
-                                    : "bg-gray-100 text-gray-500"
+                                ? "bg-green-100 text-green-700"
+                                : "bg-gray-100 text-gray-500"
                                 }`}
                         >
                             {settings.addressVisible ? (
@@ -282,10 +282,10 @@ export default function SiteSettingsPage() {
 
                 {/* Preview */}
                 <div className="bg-gray-50 rounded-2xl p-6 border border-gray-200">
-                    <h3 className="font-semibold text-(--ngo-dark) mb-4 flex items-center gap-2">
+                    <h4 className="font-semibold text-(--ngo-dark) mb-4 flex items-center gap-2">
                         <CheckCircle className="w-5 h-5 text-(--ngo-green)" />
                         Preview (Visible to Public)
-                    </h3>
+                    </h4>
                     <div className="space-y-3">
                         {settings.phoneVisible && settings.phone && (
                             <div className="flex items-center gap-2 text-(--ngo-gray)">

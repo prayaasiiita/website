@@ -248,29 +248,29 @@ export default function AdminManagementPage() {
     }
 
     return (
-        <div className="space-y-6">
+        <div className="space-y-4 md:space-y-6">
             {/* Header */}
-            <div className="flex justify-between items-center">
+            <div className="flex flex-col sm:flex-row justify-between sm:items-center gap-4">
                 <div>
-                    <h1 className="text-2xl font-bold text-gray-900 flex items-center gap-2">
-                        <Users className="w-7 h-7 text-orange-500" />
+                    <h1 className="text-xl md:text-2xl font-bold text-gray-900 flex items-center gap-2">
+                        <Users className="w-6 h-6 md:w-7 md:h-7 text-orange-500" />
                         Admin Management
                     </h1>
-                    <p className="text-gray-600 mt-1">
+                    <p className="text-gray-600 text-sm md:text-base mt-1">
                         Manage admin users and their permissions
                     </p>
                 </div>
                 <div className="flex gap-2">
                     <button
                         onClick={fetchAdmins}
-                        className="px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 flex items-center gap-2"
+                        className="flex-1 sm:flex-initial px-3 md:px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 flex items-center justify-center gap-2 text-sm touch-manipulation"
                     >
                         <RefreshCw className="w-4 h-4" />
-                        Refresh
+                        <span className="hidden sm:inline">Refresh</span>
                     </button>
                     <button
                         onClick={openCreateModal}
-                        className="px-4 py-2 bg-orange-500 text-white rounded-lg hover:bg-orange-600 flex items-center gap-2"
+                        className="flex-1 sm:flex-initial px-3 md:px-4 py-2 bg-orange-500 text-white rounded-lg hover:bg-orange-600 flex items-center justify-center gap-2 text-sm touch-manipulation"
                     >
                         <Plus className="w-4 h-4" />
                         Add Admin
@@ -294,112 +294,114 @@ export default function AdminManagementPage() {
 
             {/* Admins Table */}
             <div className="bg-white rounded-xl shadow-sm border overflow-hidden">
-                <table className="w-full">
-                    <thead className="bg-gray-50 border-b">
-                        <tr>
-                            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
-                                User
-                            </th>
-                            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
-                                Role
-                            </th>
-                            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
-                                Status
-                            </th>
-                            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
-                                Last Login
-                            </th>
-                            <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase">
-                                Actions
-                            </th>
-                        </tr>
-                    </thead>
-                    <tbody className="divide-y divide-gray-200">
-                        {admins.map((admin) => (
-                            <tr key={admin._id} className="hover:bg-gray-50">
-                                <td className="px-6 py-4">
-                                    <div>
-                                        <div className="font-medium text-gray-900">
-                                            {admin.username}
-                                        </div>
-                                        <div className="text-sm text-gray-500">
-                                            {admin.email}
-                                        </div>
-                                    </div>
-                                </td>
-                                <td className="px-6 py-4">
-                                    <span
-                                        className={`px-2 py-1 text-xs font-medium rounded-full border ${ROLE_COLORS[admin.role]
-                                            }`}
-                                    >
-                                        {ROLE_LABELS[admin.role]}
-                                    </span>
-                                </td>
-                                <td className="px-6 py-4">
-                                    {admin.isActive ? (
-                                        <span className="inline-flex items-center gap-1 text-green-700">
-                                            <Check className="w-4 h-4" /> Active
-                                        </span>
-                                    ) : (
-                                        <span className="inline-flex items-center gap-1 text-red-700">
-                                            <X className="w-4 h-4" /> Inactive
-                                        </span>
-                                    )}
-                                </td>
-                                <td className="px-6 py-4 text-sm text-gray-500">
-                                    {admin.lastLogin
-                                        ? new Date(admin.lastLogin).toLocaleDateString()
-                                        : "Never"}
-                                </td>
-                                <td className="px-6 py-4 text-right">
-                                    <div className="flex justify-end gap-2">
-                                        <button
-                                            onClick={() => openEditModal(admin)}
-                                            className="p-2 text-gray-500 hover:text-orange-500 hover:bg-orange-50 rounded-lg"
-                                        >
-                                            <Edit2 className="w-4 h-4" />
-                                        </button>
-                                        {deleteConfirm === admin._id ? (
-                                            <div className="flex items-center gap-1">
-                                                <button
-                                                    onClick={() => handleDelete(admin._id)}
-                                                    className="p-2 text-red-500 hover:bg-red-50 rounded-lg"
-                                                >
-                                                    <Check className="w-4 h-4" />
-                                                </button>
-                                                <button
-                                                    onClick={() => setDeleteConfirm(null)}
-                                                    className="p-2 text-gray-500 hover:bg-gray-50 rounded-lg"
-                                                >
-                                                    <X className="w-4 h-4" />
-                                                </button>
-                                            </div>
-                                        ) : (
-                                            <button
-                                                onClick={() => setDeleteConfirm(admin._id)}
-                                                className="p-2 text-gray-500 hover:text-red-500 hover:bg-red-50 rounded-lg"
-                                            >
-                                                <Trash2 className="w-4 h-4" />
-                                            </button>
-                                        )}
-                                    </div>
-                                </td>
+                <div className="overflow-x-auto">
+                    <table className="w-full min-w-[640px]">
+                        <thead className="bg-gray-50 border-b">
+                            <tr>
+                                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
+                                    User
+                                </th>
+                                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
+                                    Role
+                                </th>
+                                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
+                                    Status
+                                </th>
+                                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
+                                    Last Login
+                                </th>
+                                <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase">
+                                    Actions
+                                </th>
                             </tr>
-                        ))}
-                    </tbody>
-                </table>
+                        </thead>
+                        <tbody className="divide-y divide-gray-200">
+                            {admins.map((admin) => (
+                                <tr key={admin._id} className="hover:bg-gray-50">
+                                    <td className="px-6 py-4">
+                                        <div>
+                                            <div className="font-medium text-gray-900">
+                                                {admin.username}
+                                            </div>
+                                            <div className="text-sm text-gray-500">
+                                                {admin.email}
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td className="px-6 py-4">
+                                        <span
+                                            className={`px-2 py-1 text-xs font-medium rounded-full border ${ROLE_COLORS[admin.role]
+                                                }`}
+                                        >
+                                            {ROLE_LABELS[admin.role]}
+                                        </span>
+                                    </td>
+                                    <td className="px-6 py-4">
+                                        {admin.isActive ? (
+                                            <span className="inline-flex items-center gap-1 text-green-700">
+                                                <Check className="w-4 h-4" /> Active
+                                            </span>
+                                        ) : (
+                                            <span className="inline-flex items-center gap-1 text-red-700">
+                                                <X className="w-4 h-4" /> Inactive
+                                            </span>
+                                        )}
+                                    </td>
+                                    <td className="px-6 py-4 text-sm text-gray-500">
+                                        {admin.lastLogin
+                                            ? new Date(admin.lastLogin).toLocaleDateString()
+                                            : "Never"}
+                                    </td>
+                                    <td className="px-6 py-4 text-right">
+                                        <div className="flex justify-end gap-2">
+                                            <button
+                                                onClick={() => openEditModal(admin)}
+                                                className="p-2 text-gray-500 hover:text-orange-500 hover:bg-orange-50 rounded-lg"
+                                            >
+                                                <Edit2 className="w-4 h-4" />
+                                            </button>
+                                            {deleteConfirm === admin._id ? (
+                                                <div className="flex items-center gap-1">
+                                                    <button
+                                                        onClick={() => handleDelete(admin._id)}
+                                                        className="p-2 text-red-500 hover:bg-red-50 rounded-lg"
+                                                    >
+                                                        <Check className="w-4 h-4" />
+                                                    </button>
+                                                    <button
+                                                        onClick={() => setDeleteConfirm(null)}
+                                                        className="p-2 text-gray-500 hover:bg-gray-50 rounded-lg"
+                                                    >
+                                                        <X className="w-4 h-4" />
+                                                    </button>
+                                                </div>
+                                            ) : (
+                                                <button
+                                                    onClick={() => setDeleteConfirm(admin._id)}
+                                                    className="p-2 text-gray-500 hover:text-red-500 hover:bg-red-50 rounded-lg"
+                                                >
+                                                    <Trash2 className="w-4 h-4" />
+                                                </button>
+                                            )}
+                                        </div>
+                                    </td>
+                                </tr>
+                            ))}
+                        </tbody>
+                    </table>
+                </div>
             </div>
 
             {/* Create/Edit Modal */}
             {showModal && (
-                <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+                <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-3 md:p-4">
                     <div className="bg-white rounded-xl shadow-xl max-w-lg w-full max-h-[90vh] overflow-y-auto">
-                        <div className="p-6 border-b">
-                            <h2 className="text-xl font-bold">
+                        <div className="p-4 md:p-6 border-b">
+                            <h2 className="text-lg md:text-xl font-bold">
                                 {editingAdmin ? "Edit Admin" : "Create Admin"}
                             </h2>
                         </div>
-                        <form onSubmit={handleSubmit} className="p-6 space-y-4">
+                        <form onSubmit={handleSubmit} className="p-4 md:p-6 space-y-3 md:space-y-4">
                             <div>
                                 <label className="block text-sm font-medium text-gray-700 mb-1">
                                     Username
