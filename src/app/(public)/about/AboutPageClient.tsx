@@ -12,7 +12,6 @@ import {
     Sun,
     Music4,
     Clock5,
-    Handshake,
     Mail,
     Linkedin,
     ArrowRight,

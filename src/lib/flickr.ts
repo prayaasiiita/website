@@ -103,7 +103,7 @@ async function resolveUserId(): Promise<string> {
     try {
         const user = await findUserByUsernameInternal(userId);
         return user.nsid;
-    } catch (error) {
+    } catch {
         throw new FlickrAPIError(
             `Could not find Flickr user "${userId}". Make sure FLICKR_USER_ID is set to either a valid NSID (like "12345678@N00") or username.`
         );

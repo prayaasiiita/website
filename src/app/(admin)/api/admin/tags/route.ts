@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import dbConnect from '@/src/lib/mongodb';
 import Tag from '@/src/models/Tag';
 import { tagCreateSchema } from '@/src/lib/validations/empowerment';
-import { verifyToken, requirePermission } from '@/src/lib/auth';
+import { requirePermission } from '@/src/lib/auth';
 import { revalidatePublicTags, TAGS } from '@/src/lib/revalidate-paths';
 import { createAuditLog } from '@/src/lib/audit';
 import { checkRateLimit } from '@/src/lib/rate-limit';
@@ -14,17 +14,6 @@ function getIpAddress(req: NextRequest): string {
     'unknown';
 }
 
-function isAuthed(req: NextRequest) {
-  const token = req.cookies.get('admin_token')?.value;
-  return token && verifyToken(token) ? true : false;
-}
-
-function getAdminFromToken(req: NextRequest) {
-  const token = req.cookies.get('admin_token')?.value;
-  if (!token) return null;
-  const verified = verifyToken(token);
-  return verified;
-}
 
 export async function GET(request: NextRequest) {
   try {

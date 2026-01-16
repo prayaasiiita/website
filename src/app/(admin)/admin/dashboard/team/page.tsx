@@ -433,7 +433,7 @@ export default function TeamManagementPage() {
             let data;
             try {
                 data = JSON.parse(text);
-            } catch (e) {
+            } catch {
                 console.error("Failed to parse team data:", text.substring(0, 200));
                 throw new Error("Invalid server response");
             }
@@ -717,7 +717,7 @@ export default function TeamManagementPage() {
                 try {
                     const data = JSON.parse(text);
                     throw new Error(data.error || "Failed to save member");
-                } catch (e) {
+                } catch {
                     console.error("Failed to parse save member error:", text.substring(0, 200));
                     throw new Error("Failed to save member: Server Error");
                 }

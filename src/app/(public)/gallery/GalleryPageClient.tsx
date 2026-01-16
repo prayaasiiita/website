@@ -131,14 +131,15 @@ function AlbumsSection() {
 
     const openLightbox = (index: number) => setSelectedPhoto(index);
     const closeLightbox = () => setSelectedPhoto(null);
-    const nextPhoto = () =>
+    const nextPhoto = useCallback(() =>
         setSelectedPhoto((prev) =>
             prev !== null ? (prev + 1) % photos.length : null
-        );
-    const prevPhoto = () =>
+        ), [photos.length]);
+
+    const prevPhoto = useCallback(() =>
         setSelectedPhoto((prev) =>
             prev !== null ? (prev - 1 + photos.length) % photos.length : null
-        );
+        ), [photos.length]);
 
     // Keyboard navigation for lightbox
     useEffect(() => {
@@ -150,7 +151,7 @@ function AlbumsSection() {
         };
         window.addEventListener("keydown", handleKeyDown);
         return () => window.removeEventListener("keydown", handleKeyDown);
-    }, [selectedPhoto, photos.length]);
+    }, [selectedPhoto, photos.length, nextPhoto, prevPhoto]);
 
     // Filter albums by search query
     const filteredAlbumsByYear = useMemo(() => {
