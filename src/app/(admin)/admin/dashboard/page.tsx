@@ -343,7 +343,7 @@ export default function AdminDashboard() {
       {/* Main Stats Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
         <StatCard title="Events" count={loading ? "..." : stats.events} icon={Calendar} color="var(--ngo-orange)" href="/admin/dashboard/events" delay={0.1} />
-        <StatCard title="Photos" count={loading ? "..." : stats.gallery} icon={ImageIcon} color="var(--ngo-green)" href="/admin/dashboard/gallery" delay={0.2} />
+        <StatCard title="Photo Albums" count={loading ? "..." : stats.gallery} icon={ImageIcon} color="var(--ngo-green)" href="/admin/dashboard/gallery" delay={0.2} />
         <StatCard title="Stories" count={loading ? "..." : stats.empowerments} icon={Sparkles} color="#ec4899" href="/admin/dashboard/empowerments" delay={0.3} />
         <StatCard title="Volunteers" count={loading ? "..." : stats.volunteers} icon={Users} color="#8b5cf6" href="/admin/dashboard/volunteers" delay={0.4} />
       </div>

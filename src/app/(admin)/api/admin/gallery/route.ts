@@ -8,6 +8,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { requirePermission } from '@/src/lib/auth';
 import { createAuditLog } from '@/src/lib/audit';
 import dbConnect from '@/src/lib/mongodb';
+import '@/src/models/Admin'; // Register Admin model for populate
 import FlickrAlbum from '@/src/models/FlickrAlbum';
 import { syncFlickrAlbums, isSyncRunning, getLatestSyncLog } from '@/src/lib/gallery/sync-service';
 import type { AlbumStatus } from '@/src/models/FlickrAlbum';
@@ -105,8 +106,14 @@ export async function GET(request: NextRequest) {
 
     } catch (error) {
         console.error('Failed to fetch gallery albums:', error);
+
+        const errorMessage = error instanceof Error ? error.message : 'Unknown error';
+
         return NextResponse.json(
-            { error: 'Failed to fetch albums' },
+            {
+                error: 'Failed to fetch albums',
+                details: process.env.NODE_ENV === 'development' ? errorMessage : undefined
+            },
             { status: 500 }
         );
     }

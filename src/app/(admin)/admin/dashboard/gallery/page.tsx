@@ -154,6 +154,8 @@ export default function GalleryManagementPage() {
                 status: statusFilter,
                 page: page.toString(),
                 limit: "12",
+                sortBy: "dateCreated",
+                sortOrder: "desc",
             });
             if (debouncedSearch) {
                 params.set("search", debouncedSearch);
