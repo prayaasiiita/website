@@ -133,7 +133,7 @@ function ContactInfoSection({ siteSettings }: { siteSettings: SiteSettingsProps 
     contactInfo.push({
         icon: Clock,
         title: "Classes Hours",
-        details: ["Classes: Mon-Sun 5 AM - 6 PM"],
+        details: ["Classes: Mon-Sun 5 PM - 6 PM"],
         color: "#8b5cf6",
     });
 

@@ -83,6 +83,14 @@ const nextConfig: NextConfig = {
         protocol: "https",
         hostname: "www.iiita.ac.in",
       },
+      {
+        protocol: "https",
+        hostname: "live.staticflickr.com",
+      },
+      {
+        protocol: "https",
+        hostname: "*.staticflickr.com",
+      },
     ],
   },
 };

@@ -16,6 +16,7 @@ export type Permission =
   | 'manage_contacts'      // View/delete contact submissions
   | 'manage_settings'      // Edit site settings
   | 'manage_page_images'   // Upload/edit page images
+  | 'manage_gallery'       // Manage Flickr gallery albums
   | 'view_audit_logs'      // View audit logs
   | 'manage_uploads';      // Upload/delete files
 
@@ -32,6 +33,7 @@ export const ALL_PERMISSIONS: Permission[] = [
   'manage_contacts',
   'manage_settings',
   'manage_page_images',
+  'manage_gallery',
   'view_audit_logs',
   'manage_uploads',
 ];
@@ -48,6 +50,7 @@ export const DEFAULT_PERMISSIONS: Record<AdminRole, Permission[]> = {
     'manage_tags',
     'manage_contacts',
     'manage_page_images',
+    'manage_gallery',
     'manage_uploads',
   ],
   treasurer: [
@@ -62,6 +65,7 @@ export const DEFAULT_PERMISSIONS: Record<AdminRole, Permission[]> = {
     'manage_empowerments',
     'manage_tags',
     'manage_contacts',
+    'manage_gallery',
     'manage_uploads',
   ],
 };

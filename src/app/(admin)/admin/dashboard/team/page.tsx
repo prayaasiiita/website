@@ -2,6 +2,7 @@
 
 import Image from "next/image";
 import { useEffect, useState, useCallback, useRef } from "react";
+import { toast } from "sonner";
 import {
     DndContext,
     closestCenter,
@@ -563,7 +564,7 @@ export default function TeamManagementPage() {
 
     const saveGroup = async () => {
         if (!groupForm.name.trim()) {
-            setError("Group name is required");
+            toast.error("Group name is required");
             return;
         }
 
@@ -593,8 +594,9 @@ export default function TeamManagementPage() {
 
             await fetchGroups();
             setGroupModalOpen(false);
+            toast.success(editingGroup ? "Group updated successfully" : "Group created successfully");
         } catch (err) {
-            setError(err instanceof Error ? err.message : "Failed to save group");
+            toast.error(err instanceof Error ? err.message : "Failed to save group");
             setGroupModalOpen(false);
         } finally {
             setGroupSaving(false);
@@ -615,8 +617,9 @@ export default function TeamManagementPage() {
 
             await fetchGroups();
             setDeleteGroupId(null);
+            toast.success("Group deleted successfully");
         } catch (err) {
-            setError(err instanceof Error ? err.message : "Failed to delete group");
+            toast.error(err instanceof Error ? err.message : "Failed to delete group");
         } finally {
             setDeleting(false);
         }
@@ -649,7 +652,7 @@ export default function TeamManagementPage() {
                     g._id === group._id ? { ...g, isVisible: group.isVisible } : g
                 )
             );
-            setError(
+            toast.error(
                 err instanceof Error ? err.message : "Failed to update visibility"
             );
         } finally {
@@ -689,7 +692,7 @@ export default function TeamManagementPage() {
 
     const saveMember = async () => {
         if (!memberForm.name.trim() || !memberForm.email.trim()) {
-            setError("Name and email are required");
+            toast.error("Name and email are required");
             return;
         }
 
@@ -723,8 +726,9 @@ export default function TeamManagementPage() {
             await fetchGroups();
             setMemberModalOpen(false);
             setTempUploadedImage(null); // Clear temp tracking after successful save
+            toast.success(editingMember ? "Member updated successfully" : "Member added successfully");
         } catch (err) {
-            setError(err instanceof Error ? err.message : "Failed to save member");
+            toast.error(err instanceof Error ? err.message : "Failed to save member");
         } finally {
             setMemberSaving(false);
             setIsProcessing(false);
@@ -746,8 +750,9 @@ export default function TeamManagementPage() {
 
             await fetchGroups();
             setDeleteMember(null);
+            toast.success("Member removed successfully");
         } catch (err) {
-            setError(err instanceof Error ? err.message : "Failed to remove member");
+            toast.error(err instanceof Error ? err.message : "Failed to remove member");
         } finally {
             setDeleting(false);
             setIsProcessing(false);
@@ -793,7 +798,7 @@ export default function TeamManagementPage() {
                     };
                 })
             );
-            setError(
+            toast.error(
                 err instanceof Error ? err.message : "Failed to update visibility"
             );
         } finally {
@@ -1493,6 +1498,16 @@ export default function TeamManagementPage() {
                     </AlertDialogFooter>
                 </AlertDialogContent>
             </AlertDialog>
+
+            {/* Loading Overlay */}
+            {isProcessing && (
+                <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center backdrop-blur-sm">
+                    <div className="bg-white p-6 rounded-lg shadow-xl flex flex-col items-center gap-4">
+                        <Loader2 className="w-8 h-8 animate-spin text-(--ngo-orange)" />
+                        <p className="text-gray-600 font-medium">Processing...</p>
+                    </div>
+                </div>
+            )}
         </div>
     );
 }
