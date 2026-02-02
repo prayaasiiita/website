@@ -26,7 +26,7 @@ import { toast } from "sonner";
 import SpotlightCard from "@/src/components/ui/spotlightCard";
 import { PageImagesMap, getImageSrc } from "@/src/components/DynamicImage";
 import { contactFormSchema, type ContactFormData } from "@/src/lib/validations/contact-form";
-import { submitContactForm } from "./actions";
+import { submitContactForm } from "@/src/lib/actions";
 
 // Default fallback images
 const FALLBACK_IMAGES = {
@@ -74,40 +74,73 @@ function PageHero({ images }: { images: PageImagesMap }) {
     );
 }
 
-function ContactInfoSection() {
-    const contactInfo = [
-        {
+interface SiteSettingsProps {
+    phone: string | null;
+    phoneVisible: boolean;
+    email: string | null;
+    emailVisible: boolean;
+    address: string | null;
+    addressVisible: boolean;
+}
+
+function ContactInfoSection({ siteSettings }: { siteSettings: SiteSettingsProps | null }) {
+    // Build contact info array dynamically based on visibility settings
+    const contactInfo: {
+        icon: typeof MapPin;
+        title: string;
+        details: string[];
+        color: string;
+        url?: string;
+    }[] = [];
+
+    // Address
+    if (siteSettings?.addressVisible !== false) {
+        const addressParts = (siteSettings?.address || "IIIT Allahabad, Jhalwa, Prayagraj, Uttar Pradesh 211015, India").split(", ");
+        contactInfo.push({
             icon: MapPin,
             title: "Our Location",
-            details: ["IIIT Allahabad", "Jhalwa, Prayagraj", "Uttar Pradesh 211015, India"],
+            details: addressParts.length > 2
+                ? [addressParts.slice(0, 2).join(", "), addressParts.slice(2).join(", ")]
+                : [siteSettings?.address || "IIIT Allahabad, Jhalwa, Prayagraj, Uttar Pradesh 211015, India"],
             color: "#e85a4f",
             url: "/contact-us#location"
-        },
-        {
+        });
+    }
+
+    // Email
+    if (siteSettings?.emailVisible !== false) {
+        const email = siteSettings?.email || "prayaas@iiita.ac.in";
+        contactInfo.push({
             icon: Mail,
             title: "Email Us",
-            details: ["prayaas@iiita.ac.in"],
+            details: [email],
             color: "#2d6a4f",
-            url: "mailto:prayaas@iiita.ac.in"
-        },
-        {
+            url: `mailto:${email}`
+        });
+    }
+
+    // Phone
+    if (siteSettings?.phoneVisible !== false) {
+        contactInfo.push({
             icon: Phone,
             title: "Call Us",
-            details: ["+91 98765 43210"],
+            details: [siteSettings?.phone || ""],
             color: "#eec643",
-        },
-        {
-            icon: Clock,
-            title: "Classes Hours",
-            details: ["Classes: Mon-Sun 5 AM - 6 PM"],
-            color: "#8b5cf6",
-        },
-    ];
+        });
+    }
+
+    // Class Hours (always visible)
+    contactInfo.push({
+        icon: Clock,
+        title: "Classes Hours",
+        details: ["Classes: Mon-Sun 5 PM - 6 PM"],
+        color: "#8b5cf6",
+    });
 
     return (
         <section className="py-12 bg-white">
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-8">
+                <div className={`grid sm:grid-cols-2 lg:grid-cols-${contactInfo.length} gap-8`}>
                     {contactInfo.map((info, index) => (
                         <motion.div
                             key={info.title}
@@ -276,7 +309,7 @@ function ContactFormSection() {
                         viewport={{ once: true }}
                         transition={{ duration: 0.8 }}
                     >
-                        <form 
+                        <form
                             onSubmit={handleSubmit(onSubmit)}
                             className="bg-white rounded-3xl p-8 shadow-xl"
                             noValidate
@@ -289,9 +322,8 @@ function ContactFormSection() {
                                     <input
                                         type="text"
                                         {...register("firstName")}
-                                        className={`w-full px-4 py-3 rounded-xl border ${
-                                            errors.firstName ? "border-red-500" : "border-gray-200"
-                                        } focus:border-(--ngo-orange) focus:ring-2 focus:ring-(--ngo-orange)/20 outline-none transition-all`}
+                                        className={`w-full px-4 py-3 rounded-xl border ${errors.firstName ? "border-red-500" : "border-gray-200"
+                                            } focus:border-(--ngo-orange) focus:ring-2 focus:ring-(--ngo-orange)/20 outline-none transition-all`}
                                         placeholder="First Name"
                                         disabled={isSubmitting}
                                     />
@@ -308,9 +340,8 @@ function ContactFormSection() {
                                     <input
                                         type="text"
                                         {...register("lastName")}
-                                        className={`w-full px-4 py-3 rounded-xl border ${
-                                            errors.lastName ? "border-red-500" : "border-gray-200"
-                                        } focus:border-(--ngo-orange) focus:ring-2 focus:ring-(--ngo-orange)/20 outline-none transition-all`}
+                                        className={`w-full px-4 py-3 rounded-xl border ${errors.lastName ? "border-red-500" : "border-gray-200"
+                                            } focus:border-(--ngo-orange) focus:ring-2 focus:ring-(--ngo-orange)/20 outline-none transition-all`}
                                         placeholder="Last Name"
                                         disabled={isSubmitting}
                                     />
@@ -328,9 +359,8 @@ function ContactFormSection() {
                                 <input
                                     type="email"
                                     {...register("email")}
-                                    className={`w-full px-4 py-3 rounded-xl border ${
-                                        errors.email ? "border-red-500" : "border-gray-200"
-                                    } focus:border-(--ngo-orange) focus:ring-2 focus:ring-(--ngo-orange)/20 outline-none transition-all`}
+                                    className={`w-full px-4 py-3 rounded-xl border ${errors.email ? "border-red-500" : "border-gray-200"
+                                        } focus:border-(--ngo-orange) focus:ring-2 focus:ring-(--ngo-orange)/20 outline-none transition-all`}
                                     placeholder="example@example.com"
                                     disabled={isSubmitting}
                                 />
@@ -347,9 +377,8 @@ function ContactFormSection() {
                                 <input
                                     type="tel"
                                     {...register("phone")}
-                                    className={`w-full px-4 py-3 rounded-xl border ${
-                                        errors.phone ? "border-red-500" : "border-gray-200"
-                                    } focus:border-(--ngo-orange) focus:ring-2 focus:ring-(--ngo-orange)/20 outline-none transition-all`}
+                                    className={`w-full px-4 py-3 rounded-xl border ${errors.phone ? "border-red-500" : "border-gray-200"
+                                        } focus:border-(--ngo-orange) focus:ring-2 focus:ring-(--ngo-orange)/20 outline-none transition-all`}
                                     placeholder="+91 XXXXX XXXXX"
                                     disabled={isSubmitting}
                                 />
@@ -363,11 +392,10 @@ function ContactFormSection() {
                                 <label className="block text-(--ngo-dark) font-medium mb-2">
                                     Subject <span className="text-red-500">*</span>
                                 </label>
-                                <select 
+                                <select
                                     {...register("subject")}
-                                    className={`w-full px-4 py-3 rounded-xl border ${
-                                        errors.subject ? "border-red-500" : "border-gray-200"
-                                    } focus:border-(--ngo-orange) focus:ring-2 focus:ring-(--ngo-orange)/20 outline-none transition-all bg-white`}
+                                    className={`w-full px-4 py-3 rounded-xl border ${errors.subject ? "border-red-500" : "border-gray-200"
+                                        } focus:border-(--ngo-orange) focus:ring-2 focus:ring-(--ngo-orange)/20 outline-none transition-all bg-white`}
                                     disabled={isSubmitting}
                                 >
                                     <option value="">Select a topic</option>
@@ -390,9 +418,8 @@ function ContactFormSection() {
                                 <textarea
                                     rows={5}
                                     {...register("message")}
-                                    className={`w-full px-4 py-3 rounded-xl border ${
-                                        errors.message ? "border-red-500" : "border-gray-200"
-                                    } focus:border-(--ngo-orange) focus:ring-2 focus:ring-(--ngo-orange)/20 outline-none transition-all resize-none`}
+                                    className={`w-full px-4 py-3 rounded-xl border ${errors.message ? "border-red-500" : "border-gray-200"
+                                        } focus:border-(--ngo-orange) focus:ring-2 focus:ring-(--ngo-orange)/20 outline-none transition-all resize-none`}
                                     placeholder="How can we help you?"
                                     disabled={isSubmitting}
                                 />
@@ -589,11 +616,11 @@ function MapSection() {
     );
 }
 
-export default function ContactPageClient({ images }: { images: PageImagesMap }) {
+export default function ContactPageClient({ images, siteSettings }: { images: PageImagesMap; siteSettings: SiteSettingsProps | null }) {
     return (
         <>
             <PageHero images={images} />
-            <ContactInfoSection />
+            <ContactInfoSection siteSettings={siteSettings} />
             <ContactFormSection />
             <MapSection />
         </>

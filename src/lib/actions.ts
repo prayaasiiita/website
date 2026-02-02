@@ -28,7 +28,7 @@ export interface SubmitContactFormResult {
  */
 async function getClientIP(): Promise<string> {
     const headersList = await headers();
-    
+
     // Check common proxy headers in order of priority
     const forwardedFor = headersList.get('x-forwarded-for');
     if (forwardedFor) {
@@ -128,6 +128,24 @@ export async function submitContactForm(
             ...sanitizedData,
             ip,
             userAgent,
+        });
+
+        // Audit log the form submission (non-blocking, imported dynamically to avoid circular deps)
+        import('./audit-helpers').then(({ auditFormSubmission }) => {
+            auditFormSubmission({
+                formType: 'contact_form',
+                submitterId: submission._id.toString(),
+                submitterEmail: sanitizedData.email,
+                ipAddress: ip,
+                userAgent,
+                success: true,
+                metadata: {
+                    subject: sanitizedData.subject,
+                    firstName: sanitizedData.firstName,
+                },
+            });
+        }).catch(() => {
+            // Form submission audit is optional
         });
 
         console.log('Contact form submitted successfully:', {

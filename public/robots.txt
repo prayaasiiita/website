@@ -2,7 +2,7 @@
 User-agent: *
 Allow: /
 Allow: /about
-Allow: /programs
+Allow: /our-work
 Allow: /gallery
 Allow: /get-involved
 Allow: /contact-us

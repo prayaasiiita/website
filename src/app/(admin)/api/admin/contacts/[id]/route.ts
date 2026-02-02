@@ -1,25 +1,22 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { verifyAuth } from '@/src/lib/auth';
+import { requirePermission } from '@/src/lib/auth';
 import dbConnect from '@/src/lib/mongodb';
 import ContactSubmission from '@/src/models/ContactSubmission';
+import { createAuditLog } from '@/src/lib/audit';
 
 /**
  * DELETE /api/admin/contacts/[id]
- * Delete a specific contact submission (requires admin authentication)
+ * Delete a specific contact submission (requires manage_contacts permission)
  */
 export async function DELETE(
     request: NextRequest,
     { params }: { params: Promise<{ id: string }> }
 ) {
     try {
-        // Verify admin authentication
-        const authResult = await verifyAuth(request);
-        if (!authResult) {
-            return NextResponse.json(
-                { error: 'Unauthorized' },
-                { status: 401 }
-            );
-        }
+        // Verify admin authentication and permission
+        const authResult = await requirePermission(request, 'manage_contacts');
+        if ('error' in authResult) return authResult.error;
+        const adminPayload = authResult.admin;
 
         const { id } = await params;
 
@@ -42,6 +39,25 @@ export async function DELETE(
                 { status: 404 }
             );
         }
+
+        // Audit log (non-blocking)
+        createAuditLog({
+            action: 'delete',
+            resource: 'contact_submission',
+            resourceId: id,
+            admin: adminPayload,
+            request,
+            severity: 'warning',
+            changes: {
+                before: {
+                    email: deletedContact.email,
+                    subject: deletedContact.subject,
+                    firstName: deletedContact.firstName,
+                    lastName: deletedContact.lastName,
+                },
+                after: null,
+            },
+        });
 
         return NextResponse.json({
             success: true,

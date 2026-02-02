@@ -57,4 +57,9 @@ const VolunteerSchema = new mongoose.Schema<IVolunteer>(
   }
 );
 
+// Indexes for efficient queries
+VolunteerSchema.index({ status: 1, createdAt: -1 }); // For filtering by status and sorting
+VolunteerSchema.index({ email: 1 }); // For looking up by email
+VolunteerSchema.index({ createdAt: -1 }); // For sorting by newest
+
 export default mongoose.models.Volunteer || mongoose.model<IVolunteer>('Volunteer', VolunteerSchema);

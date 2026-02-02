@@ -1,8 +1,9 @@
 import { NextRequest, NextResponse } from 'next/server';
 import dbConnect from '@/src/lib/mongodb';
-import Admin from '@/src/models/Admin';
+import Admin, { ALL_PERMISSIONS, Permission } from '@/src/models/Admin';
 import { comparePassword, generateToken } from '@/src/lib/auth';
 import { createAuditLog } from '@/src/lib/audit';
+import { auditSecurityEvent } from '@/src/lib/audit-helpers';
 
 // Simple rate limiting (in production, use Redis)
 const loginAttempts = new Map<string, { count: number; resetTime: number }>();
@@ -10,16 +11,16 @@ const loginAttempts = new Map<string, { count: number; resetTime: number }>();
 function checkRateLimit(ip: string): boolean {
   const now = Date.now();
   const attempt = loginAttempts.get(ip);
-  
+
   if (!attempt || now > attempt.resetTime) {
     loginAttempts.set(ip, { count: 1, resetTime: now + 15 * 60 * 1000 }); // 15 min window
     return true;
   }
-  
+
   if (attempt.count >= 5) {
     return false;
   }
-  
+
   attempt.count++;
   return true;
 }
@@ -37,6 +38,15 @@ export async function POST(request: NextRequest) {
     // Rate limiting
     const ip = request.headers.get('x-forwarded-for')?.split(',')[0] || 'unknown';
     if (!checkRateLimit(ip)) {
+      // Log rate limit violation
+      auditSecurityEvent({
+        request,
+        eventType: 'rate_limit',
+        ipAddress: ip,
+        details: { endpoint: '/api/auth/login' },
+        severity: 'warning',
+      });
+
       return NextResponse.json(
         { error: 'Too many login attempts. Please try again later.' },
         { status: 429, headers: noStoreHeaders }
@@ -78,6 +88,14 @@ export async function POST(request: NextRequest) {
       );
     }
 
+    // Check if admin is active
+    if (admin.isActive === false) {
+      return NextResponse.json(
+        { error: 'Account is disabled. Please contact administrator.' },
+        { status: 403, headers: noStoreHeaders }
+      );
+    }
+
     const isPasswordValid = await comparePassword(password, admin.password);
 
     if (!isPasswordValid) {
@@ -101,10 +119,24 @@ export async function POST(request: NextRequest) {
       );
     }
 
+    // Migration: If admin doesn't have role set, make them super_admin (existing admins)
+    if (!admin.role) {
+      admin.role = 'super_admin';
+      admin.permissions = ALL_PERMISSIONS;
+      await admin.save();
+      console.log(`Migrated existing admin ${admin.username} to super_admin role`);
+    }
+
+    // Update last login
+    admin.lastLogin = new Date();
+    await admin.save();
+
     const token = generateToken({
       userId: admin._id.toString(),
       username: admin.username,
       email: admin.email,
+      role: admin.role,
+      permissions: admin.permissions as Permission[],
     });
 
     // Log successful login
@@ -127,6 +159,7 @@ export async function POST(request: NextRequest) {
           id: admin._id,
           username: admin.username,
           email: admin.email,
+          role: admin.role,
         },
       },
       { status: 200, headers: noStoreHeaders }

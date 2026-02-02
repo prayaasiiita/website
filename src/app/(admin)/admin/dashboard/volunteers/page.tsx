@@ -72,25 +72,24 @@ export default function VolunteersManagement() {
 
   return (
     <div>
-      <div className="mb-8">
-        <h1 className="text-3xl font-bold text-(--ngo-dark) mb-2">
+      <div className="mb-6 md:mb-8">
+        <h1 className="text-2xl md:text-3xl font-bold text-(--ngo-dark) mb-1 md:mb-2">
           Volunteers Management
         </h1>
-        <p className="text-(--ngo-gray)">
+        <p className="text-sm md:text-base text-(--ngo-gray)">
           Manage volunteer applications
         </p>
       </div>
 
-      <div className="flex gap-2 mb-6">
+      <div className="flex gap-2 mb-6 overflow-x-auto pb-2 -mx-1 px-1">
         {(["all", "pending", "approved", "rejected"] as VolunteerStatusFilter[]).map((f) => (
           <button
             key={f}
             onClick={() => setFilter(f)}
-            className={`px-4 py-2 rounded-lg font-medium capitalize transition-all ${
-              filter === f
-                ? "bg-purple-600 text-white"
-                : "bg-white text-(--ngo-gray) border border-gray-200 hover:bg-gray-50"
-            }`}
+            className={`px-3 md:px-4 py-1.5 md:py-2 rounded-lg font-medium capitalize transition-all text-sm whitespace-nowrap touch-manipulation ${filter === f
+              ? "bg-purple-600 text-white"
+              : "bg-white text-(--ngo-gray) border border-gray-200 hover:bg-gray-50"
+              }`}
           >
             {f}
           </button>
@@ -102,18 +101,18 @@ export default function VolunteersManagement() {
           <div className="w-12 h-12 border-4 border-purple-600 border-t-transparent rounded-full animate-spin mx-auto" />
         </div>
       ) : (
-        <div className="space-y-4">
+        <div className="space-y-3 md:space-y-4">
           {filteredVolunteers.map((volunteer) => (
             <div
               key={volunteer._id}
-              className="bg-white rounded-2xl p-6 border border-gray-200"
+              className="bg-white rounded-xl md:rounded-2xl p-4 md:p-6 border border-gray-200"
             >
-              <div className="flex items-start justify-between mb-4">
+              <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-3 mb-4">
                 <div>
-                  <h3 className="text-xl font-bold text-(--ngo-dark) mb-1">
+                  <h3 className="text-lg md:text-xl font-bold text-(--ngo-dark) mb-1">
                     {volunteer.name}
                   </h3>
-                  <p className="text-(--ngo-gray) text-sm">
+                  <p className="text-(--ngo-gray) text-xs md:text-sm">
                     Applied on {new Date(volunteer.createdAt).toLocaleDateString()}
                   </p>
                 </div>
@@ -125,12 +124,12 @@ export default function VolunteersManagement() {
                 </div>
               </div>
 
-              <div className="grid md:grid-cols-2 gap-4 mb-4">
-                <div>
-                  <span className="text-sm font-medium text-(--ngo-dark)">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 md:gap-4 mb-4">
+                <div className="min-w-0">
+                  <span className="text-xs md:text-sm font-medium text-(--ngo-dark)">
                     Email:
                   </span>
-                  <p className="text-(--ngo-gray)">{volunteer.email}</p>
+                  <p className="text-(--ngo-gray) text-sm truncate">{volunteer.email}</p>
                 </div>
                 <div>
                   <span className="text-sm font-medium text-(--ngo-dark)">
@@ -169,16 +168,16 @@ export default function VolunteersManagement() {
                 <div className="flex gap-2">
                   <button
                     onClick={() => updateStatus(volunteer._id, "approved")}
-                    className="flex items-center gap-2 px-4 py-2 bg-green-50 text-green-600 rounded-lg hover:bg-green-100 transition-all"
+                    className="flex items-center gap-1.5 md:gap-2 px-3 md:px-4 py-2 bg-green-50 text-green-600 rounded-lg hover:bg-green-100 transition-all text-sm touch-manipulation"
                   >
-                    <CheckCircle className="w-4 h-4" />
+                    <CheckCircle className="w-3.5 h-3.5 md:w-4 md:h-4" />
                     Approve
                   </button>
                   <button
                     onClick={() => updateStatus(volunteer._id, "rejected")}
-                    className="flex items-center gap-2 px-4 py-2 bg-red-50 text-red-600 rounded-lg hover:bg-red-100 transition-all"
+                    className="flex items-center gap-1.5 md:gap-2 px-3 md:px-4 py-2 bg-red-50 text-red-600 rounded-lg hover:bg-red-100 transition-all text-sm touch-manipulation"
                   >
-                    <XCircle className="w-4 h-4" />
+                    <XCircle className="w-3.5 h-3.5 md:w-4 md:h-4" />
                     Reject
                   </button>
                 </div>

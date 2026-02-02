@@ -144,15 +144,15 @@ export default function AuditLogsPage() {
     };
 
     return (
-        <div className="container mx-auto p-6 space-y-6">
-            <div className="flex justify-between items-center">
+        <div className="container mx-auto p-4 md:p-6 space-y-4 md:space-y-6">
+            <div className="flex flex-col sm:flex-row justify-between sm:items-center gap-4">
                 <div>
-                    <h1 className="text-3xl font-bold">Audit Logs</h1>
-                    <p className="text-muted-foreground">
+                    <h1 className="text-2xl md:text-3xl font-bold">Audit Logs</h1>
+                    <p className="text-muted-foreground text-sm md:text-base">
                         Monitor all admin activities and system events
                     </p>
                 </div>
-                <Badge variant="outline" className="text-lg px-4 py-2">
+                <Badge variant="outline" className="text-base md:text-lg px-3 md:px-4 py-1.5 md:py-2 self-start sm:self-auto">
                     {total} total events
                 </Badge>
             </div>
@@ -165,12 +165,12 @@ export default function AuditLogsPage() {
 
             {/* Filters */}
             <Card>
-                <CardHeader>
-                    <CardTitle>Filters</CardTitle>
-                    <CardDescription>Filter audit logs by resource, action, or admin</CardDescription>
+                <CardHeader className="p-1 md:p-2">
+                    <CardTitle className="text-base md:text-lg">Filters</CardTitle>
+                    <CardDescription className="text-xs md:text-sm">Filter audit logs by resource, action, or admin</CardDescription>
                 </CardHeader>
-                <CardContent>
-                    <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+                <CardContent className="p-1 md:p-2 pt-0">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 md:gap-4">
                         <div>
                             <label className="text-sm font-medium mb-2 block">Resource</label>
                             <select
@@ -183,11 +183,17 @@ export default function AuditLogsPage() {
                             >
                                 <option value="">All Resources</option>
                                 <option value="auth">Authentication</option>
+                                <option value="admin">Admins</option>
                                 <option value="volunteer">Volunteers</option>
                                 <option value="event">Events</option>
                                 <option value="team">Team</option>
                                 <option value="content">Content</option>
                                 <option value="gallery">Gallery</option>
+                                <option value="empowerment">Empowerments</option>
+                                <option value="site_settings">Site Settings</option>
+                                <option value="contact_submission">Contacts</option>
+                                <option value="tag">Tags</option>
+                                <option value="image">Images</option>
                             </select>
                         </div>
 
@@ -203,11 +209,14 @@ export default function AuditLogsPage() {
                             >
                                 <option value="">All Actions</option>
                                 <option value="login">Login</option>
+                                <option value="logout">Logout</option>
                                 <option value="create">Create</option>
                                 <option value="update">Update</option>
                                 <option value="delete">Delete</option>
                                 <option value="upload">Upload</option>
                                 <option value="password_change">Password Change</option>
+                                <option value="password_reset">Password Reset</option>
+                                <option value="view">View</option>
                             </select>
                         </div>
 
@@ -395,41 +404,41 @@ export default function AuditLogsPage() {
             )}
 
             {/* Quick Stats */}
-            <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-2 md:gap-3">
                 <Card>
-                    <CardHeader className="pb-2">
-                        <CardTitle className="text-sm font-medium">Total Events</CardTitle>
+                    <CardHeader className="pb-1 p-3 md:p-4 md:pb-1">
+                        <CardTitle className="text-xs md:text-sm font-medium">Total Events</CardTitle>
                     </CardHeader>
-                    <CardContent>
-                        <p className="text-2xl font-bold">{total}</p>
+                    <CardContent className="p-3 md:p-4 pt-0">
+                        <p className="text-lg md:text-xl font-bold">{total}</p>
                     </CardContent>
                 </Card>
                 <Card>
-                    <CardHeader className="pb-2">
-                        <CardTitle className="text-sm font-medium">Failed Logins</CardTitle>
+                    <CardHeader className="pb-1 p-3 md:p-4 md:pb-1">
+                        <CardTitle className="text-xs md:text-sm font-medium">Failed Logins</CardTitle>
                     </CardHeader>
-                    <CardContent>
-                        <p className="text-2xl font-bold text-red-500">
+                    <CardContent className="p-3 md:p-4 pt-0">
+                        <p className="text-lg md:text-xl font-bold text-red-500">
                             {logs.filter(l => l.action === 'login' && l.status === 'failure').length}
                         </p>
                     </CardContent>
                 </Card>
                 <Card>
-                    <CardHeader className="pb-2">
-                        <CardTitle className="text-sm font-medium">Deletions</CardTitle>
+                    <CardHeader className="pb-1 p-3 md:p-4 md:pb-1">
+                        <CardTitle className="text-xs md:text-sm font-medium">Deletions</CardTitle>
                     </CardHeader>
-                    <CardContent>
-                        <p className="text-2xl font-bold text-orange-500">
+                    <CardContent className="p-3 md:p-4 pt-0">
+                        <p className="text-lg md:text-xl font-bold text-orange-500">
                             {logs.filter(l => l.action === 'delete').length}
                         </p>
                     </CardContent>
                 </Card>
                 <Card>
-                    <CardHeader className="pb-2">
-                        <CardTitle className="text-sm font-medium">Retention</CardTitle>
+                    <CardHeader className="pb-1 p-3 md:p-4 md:pb-1">
+                        <CardTitle className="text-xs md:text-sm font-medium">Retention</CardTitle>
                     </CardHeader>
-                    <CardContent>
-                        <p className="text-2xl font-bold">90 days</p>
+                    <CardContent className="p-3 md:p-4 pt-0">
+                        <p className="text-lg md:text-xl font-bold">90 days</p>
                     </CardContent>
                 </Card>
             </div>

@@ -10,9 +10,9 @@ export default function PublicLayout({
   children: React.ReactNode;
 }) {
   return (
-    <div className="overflow-x-hidden w-full">
+    <div className="overflow-x-clip w-full">
       <Navbar />
-      <main className="w-full overflow-x-hidden">{children}</main>
+      <main className="w-full">{children}</main>
       <Footer />
     </div>
   );

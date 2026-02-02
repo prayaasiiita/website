@@ -29,7 +29,7 @@ const SpotlightCard: React.FC<SpotlightCardProps> = ({
 
   const handleFocus = () => {
     setIsFocused(true);
-    setOpacity(0.6);
+    setOpacity(0.8);
   };
 
   const handleBlur = () => {
@@ -38,7 +38,7 @@ const SpotlightCard: React.FC<SpotlightCardProps> = ({
   };
 
   const handleMouseEnter = () => {
-    setOpacity(0.6);
+    setOpacity(0.8);
   };
 
   const handleMouseLeave = () => {
@@ -53,13 +53,16 @@ const SpotlightCard: React.FC<SpotlightCardProps> = ({
       onBlur={handleBlur}
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
-      className={`relative rounded-3xl border border-neutral-800 bg-neutral-900 overflow-hidden p-8 ${className}`}
+      className={`relative rounded-3xl border border-neutral-800/50 bg-linear-to-br from-neutral-900 to-neutral-950 overflow-hidden p-8 transition-all duration-500 hover:border-neutral-700/50 hover:shadow-2xl hover:shadow-(--ngo-orange)/5 ${className}`}
     >
+      {/* Inner glow effect */}
+      <div className="absolute inset-0 bg-linear-to-br from-(--ngo-orange)/5 via-transparent to-(--ngo-green)/5 opacity-0 hover:opacity-100 transition-opacity duration-700 pointer-events-none" />
+      
       <div
-        className="pointer-events-none absolute inset-0 opacity-0 transition-opacity duration-500 ease-in-out"
+        className="pointer-events-none absolute inset-0 opacity-0 transition-opacity duration-500 ease-out"
         style={{
           opacity,
-          background: `radial-gradient(circle at ${position.x}px ${position.y}px, ${spotlightColor}, transparent 80%)`
+          background: `radial-gradient(circle at ${position.x}px ${position.y}px, ${spotlightColor}, transparent 60%)`
         }}
       />
       {children}

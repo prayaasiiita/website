@@ -1,8 +1,9 @@
 import { NextRequest, NextResponse } from 'next/server';
 import dbConnect from '@/src/lib/mongodb';
 import TeamGroup from '@/src/models/TeamGroup';
-import { verifyToken } from '@/src/lib/auth';
+import { requirePermission } from '@/src/lib/auth';
 import { revalidatePublicTags, TAGS } from '@/src/lib/revalidate-paths';
+import { createAuditLog } from '@/src/lib/audit';
 import {
   TEAM_API_SMAXAGE_SECONDS,
   TEAM_API_STALE_SECONDS,
@@ -11,13 +12,6 @@ import {
 const cacheHeaders = {
   'Cache-Control': `public, s-maxage=${TEAM_API_SMAXAGE_SECONDS}, stale-while-revalidate=${TEAM_API_STALE_SECONDS}`,
 };
-
-// Helper to verify admin authentication
-function verifyAdmin(request: NextRequest) {
-  const token = request.cookies.get('admin_token')?.value;
-  if (!token) return null;
-  return verifyToken(token);
-}
 
 // GET - Fetch all team groups with members
 export async function GET(request: NextRequest) {
@@ -37,18 +31,18 @@ export async function GET(request: NextRequest) {
       query.type = type;
     }
 
-    const groups = await TeamGroup.find(query).sort({ order: 1 });
+    const groups = await TeamGroup.find(query).sort({ order: 1 }).lean();
 
     // Filter out hidden members for public requests
     const processedGroups = groups.map((group) => {
-      const groupObj = group.toObject();
+      const groupObj = { ...group };
       if (!includeHidden) {
-        groupObj.members = groupObj.members
-          .filter((m: { isVisible: boolean }) => m.isVisible)
-          .sort((a: { order: number }, b: { order: number }) => a.order - b.order);
+        groupObj.members = (groupObj.members as Array<{ isVisible: boolean; order: number }>)
+          .filter((m) => m.isVisible)
+          .sort((a, b) => a.order - b.order);
       } else {
-        groupObj.members = groupObj.members.sort(
-          (a: { order: number }, b: { order: number }) => a.order - b.order
+        groupObj.members = (groupObj.members as Array<{ order: number }>).sort(
+          (a, b) => a.order - b.order
         );
       }
       return groupObj;
@@ -67,13 +61,12 @@ export async function GET(request: NextRequest) {
   }
 }
 
-// POST - Create a new team group (Admin only)
+// POST - Create a new team group (requires manage_team permission)
 export async function POST(request: NextRequest) {
   try {
-    const payload = verifyAdmin(request);
-    if (!payload) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
-    }
+    const authResult = await requirePermission(request, 'manage_team');
+    if ('error' in authResult) return authResult.error;
+    const adminPayload = authResult.admin;
 
     await dbConnect();
 
@@ -138,6 +131,18 @@ export async function POST(request: NextRequest) {
       order: groupOrder,
       members: [],
       isVisible: isVisible !== undefined ? isVisible : true,
+    });
+
+    // Audit log (non-blocking)
+    createAuditLog({
+      action: 'create',
+      resource: 'team_group',
+      resourceId: newGroup._id.toString(),
+      admin: adminPayload,
+      request,
+      changes: {
+        after: { name: sanitizedName, type: type || 'student', slug },
+      },
     });
 
     revalidatePublicTags([TAGS.TEAM, TAGS.PUBLIC]);

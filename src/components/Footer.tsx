@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { useEffect, useState } from "react";
 import {
   Mail,
   Phone,
@@ -16,10 +17,37 @@ import {
 import { links } from "@/details";
 import Image from "next/image";
 
+interface SiteSettings {
+  phone: string | null;
+  phoneVisible: boolean;
+  email: string | null;
+  emailVisible: boolean;
+  address: string | null;
+  addressVisible: boolean;
+}
+
 export function Footer() {
+  const [settings, setSettings] = useState<SiteSettings | null>(null);
+
+  useEffect(() => {
+    async function fetchSettings() {
+      try {
+        const res = await fetch("/api/site-settings");
+        if (res.ok) {
+          const data = await res.json();
+          setSettings(data.settings);
+        }
+      } catch (err) {
+        console.error("Failed to fetch site settings:", err);
+      }
+    }
+    fetchSettings();
+  }, []);
+
   const quickLinks = [
     { href: "/about", label: "About Us" },
-    { href: "/programs", label: "Our Programs" },
+    { href: "/our-work", label: "Our Programs" },
+    { href: "/events", label: "Events" },
     { href: "/impact", label: "Our Impact" },
     { href: "/gallery", label: "Gallery" },
     { href: "/get-involved", label: "Get Involved" },
@@ -27,10 +55,10 @@ export function Footer() {
   ];
 
   const programs = [
-    { href: "/programs#education", label: "Education & Tutoring" },
-    { href: "/programs#recreation", label: "Recreational Activities" },
-    { href: "/programs#life-skills", label: "Life Skills Development" },
-    { href: "/programs#outreach", label: "Community Outreach" },
+    { href: "/our-work#education", label: "Education & Tutoring" },
+    { href: "/our-work#recreation", label: "Recreational Activities" },
+    { href: "/our-work#life-skills", label: "Life Skills Development" },
+    { href: "/our-work#outreach", label: "Community Outreach" },
   ];
 
   const socialLinks = [
@@ -41,13 +69,25 @@ export function Footer() {
     { href: links.youtube, icon: Youtube, label: "YouTube", color: "hover:bg-[#FF0000]" },
   ];
 
+  // Use fetched settings or fallback to defaults
+  const displayAddress = settings?.address ?? "IIIT Allahabad, Jhalwa, Prayagraj, Uttar Pradesh 211015, India";
+  const displayEmail = settings?.email ?? "prayaas@iiita.ac.in";
+  const displayPhone = settings?.phone ?? "";
+
+  const showAddress = settings?.addressVisible ?? true;
+  const showEmail = settings?.emailVisible ?? true;
+  const showPhone = settings?.phoneVisible ?? true;
+
   return (
-    <footer className="relative bg-linear-to-br from-[#1a1a2e] via-[#16213e] to-[#0f1419] text-white">
+    <footer className="relative bg-linear-to-br from-[#2d3748] via-[#1e3a5f] to-[#1a365d] text-white overflow-hidden">
       {/* Decorative Background Elements */}
-      <div className="absolute inset-0 opacity-5 rounded-t-4xl overflow-hidden">
-        <div className="absolute top-0 right-0 w-96 h-96 bg-(--ngo-orange) rounded-full blur-3xl" />
-        <div className="absolute bottom-0 left-0 w-96 h-96 bg-(--ngo-green) rounded-full blur-3xl" />
+      <div className="absolute inset-0 opacity-10 rounded-t-4xl overflow-hidden">
+        <div className="absolute top-0 right-0 w-96 h-96 bg-(--ngo-orange) rounded-full blur-3xl animate-pulse" />
+        <div className="absolute bottom-0 left-0 w-96 h-96 bg-(--ngo-green) rounded-full blur-3xl animate-pulse" style={{ animationDelay: '1s' }} />
       </div>
+      
+      {/* Subtle grid pattern */}
+      <div className="absolute inset-0 opacity-[0.03]" style={{ backgroundImage: 'linear-gradient(rgba(255,255,255,0.1) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.1) 1px, transparent 1px)', backgroundSize: '40px 40px' }} />
 
       <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-6 sm:pt-8 md:pt-10 pb-3">
         {/* Main Footer Content */}
@@ -55,12 +95,12 @@ export function Footer() {
           {/* Brand Section */}
           <div className="space-y-2.5 lg:col-span-1 col-span-1">
             <Link href="/" className="inline-block group">
-              <Image 
-                src="/logo.png" 
-                alt="Prayaas Logo" 
-                width={140} 
-                height={93} 
-                className="h-16 w-auto sm:h-18 transition-transform duration-300 group-hover:scale-110" 
+              <Image
+                src="/logo.png"
+                alt="Prayaas Logo"
+                width={140}
+                height={93}
+                className="h-16 w-auto sm:h-18 transition-transform duration-300 group-hover:scale-110"
               />
             </Link>
             <p className="text-gray-300 leading-relaxed text-s sm:text-sm">
@@ -68,7 +108,7 @@ export function Footer() {
               quality education accessible to underprivileged children and
               creating lasting positive change in our community.
             </p>
-            
+
             {/* Social Media Icons */}
             <div>
               <p className="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-2">
@@ -81,7 +121,7 @@ export function Footer() {
                     href={social.href}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className={`w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-white/10 backdrop-blur-sm flex items-center justify-center hover:scale-110 transition-all duration-300 ${social.color} group`}
+                    className={`w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-white/10 backdrop-blur-sm flex items-center justify-center hover:scale-110 hover:-translate-y-1 transition-all duration-300 ${social.color} group border border-white/5 hover:border-white/20`}
                     aria-label={social.label}
                     title={social.label}
                   >
@@ -94,53 +134,53 @@ export function Footer() {
 
           {/* Quick Links & Programs - Side by side on mobile */}
           <div className="col-span-1 grid grid-cols-2 gap-5 sm:gap-6 lg:contents">
-          {/* Quick Links */}
-          <div>
-            <h3
-              className="text-base sm:text-lg font-bold mb-3.5 text-white relative inline-block"
-              style={{ fontFamily: "'Playfair Display', serif" }}
-            >
-              Quick Links
-              <span className="absolute -bottom-2 left-0 w-12 h-1 bg-(--ngo-orange) rounded-full" />
-            </h3>
-            <ul className="space-y-2.5">
-              {quickLinks.map((link) => (
-                <li key={link.href}>
-                  <Link
-                    href={link.href}
-                    className="text-gray-300 hover:text-(--ngo-orange) transition-all duration-200 text-sm sm:text-base py-0.5 flex items-center group"
-                  >
-                    <ArrowRight className="w-4 h-4 mr-2 opacity-0 -ml-6 group-hover:opacity-100 group-hover:ml-0 transition-all duration-300" />
-                    {link.label}
-                  </Link>
-                </li>
-              ))}
-            </ul>
-          </div>
+            {/* Quick Links */}
+            <div>
+              <h3
+                className="text-base sm:text-lg font-bold mb-3.5 text-white relative inline-block"
+                style={{ fontFamily: "'Playfair Display', serif" }}
+              >
+                Quick Links
+                <span className="absolute -bottom-2 left-0 w-12 h-1 bg-(--ngo-orange) rounded-full" />
+              </h3>
+              <ul className="space-y-2.5">
+                {quickLinks.map((link) => (
+                  <li key={link.href}>
+                    <Link
+                      href={link.href}
+                      className="text-gray-300 hover:text-(--ngo-orange) transition-all duration-200 text-sm sm:text-base py-0.5 flex items-center group"
+                    >
+                      <ArrowRight className="w-4 h-4 mr-2 opacity-0 -ml-6 group-hover:opacity-100 group-hover:ml-0 transition-all duration-300" />
+                      {link.label}
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            </div>
 
-          {/* Programs */}
-          <div>
-            <h3
-              className="text-base sm:text-lg font-bold mb-3.5 text-white relative inline-block"
-              style={{ fontFamily: "'Playfair Display', serif" }}
-            >
-              Our Programs
-              <span className="absolute -bottom-2 left-0 w-12 h-1 bg-(--ngo-orange) rounded-full" />
-            </h3>
-            <ul className="space-y-2.5">
-              {programs.map((link) => (
-                <li key={link.href}>
-                  <Link
-                    href={link.href}
-                    className="text-gray-300 hover:text-(--ngo-orange) transition-all duration-200 text-sm sm:text-base py-0.5 flex items-center group"
-                  >
-                    <ArrowRight className="w-4 h-4 mr-2 opacity-0 -ml-6 group-hover:opacity-100 group-hover:ml-0 transition-all duration-300" />
-                    {link.label}
-                  </Link>
-                </li>
-              ))}
-            </ul>
-          </div>
+            {/* Programs */}
+            <div>
+              <h3
+                className="text-base sm:text-lg font-bold mb-3.5 text-white relative inline-block"
+                style={{ fontFamily: "'Playfair Display', serif" }}
+              >
+                Our Programs
+                <span className="absolute -bottom-2 left-0 w-12 h-1 bg-(--ngo-orange) rounded-full" />
+              </h3>
+              <ul className="space-y-2.5">
+                {programs.map((link) => (
+                  <li key={link.href}>
+                    <Link
+                      href={link.href}
+                      className="text-gray-300 hover:text-(--ngo-orange) transition-all duration-200 text-sm sm:text-base py-0.5 flex items-center group"
+                    >
+                      <ArrowRight className="w-4 h-4 mr-2 opacity-0 -ml-6 group-hover:opacity-100 group-hover:ml-0 transition-all duration-300" />
+                      {link.label}
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            </div>
           </div>
 
           {/* Contact Information */}
@@ -153,36 +193,42 @@ export function Footer() {
               <span className="absolute -bottom-2 left-0 w-12 h-1 bg-(--ngo-orange) rounded-full" />
             </h3>
             <ul className="space-y-1.5">
-              <li className="flex items-start gap-2.5 group">
-                <div className="w-8 h-8 rounded-lg bg-(--ngo-orange)/10 flex items-center justify-center shrink-0 group-hover:bg-(--ngo-orange)/20 transition-colors">
-                  <MapPin className="w-4 h-4 text-(--ngo-orange)" />
-                </div>
-                <span className="text-gray-300 text-sm sm:text-base leading-relaxed pt-0.5">
-                  IIIT Allahabad, Jhalwa, Prayagraj, Uttar Pradesh 211015, India
-                </span>
-              </li>
-              <li className="flex items-center gap-2.5 group">
-                <div className="w-8 h-8 rounded-lg bg-(--ngo-orange)/10 flex items-center justify-center shrink-0 group-hover:bg-(--ngo-orange)/20 transition-colors">
-                  <Mail className="w-4 h-4 text-(--ngo-orange)" />
-                </div>
-                <a
-                  href="mailto:prayaas@iiita.ac.in"
-                  className="text-gray-300 hover:text-(--ngo-orange) transition-colors text-sm sm:text-base"
-                >
-                  prayaas@iiita.ac.in
-                </a>
-              </li>
-              <li className="flex items-center gap-2.5 group">
-                <div className="w-8 h-8 rounded-lg bg-(--ngo-orange)/10 flex items-center justify-center shrink-0 group-hover:bg-(--ngo-orange)/20 transition-colors">
-                  <Phone className="w-4 h-4 text-(--ngo-orange)" />
-                </div>
-                <a
-                  href="tel:+919876543210"
-                  className="text-gray-300 hover:text-(--ngo-orange) transition-colors text-sm sm:text-base"
-                >
-                  +91 98765 43210
-                </a>
-              </li>
+              {showAddress && displayAddress && (
+                <li className="flex items-start gap-2.5 group">
+                  <div className="w-8 h-8 rounded-lg bg-(--ngo-orange)/10 flex items-center justify-center shrink-0 group-hover:bg-(--ngo-orange)/20 transition-colors">
+                    <MapPin className="w-4 h-4 text-(--ngo-orange)" />
+                  </div>
+                  <span className="text-gray-300 text-sm sm:text-base leading-relaxed pt-0.5">
+                    {displayAddress}
+                  </span>
+                </li>
+              )}
+              {showEmail && displayEmail && (
+                <li className="flex items-center gap-2.5 group">
+                  <div className="w-8 h-8 rounded-lg bg-(--ngo-orange)/10 flex items-center justify-center shrink-0 group-hover:bg-(--ngo-orange)/20 transition-colors">
+                    <Mail className="w-4 h-4 text-(--ngo-orange)" />
+                  </div>
+                  <a
+                    href={`mailto:${displayEmail}`}
+                    className="text-gray-300 hover:text-(--ngo-orange) transition-colors text-sm sm:text-base"
+                  >
+                    {displayEmail}
+                  </a>
+                </li>
+              )}
+              {showPhone && displayPhone && (
+                <li className="flex items-center gap-2.5 group">
+                  <div className="w-8 h-8 rounded-lg bg-(--ngo-orange)/10 flex items-center justify-center shrink-0 group-hover:bg-(--ngo-orange)/20 transition-colors">
+                    <Phone className="w-4 h-4 text-(--ngo-orange)" />
+                  </div>
+                  <a
+                    href={`tel:${displayPhone.replace(/\s/g, '')}`}
+                    className="text-gray-300 hover:text-(--ngo-orange) transition-colors text-sm sm:text-base"
+                  >
+                    {displayPhone}
+                  </a>
+                </li>
+              )}
             </ul>
           </div>
         </div>
