@@ -12,6 +12,7 @@ import {
     Heart,
     Clock,
     Phone,
+    Users,
 } from "lucide-react";
 import { PageImagesMap, getCarouselImages, getImageSrc } from "@/src/components/DynamicImage";
 import { useEffect, useState } from "react";
@@ -223,50 +224,170 @@ function ProgramDetail({
 
 function CTASection({ images }: { images: PageImagesMap }) {
     const ctaSrc = getImageSrc(images, "cta", "background", "");
-    const ctaAlt = images["cta:background"]?.alt
+    const ctaAlt = images["cta:background"]?.alt || "Children learning";
 
     return (
-        <section className="py-8 sm:py-12 md:py-14 px-4 sm:px-6 lg:px-8">
-            <div className="relative overflow-hidden rounded-3xl sm:rounded-[40px] md:rounded-[50px] max-w-7xl mx-auto ">
-                <div className="absolute inset-0 bg-(--ngo-dark)">
-                    {ctaSrc && <><Image src={ctaSrc} alt={ctaAlt} fill className="object-cover" />
-                        <div className="hero-gradient absolute inset-0" />
-                        <div className="absolute inset-0 bg-linear-to-b from-black/70 via-black/45 to-black/30" /></>}
-                </div>
-                <div className="relative z-10 max-w-4xl mx-auto px-6 sm:px-8 lg:px-12 py-12 sm:py-14 md:py-16 text-center">
-                    <motion.div
-                        initial={{ opacity: 0, y: 30 }}
-                        whileInView={{ opacity: 1, y: 0 }}
-                        viewport={{ once: true }}
-                        transition={{ duration: 0.8 }}
-                    >
-                        <h2
-                            className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-white mb-4 sm:mb-6"
-                            style={{ fontFamily: "'Playfair Display', serif" }}
-                        >
-                            Help Us Expand Our Work
-                        </h2>
-                        <p className="text-white/90 text-sm sm:text-base md:text-lg mb-8 sm:mb-10 max-w-2xl mx-auto">
-                            Your support enables us to reach more children and create more
-                            impactful programs. Join us in making a difference.
-                        </p>
-                        <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center items-center">
-                            <Link
-                                href="/get-involved#donate"
-                                className="btn-primary flex items-center justify-center gap-2 w-full sm:w-auto max-w-xs"
+        <section className="py-14 sm:py-18 md:py-24 px-4 sm:px-6 lg:px-8 bg-linear-to-br from-white via-(--ngo-cream)/50 to-white relative overflow-hidden">
+            {/* Subtle background decoration */}
+            <div className="absolute top-0 right-0 w-96 h-96 bg-(--ngo-orange)/5 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2" />
+            <div className="absolute bottom-0 left-0 w-80 h-80 bg-(--ngo-green)/5 rounded-full blur-3xl translate-y-1/2 -translate-x-1/2" />
+            
+            <div className="relative z-10 w-full max-w-6xl mx-auto">
+                <div className="flex flex-col lg:flex-row items-center gap-12 lg:gap-20">
+                    
+                    {/* Left side - Creative visual */}
+                    <div className="relative w-full lg:w-5/12 flex justify-center">
+                        <div className="relative w-[300px] sm:w-[340px] h-[280px] sm:h-[320px]">
+                            
+                            {/* Decorative dots */}
+                            <div className="absolute -top-4 -left-4 w-3 h-3 rounded-full bg-(--ngo-orange)/60" />
+                            <div className="absolute top-8 -left-8 w-2 h-2 rounded-full bg-(--ngo-green)/50" />
+                            <div className="absolute -top-2 right-16 w-2 h-2 rounded-full bg-(--ngo-yellow)/70" />
+                            <div className="absolute bottom-12 -right-6 w-3 h-3 rounded-full bg-(--ngo-orange)/40" />
+                            <div className="absolute -bottom-4 left-20 w-2 h-2 rounded-full bg-(--ngo-green)/60" />
+                            
+                            {/* Background gradient blob */}
+                            <div className="absolute -inset-4 bg-linear-to-br from-(--ngo-orange)/10 via-transparent to-(--ngo-green)/10 rounded-[60px] blur-xl" />
+                            
+                            {/* Main image card */}
+                            <motion.div 
+                                className="absolute inset-0 rounded-3xl overflow-hidden shadow-2xl"
+                                initial={{ opacity: 0, scale: 0.9 }}
+                                whileInView={{ opacity: 1, scale: 1 }}
+                                viewport={{ once: true }}
+                                transition={{ duration: 0.5 }}
                             >
-                                <Heart className="w-4 h-4 sm:w-5 sm:h-5" />
-                                Support Our Work
-                            </Link>
-                            <Link
-                                href="/get-involved#volunteer"
-                                className="btn-outline flex items-center justify-center gap-2 w-full sm:w-auto max-w-xs"
+                                {ctaSrc ? (
+                                    <Image 
+                                        src={ctaSrc} 
+                                        alt={ctaAlt} 
+                                        fill 
+                                        className="object-cover" 
+                                    />
+                                ) : (
+                                    <div className="w-full h-full bg-linear-to-br from-(--ngo-orange)/20 to-(--ngo-green)/20 flex items-center justify-center">
+                                        <BookOpen className="w-16 h-16 text-(--ngo-orange)/40" />
+                                    </div>
+                                )}
+                                <div className="absolute inset-0 bg-linear-to-t from-(--ngo-dark)/40 via-transparent to-transparent" />
+                                
+                                {/* Gradient border effect */}
+                                <div className="absolute inset-0 rounded-3xl ring-2 ring-white/50" />
+                            </motion.div>
+                            
+                            {/* Floating stat card - top right */}
+                            <motion.div 
+                                className="absolute -top-6 -right-4 sm:-right-8"
+                                initial={{ opacity: 0, y: 20 }}
+                                whileInView={{ opacity: 1, y: 0 }}
+                                viewport={{ once: true }}
+                                transition={{ delay: 0.3 }}
+                                animate={{ y: [0, -6, 0] }}
                             >
-                                <Phone className="w-4 h-4 sm:w-5 sm:h-5" />
-                                Volunteer With Us
-                            </Link>
+                                <div className="bg-white rounded-2xl shadow-xl p-3 sm:p-4 border border-(--ngo-gray)/5">
+                                    <div className="flex items-center gap-3">
+                                        <div className="w-10 h-10 rounded-xl bg-linear-to-br from-(--ngo-green) to-emerald-500 flex items-center justify-center shadow-md">
+                                            <BookOpen className="w-5 h-5 text-white" />
+                                        </div>
+                                        <div>
+                                            <p className="text-lg font-bold text-(--ngo-dark)">4+</p>
+                                            <p className="text-xs text-(--ngo-gray)">Programs</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </motion.div>
+                            
+                            {/* Floating stat card - bottom left */}
+                            <motion.div 
+                                className="absolute -bottom-6 -left-4 sm:-left-8"
+                                initial={{ opacity: 0, y: -20 }}
+                                whileInView={{ opacity: 1, y: 0 }}
+                                viewport={{ once: true }}
+                                transition={{ delay: 0.4 }}
+                                animate={{ y: [0, 6, 0] }}
+                            >
+                                <div className="bg-white rounded-2xl shadow-xl p-3 sm:p-4 border border-(--ngo-gray)/5">
+                                    <div className="flex items-center gap-3">
+                                        <div className="w-10 h-10 rounded-xl bg-linear-to-br from-(--ngo-orange) to-(--ngo-orange-dark) flex items-center justify-center shadow-md">
+                                            <Users className="w-5 h-5 text-white" />
+                                        </div>
+                                        <div>
+                                            <p className="text-lg font-bold text-(--ngo-dark)">5000+</p>
+                                            <p className="text-xs text-(--ngo-gray)">Lives Touched</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </motion.div>
+                            
+                            {/* Corner accent lines */}
+                            <div className="absolute -top-2 -left-2 w-8 h-8">
+                                <div className="absolute top-0 left-0 w-full h-0.5 bg-linear-to-r from-(--ngo-orange) to-transparent" />
+                                <div className="absolute top-0 left-0 w-0.5 h-full bg-linear-to-b from-(--ngo-orange) to-transparent" />
+                            </div>
+                            <div className="absolute -bottom-2 -right-2 w-8 h-8">
+                                <div className="absolute bottom-0 right-0 w-full h-0.5 bg-linear-to-l from-(--ngo-green) to-transparent" />
+                                <div className="absolute bottom-0 right-0 w-0.5 h-full bg-linear-to-t from-(--ngo-green) to-transparent" />
+                            </div>
                         </div>
-                    </motion.div>
+                    </div>
+                    
+                    {/* Right side - Content */}
+                    <div className="flex-1 text-center lg:text-left">
+                        <motion.div
+                            initial={{ opacity: 0, y: 20 }}
+                            whileInView={{ opacity: 1, y: 0 }}
+                            viewport={{ once: true }}
+                            transition={{ duration: 0.6 }}
+                        >
+                            <span className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-(--ngo-orange)/10 text-(--ngo-orange) text-sm font-semibold mb-5">
+                                <span className="w-1.5 h-1.5 rounded-full bg-(--ngo-orange) animate-pulse" />
+                                Expand Our Impact
+                            </span>
+                            
+                            <h2
+                                className="text-3xl sm:text-4xl lg:text-5xl font-bold text-(--ngo-dark) mb-5 leading-tight"
+                                style={{ fontFamily: "'Playfair Display', serif" }}
+                            >
+                                Help Us Grow{" "}
+                                <span className="relative inline-block">
+                                    <span className="text-(--ngo-orange)">Our Work</span>
+                                    <svg className="absolute -bottom-1 left-0 w-full" height="8" viewBox="0 0 100 8" preserveAspectRatio="none">
+                                        <path d="M0 6 Q 25 0, 50 6 T 100 6" stroke="var(--ngo-green)" strokeWidth="3" fill="none" strokeLinecap="round" opacity="0.4"/>
+                                    </svg>
+                                </span>
+                            </h2>
+                            
+                            <p className="text-(--ngo-gray) text-base sm:text-lg mb-8 max-w-lg mx-auto lg:mx-0 leading-relaxed">
+                                Your support enables us to reach more children and create more 
+                                impactful programs. Join us in making a difference.
+                            </p>
+
+                            {/* CTA Buttons */}
+                            <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
+                                <Link
+                                    href="/get-involved#donate"
+                                    className="group relative inline-flex items-center justify-center gap-2 px-7 py-3.5 rounded-full bg-linear-to-r from-(--ngo-orange) to-(--ngo-orange-dark) text-white font-semibold shadow-lg shadow-(--ngo-orange)/20 hover:shadow-xl hover:-translate-y-0.5 transition-all duration-300 overflow-hidden"
+                                >
+                                    <span className="absolute inset-0 bg-linear-to-r from-transparent via-white/20 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-500" />
+                                    <Heart className="w-5 h-5" fill="currentColor" />
+                                    <span className="relative">Support Our Work</span>
+                                </Link>
+                                <Link
+                                    href="/get-involved#volunteer"
+                                    className="group inline-flex items-center justify-center gap-2 px-7 py-3.5 rounded-full bg-white border-2 border-(--ngo-gray)/10 text-(--ngo-dark) font-semibold hover:border-(--ngo-green) hover:text-(--ngo-green) transition-all duration-300 shadow-sm hover:shadow-md"
+                                >
+                                    <Phone className="w-5 h-5" />
+                                    Volunteer With Us
+                                </Link>
+                            </div>
+                            
+                            {/* Simple trust line */}
+                            <p className="mt-6 text-sm text-(--ngo-gray) flex items-center justify-center lg:justify-start gap-2">
+                                <span className="text-(--ngo-yellow)">★★★★★</span>
+                                <span>Making an impact since 2003</span>
+                            </p>
+                        </motion.div>
+                    </div>
                 </div>
             </div>
         </section>

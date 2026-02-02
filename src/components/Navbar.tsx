@@ -39,12 +39,12 @@ export function Navbar() {
 
   return (
     <nav
-      className={`fixed top-0 left-0 right-0 z-80 w-full transition-all duration-300 ${
+      className={`fixed top-0 left-0 right-0 z-80 w-full transition-all duration-500 ${
         isOpen
           ? "bg-white shadow-lg py-3"
           : scrolled
-          ? "bg-white/95 backdrop-blur-md shadow-lg py-2"
-          : "bg-transparent py-3"
+          ? "bg-white/90 backdrop-blur-lg shadow-[0_4px_30px_rgba(0,0,0,0.1)] py-2 border-b border-white/20"
+          : "bg-gradient-to-b from-black/20 to-transparent py-3"
       }`}
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full">
@@ -72,10 +72,11 @@ export function Navbar() {
           <div className="hidden lg:flex items-center gap-4">
             <Link
               href="/get-involved#donate"
-              className="flex items-center gap-2 px-4 xl:px-5 py-2 xl:py-2.5 rounded-full font-semibold bg-(--ngo-orange) text-white hover:bg-(--ngo-orange-dark) transition-all duration-300 shadow-md hover:shadow-lg"
+              className="group relative flex items-center gap-2 px-4 xl:px-5 py-2 xl:py-2.5 rounded-full font-semibold bg-gradient-to-r from-[var(--ngo-orange)] to-[var(--ngo-orange-dark)] text-white hover:from-[var(--ngo-orange-dark)] hover:to-[var(--ngo-orange)] transition-all duration-300 shadow-md hover:shadow-[0_8px_30px_rgba(232,90,79,0.4)] hover:scale-105 overflow-hidden"
             >
-              <Heart className="w-4 h-4" />
-              Donate
+              <span className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-700" />
+              <Heart className="w-4 h-4 group-hover:scale-110 transition-transform" />
+              <span className="relative">Donate</span>
             </Link>
           </div>
 

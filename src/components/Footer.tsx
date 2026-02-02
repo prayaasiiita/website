@@ -79,12 +79,15 @@ export function Footer() {
   const showPhone = settings?.phoneVisible ?? true;
 
   return (
-    <footer className="relative bg-linear-to-br from-[#1a1a2e] via-[#16213e] to-[#0f1419] text-white">
+    <footer className="relative bg-linear-to-br from-[#2d3748] via-[#1e3a5f] to-[#1a365d] text-white overflow-hidden">
       {/* Decorative Background Elements */}
-      <div className="absolute inset-0 opacity-5 rounded-t-4xl overflow-hidden">
-        <div className="absolute top-0 right-0 w-96 h-96 bg-(--ngo-orange) rounded-full blur-3xl" />
-        <div className="absolute bottom-0 left-0 w-96 h-96 bg-(--ngo-green) rounded-full blur-3xl" />
+      <div className="absolute inset-0 opacity-10 rounded-t-4xl overflow-hidden">
+        <div className="absolute top-0 right-0 w-96 h-96 bg-(--ngo-orange) rounded-full blur-3xl animate-pulse" />
+        <div className="absolute bottom-0 left-0 w-96 h-96 bg-(--ngo-green) rounded-full blur-3xl animate-pulse" style={{ animationDelay: '1s' }} />
       </div>
+      
+      {/* Subtle grid pattern */}
+      <div className="absolute inset-0 opacity-[0.03]" style={{ backgroundImage: 'linear-gradient(rgba(255,255,255,0.1) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.1) 1px, transparent 1px)', backgroundSize: '40px 40px' }} />
 
       <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-6 sm:pt-8 md:pt-10 pb-3">
         {/* Main Footer Content */}
@@ -118,7 +121,7 @@ export function Footer() {
                     href={social.href}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className={`w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-white/10 backdrop-blur-sm flex items-center justify-center hover:scale-110 transition-all duration-300 ${social.color} group`}
+                    className={`w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-white/10 backdrop-blur-sm flex items-center justify-center hover:scale-110 hover:-translate-y-1 transition-all duration-300 ${social.color} group border border-white/5 hover:border-white/20`}
                     aria-label={social.label}
                     title={social.label}
                   >
