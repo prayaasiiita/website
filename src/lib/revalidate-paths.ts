@@ -11,6 +11,9 @@ export const TAGS = {
     TEAM: "team",
     CONTENT: "content",
     PAGE_IMAGES: "page-images",
+    EMPOWERMENTS: "empowerments",
+    TAGS: "tags",
+    SITE_SETTINGS: "site-settings",
 };
 
 /**
@@ -22,6 +25,8 @@ export function revalidatePublicTags(extraTags: string[] = []) {
         TAGS.EVENTS,
         TAGS.TEAM,
         TAGS.CONTENT,
+        TAGS.EMPOWERMENTS,
+        TAGS.TAGS,
         ...extraTags,
     ]);
 

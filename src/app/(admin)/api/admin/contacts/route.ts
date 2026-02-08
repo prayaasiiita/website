@@ -1,22 +1,17 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { verifyAuth } from '@/src/lib/auth';
+import { requirePermission } from '@/src/lib/auth';
 import dbConnect from '@/src/lib/mongodb';
 import ContactSubmission from '@/src/models/ContactSubmission';
 
 /**
  * GET /api/admin/contacts
- * Fetch all contact form submissions (requires admin authentication)
+ * Fetch all contact form submissions (requires manage_contacts permission)
  */
 export async function GET(request: NextRequest) {
     try {
-        // Verify admin authentication
-        const authResult = await verifyAuth(request);
-        if (!authResult) {
-            return NextResponse.json(
-                { error: 'Unauthorized' },
-                { status: 401 }
-            );
-        }
+        // Verify admin authentication and permission
+        const authResult = await requirePermission(request, 'manage_contacts');
+        if ('error' in authResult) return authResult.error;
 
         // Connect to database
         await dbConnect();

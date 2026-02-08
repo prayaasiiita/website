@@ -118,7 +118,8 @@ function checkRateLimit(identifier: string): boolean {
 }
 
 // Authentication helper
-async function authenticateAdmin(_request: NextRequest): Promise<{ success: boolean; error?: string; userId?: string }> {
+async function authenticateAdmin(request: NextRequest): Promise<{ success: boolean; error?: string; userId?: string }> {
+    void request; // request currently unused but kept for future use
     try {
         const cookieStore = await cookies();
         const token = cookieStore.get('admin_token')?.value;

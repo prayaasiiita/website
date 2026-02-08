@@ -120,7 +120,6 @@ interface PageImage {
 type GroupedImages = Record<string, Record<string, PageImage[]>>;
 
 export default function ImagesManagement() {
-    const [images, setImages] = useState<PageImage[]>([]);
     const [grouped, setGrouped] = useState<GroupedImages>({});
     const [loading, setLoading] = useState(true);
     const [allowedPages, setAllowedPages] = useState<string[]>([]);
@@ -161,7 +160,6 @@ export default function ImagesManagement() {
             const data = await res.json();
 
             if (res.ok) {
-                setImages(data.images || []);
                 setGrouped(data.grouped || {});
                 setAllowedPages(data.allowedPages || []);
                 setAllowedSections(data.allowedSections || []);

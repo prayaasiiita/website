@@ -9,16 +9,18 @@ import {
     Heart,
     Users,
     BookOpen,
-    Palette,
-    Lightbulb,
-    HandHeart,
     ArrowRight,
-    Quote,
     Calendar,
     Phone,
 } from "lucide-react";
 import PhotoGridSection from "@/src/components/PhotoGridSection";
 import { PageImagesMap, getImageSrc, getCarouselImages } from "@/src/components/DynamicImage";
+import EmpCard from "@/src/components/ui/empCard";
+import { Program } from "@/src/components/ui/program";
+import { StudentSvg } from "@/src/components/svg/StudentSvg";
+import { DrawingSvg } from "@/src/components/svg/DrawingSvg";
+import { ChildrenPlayingSvg } from "@/src/components/svg/ChildrenPlayingSvg";
+import { HelpingHandSvg } from "@/src/components/svg/HelpingHandSvg";
 
 // Default fallback images
 const FALLBACK_IMAGES = {
@@ -76,6 +78,12 @@ function HeroSection({ images }: { images: PageImagesMap }) {
     const heroAlt = images["hero:main"]?.alt || FALLBACK_IMAGES.hero.alt;
     return (
         <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
+            {/* Animated background decorations */}
+            <div className="absolute inset-0 overflow-hidden pointer-events-none">
+                <div className="absolute top-1/4 -left-20 w-72 h-72 bg-(--ngo-orange) rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-blob" />
+                <div className="absolute top-1/3 -right-20 w-72 h-72 bg-(--ngo-green) rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-blob animation-delay-200" />
+                <div className="absolute bottom-1/4 left-1/3 w-72 h-72 bg-(--ngo-yellow) rounded-full mix-blend-multiply filter blur-3xl opacity-15 animate-blob animation-delay-400" />
+            </div>
             <div className="absolute inset-0">
                 <Image
                     src={heroSrc}
@@ -93,8 +101,11 @@ function HeroSection({ images }: { images: PageImagesMap }) {
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ duration: 0.8 }}
                 >
-                    <span className="inline-block px-3 sm:px-4 py-2 bg-white/10 backdrop-blur-xs rounded-3xl text-white text-base sm:text-sm font-medium mb-4 sm:mb-6 shadow-lg">
-                        A Students Initiative at IIIT Allahabad
+                    <span className="inline-block px-4 sm:px-5 py-2.5 bg-white/10 backdrop-blur-md rounded-full text-white text-base sm:text-sm font-medium mb-4 sm:mb-6 shadow-lg border border-white/20 hover:bg-white/15 transition-all duration-300">
+                        <span className="inline-flex items-center gap-2">
+                            <span className="w-2 h-2 bg-(--ngo-orange) rounded-full animate-pulse" />
+                            A Students Initiative at IIIT Allahabad
+                        </span>
                     </span>
                 </motion.div>
                 <motion.h1
@@ -106,7 +117,7 @@ function HeroSection({ images }: { images: PageImagesMap }) {
                 >
                     Empowering Lives,
                     <br />
-                    <span className="bg-linear-to-r from-[#FFF6A5] via-[#F2C94C] to-[#fedc8d] bg-clip-text text-transparent drop-shadow-[0_0_2px_rgba(242,201,76,0.45)]">
+                    <span className="bg-linear-to-r from-[#FFF6A5] via-[#F2C94C] to-[#fedc8d] bg-clip-text text-transparent drop-shadow-[0_0_2px_rgba(242,201,76,0.45)] animate-gradient bg-[length:200%_auto]">
                         Education is Opportunity to Success
                     </span>
                 </motion.h1>
@@ -114,7 +125,7 @@ function HeroSection({ images }: { images: PageImagesMap }) {
                     initial={{ opacity: 0, y: 30 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ duration: 0.8, delay: 0.4 }}
-                    className="text-xl sm:text-base md:text-lg lg:text-xl text-white/90 max-w-3xl mx-auto mb-8 sm:mb-10 px-4"
+                    className="text-xl sm:text-base md:text-lg lg:text-xl text-white/90 max-w-3xl mx-auto mb-8 sm:mb-10 px-4 leading-relaxed"
                 >
                     Prayaas is an earnest attempt to bring sunshine in wearisome lives. It
                     is a volunteer movement initiated by student fraternity of IIIT
@@ -128,18 +139,34 @@ function HeroSection({ images }: { images: PageImagesMap }) {
                 >
                     <Link
                         href="/get-involved#donate"
-                        className="btn-primary flex items-center justify-center gap-2 w-full sm:w-auto max-w-xs"
+                        className="btn-primary flex items-center justify-center gap-2 w-full sm:w-auto max-w-xs group"
                     >
-                        <Heart className="w-4 h-4 sm:w-5 sm:h-5" />
+                        <Heart className="w-4 h-4 sm:w-5 sm:h-5 group-hover:scale-110 transition-transform" />
                         Donate Now
                     </Link>
                     <Link
                         href="/contact-us"
-                        className="btn-outline flex items-center justify-center gap-2 w-full sm:w-auto max-w-xs"
+                        className="btn-outline flex items-center justify-center gap-2 w-full sm:w-auto max-w-xs group"
                     >
-                        <Users className="w-4 h-4 sm:w-5 sm:h-5" />
+                        <Users className="w-4 h-4 sm:w-5 sm:h-5 group-hover:scale-110 transition-transform" />
                         Contact Us
                     </Link>
+                </motion.div>
+                {/* Scroll indicator */}
+                <motion.div 
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    transition={{ duration: 0.8, delay: 1.2 }}
+                    className="absolute bottom-8 left-1/2 -translate-x-1/2 hidden sm:flex flex-col items-center gap-2"
+                >
+                    <span className="text-white/60 text-xs uppercase tracking-widest">Scroll</span>
+                    <motion.div 
+                        animate={{ y: [0, 8, 0] }}
+                        transition={{ duration: 1.5, repeat: Infinity, ease: "easeInOut" }}
+                        className="w-6 h-10 rounded-full border-2 border-white/30 flex justify-center pt-2"
+                    >
+                        <div className="w-1.5 h-1.5 bg-white/60 rounded-full" />
+                    </motion.div>
                 </motion.div>
             </div>
         </section>
@@ -165,8 +192,10 @@ function AboutSection({ images }: { images: PageImagesMap }) {
     };
 
     return (
-        <section className="bg-white py-12 sm:py-16 md:py-20">
-            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <section className="bg-white py-12 sm:py-16 md:py-20 relative overflow-hidden">
+            {/* Subtle background pattern */}
+            <div className="absolute inset-0 dots-pattern opacity-30" />
+            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative">
                 <div className="grid lg:grid-cols-2 gap-8 sm:gap-12 lg:gap-16 items-center">
                     <motion.div
                         initial={{ opacity: 0, x: -50 }}
@@ -174,14 +203,21 @@ function AboutSection({ images }: { images: PageImagesMap }) {
                         viewport={{ once: true }}
                         transition={{ duration: 0.8 }}
                     >
-                        <span className="text-(--ngo-orange) font-semibold uppercase tracking-wider text-xs sm:text-sm">
+                        <span className="text-(--ngo-orange) font-semibold uppercase tracking-wider text-xs sm:text-sm inline-flex items-center gap-2">
+                            <span className="w-8 h-[2px] bg-(--ngo-orange)" />
                             About Prayaas
                         </span>
                         <h2
-                            className="text-3xl sm:text-4xl md:text-5xl font-bold text-(--ngo-dark) mt-2 mb-4 sm:mb-6"
+                            className="text-3xl sm:text-4xl md:text-5xl font-bold text-(--ngo-dark) mt-3 mb-4 sm:mb-6"
                             style={{ fontFamily: "'Playfair Display', serif" }}
                         >
-                            Transforming Communities Through Education
+                            Transforming Communities Through{" "}
+                            <span className="relative inline-block">
+                                Education
+                                <svg className="absolute -bottom-2 left-0 w-full" height="8" viewBox="0 0 100 8" preserveAspectRatio="none">
+                                    <path d="M0 7 Q 25 0, 50 7 T 100 7" stroke="var(--ngo-orange)" strokeWidth="3" fill="none" strokeLinecap="round" opacity="0.6"/>
+                                </svg>
+                            </span>
                         </h2>
                         <p className="text-(--ngo-gray) text-sm sm:text-base md:text-lg leading-relaxed mb-4 sm:mb-6">
                             Prayaas, which means &ldquo;effort&rdquo; in Hindi, is a student-run
@@ -201,18 +237,23 @@ function AboutSection({ images }: { images: PageImagesMap }) {
                                 { icon: BookOpen, label: "Education", color: "var(--ngo-green)" },
                                 { icon: Users, label: "Community", color: "var(--ngo-yellow)" },
                             ].map((item) => (
-                                <div key={item.label} className="text-center">
+                                <motion.div 
+                                    key={item.label} 
+                                    className="text-center group"
+                                    whileHover={{ y: -4 }}
+                                    transition={{ duration: 0.3 }}
+                                >
                                     <div
-                                        className="w-12 h-12 sm:w-14 sm:h-14 rounded-full mx-auto mb-2 sm:mb-3 flex items-center justify-center"
-                                        style={{ backgroundColor: `${item.color}20` }}
+                                        className="w-12 h-12 sm:w-14 sm:h-14 rounded-2xl mx-auto mb-2 sm:mb-3 flex items-center justify-center transition-all duration-300 group-hover:shadow-lg group-hover:scale-105"
+                                        style={{ backgroundColor: `${item.color}15`, boxShadow: `0 4px 20px ${item.color}20` }}
                                     >
                                         <item.icon
-                                            className="w-6 h-6 sm:w-7 sm:h-7 md:w-9 md:h-9"
+                                            className="w-6 h-6 sm:w-7 sm:h-7 md:w-8 md:h-8 transition-transform duration-300 group-hover:scale-110"
                                             style={{ color: item.color }}
                                         />
                                     </div>
                                     <span className="font-bold text-(--ngo-dark) text-xs sm:text-sm md:text-base">{item.label}</span>
-                                </div>
+                                </motion.div>
                             ))}
                         </div>
                     </motion.div>
@@ -223,7 +264,7 @@ function AboutSection({ images }: { images: PageImagesMap }) {
                         transition={{ duration: 0.8 }}
                         className="relative"
                     >
-                        <div className="relative z-10 rounded-xl sm:rounded-2xl overflow-hidden shadow-xl sm:shadow-2xl transition-transform duration-300 hover:scale-[1.02]">
+                        <div className="relative z-10 rounded-2xl sm:rounded-3xl overflow-hidden shadow-2xl transition-all duration-500 hover:shadow-[0_25px_60px_-15px_rgba(0,0,0,0.25)]">
                             <motion.div
                                 className="flex"
                                 animate={{ x: `-${activeIndex * 100}%` }}
@@ -243,23 +284,27 @@ function AboutSection({ images }: { images: PageImagesMap }) {
                                     </div>
                                 ))}
                             </motion.div>
-                            <div className="absolute inset-x-0 bottom-3 sm:bottom-4 flex items-center justify-center gap-2">
+                            <div className="absolute inset-x-0 bottom-4 sm:bottom-5 flex items-center justify-center gap-2.5">
                                 {aboutImages.map((_, index) => (
                                     <button
                                         key={`dot-${index}`}
                                         type="button"
                                         aria-label={`Show slide ${index + 1}`}
                                         onClick={() => handleDotClick(index)}
-                                        className={`h-2 sm:h-2.5 rounded-full transition-all duration-300 ${activeIndex === index
-                                            ? "w-6 sm:w-8 bg-(--ngo-orange)"
-                                            : "w-2 sm:w-3 bg-white/70 hover:bg-white"
+                                        className={`h-2 sm:h-2.5 rounded-full transition-all duration-300 shadow-sm ${activeIndex === index
+                                            ? "w-8 sm:w-10 bg-(--ngo-orange)"
+                                            : "w-2 sm:w-2.5 bg-white/70 hover:bg-white hover:scale-110"
                                             }`}
                                     />
                                 ))}
                             </div>
                         </div>
-                        <div className="absolute -bottom-4 -left-4 sm:-bottom-6 sm:-left-6 w-48 h-48 sm:w-72 sm:h-72 bg-(--ngo-orange)/10 rounded-xl sm:rounded-2xl -z-10" />
-                        <div className="absolute -top-4 -right-4 sm:-top-6 sm:-right-6 w-32 h-32 sm:w-48 sm:h-48 bg-(--ngo-green)/10 rounded-xl sm:rounded-2xl -z-10" />
+                        {/* Decorative elements with animation */}
+                        <div className="absolute -bottom-4 -left-4 sm:-bottom-6 sm:-left-6 w-48 h-48 sm:w-72 sm:h-72 bg-linear-to-br from-(--ngo-orange)/15 to-(--ngo-orange)/5 rounded-2xl sm:rounded-3xl -z-10 animate-float-slow" />
+                        <div className="absolute -top-4 -right-4 sm:-top-6 sm:-right-6 w-32 h-32 sm:w-48 sm:h-48 bg-linear-to-br from-(--ngo-green)/15 to-(--ngo-green)/5 rounded-2xl sm:rounded-3xl -z-10 animate-float" style={{ animationDelay: '1s' }} />
+                        {/* Additional decorative dots */}
+                        <div className="absolute top-1/2 -right-8 w-4 h-4 bg-(--ngo-orange) rounded-full opacity-60 animate-pulse hidden lg:block" />
+                        <div className="absolute bottom-1/4 -left-6 w-3 h-3 bg-(--ngo-green) rounded-full opacity-60 animate-pulse hidden lg:block" style={{ animationDelay: '0.5s' }} />
                     </motion.div>
                 </div>
             </div>
@@ -267,104 +312,132 @@ function AboutSection({ images }: { images: PageImagesMap }) {
     );
 }
 
-function ProgramsSection() {
+function OurWorkSection() {
     const programs = [
         {
-            icon: BookOpen,
+            icon: StudentSvg,
             title: "Education & Tutoring",
             description:
                 "Regular classes covering academics, computer literacy, and language skills to help children excel in their studies.",
             color: "var(--ngo-orange)",
+            gradient: "from-orange-400 to-orange-600",
         },
         {
-            icon: Palette,
+            icon: DrawingSvg,
             title: "Recreational Activities",
             description:
                 "Art, music, sports, and cultural programs that foster creativity and teamwork among children.",
-            color: "var(--ngo-green)",
+            color: "#10b981",
+            gradient: "from-emerald-400 to-emerald-600",
         },
         {
-            icon: Lightbulb,
+            icon: ChildrenPlayingSvg,
             title: "Life Skills Development",
             description:
                 "Sessions on hygiene, communication, leadership, and other essential skills for holistic growth.",
-            color: "var(--ngo-yellow)",
+            color: "#f59e0b",
+            gradient: "from-amber-400 to-amber-600",
         },
         {
-            icon: HandHeart,
+            icon: HelpingHandSvg,
             title: "Community Outreach",
             description:
                 "Health camps, awareness drives, and community events that extend our impact beyond the classroom.",
             color: "#8b5cf6",
+            gradient: "from-violet-400 to-violet-600",
         },
     ];
 
     return (
-        <section className="section-gradient py-12 sm:py-16 md:py-20">
-            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <section className="py-16 sm:py-20 md:py-24 relative overflow-hidden bg-linear-to-b from-white via-(--ngo-cream)/30 to-white">
+            {/* Decorative background elements */}
+            <div className="absolute top-20 right-10 w-72 h-72 bg-(--ngo-orange)/5 rounded-full blur-3xl" />
+            <div className="absolute bottom-20 left-10 w-72 h-72 bg-(--ngo-green)/5 rounded-full blur-3xl" />
+            
+            {/* Floating decorative shapes */}
+            <div className="absolute top-32 left-20 w-4 h-4 bg-(--ngo-orange)/30 rounded-full animate-float hidden lg:block" />
+            <div className="absolute top-48 right-32 w-3 h-3 bg-(--ngo-green)/30 rounded-full animate-float-slow hidden lg:block" />
+            <div className="absolute bottom-40 left-1/4 w-2 h-2 bg-(--ngo-yellow)/40 rounded-full animate-pulse hidden lg:block" />
+            
+            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative">
                 <motion.div
                     initial={{ opacity: 0, y: 30 }}
                     whileInView={{ opacity: 1, y: 0 }}
                     viewport={{ once: true }}
                     transition={{ duration: 0.8 }}
-                    className="text-center mb-10 sm:mb-12 md:mb-16"
+                    className="text-center mb-12 sm:mb-16"
                 >
-                    <span className="text-(--ngo-orange) font-semibold uppercase tracking-wider text-xs sm:text-sm">
-                        What We Do
-                    </span>
+                    <motion.div 
+                        className="inline-flex items-center gap-3 px-5 py-2 rounded-full bg-white shadow-sm border border-(--ngo-orange)/10 mb-5"
+                        whileHover={{ scale: 1.02 }}
+                    >
+                        <span className="w-2 h-2 rounded-full bg-(--ngo-orange)" />
+                        <span className="text-(--ngo-orange) font-semibold uppercase tracking-wider text-xs sm:text-sm">What We Do</span>
+                        <span className="w-2 h-2 rounded-full bg-(--ngo-green)" />
+                    </motion.div>
+                    
                     <h2
-                        className="text-3xl sm:text-4xl md:text-5xl font-bold text-(--ngo-dark) mt-2 mb-3 sm:mb-4"
+                        className="text-3xl sm:text-4xl md:text-5xl font-bold text-(--ngo-dark) mb-4"
                         style={{ fontFamily: "'Playfair Display', serif" }}
                     >
-                        Our Programs
+                        Programs That{" "}
+                        <span className="relative inline-block">
+                            <span className="text-(--ngo-orange)">Empower</span>
+                            <svg className="absolute -bottom-1 left-0 w-full" height="8" viewBox="0 0 100 8" preserveAspectRatio="none">
+                                <path d="M0 6 Q 25 0, 50 6 T 100 6" stroke="var(--ngo-green)" strokeWidth="3" fill="none" strokeLinecap="round" opacity="0.4"/>
+                            </svg>
+                        </span>
                     </h2>
-                    <p className="text-(--ngo-gray) text-sm sm:text-base md:text-lg max-w-2xl mx-auto px-4">
+                    <p className="text-(--ngo-gray) text-base sm:text-lg max-w-2xl mx-auto">
                         We run comprehensive programs designed to nurture every aspect of a
                         child&apos;s development
                     </p>
                 </motion.div>
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 lg:gap-8">
+                
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 lg:gap-8">
                     {programs.map((program, index) => (
                         <motion.div
                             key={program.title}
-                            initial={{ opacity: 0, y: 30 }}
+                            initial={{ opacity: 0, y: 40 }}
                             whileInView={{ opacity: 1, y: 0 }}
-                            viewport={{ once: true }}
-                            transition={{ duration: 0.5, delay: index * 0.1 }}
-                            className="h-full"
+                            viewport={{ once: true, margin: "-50px" }}
+                            transition={{
+                                duration: 0.6,
+                                delay: index * 0.15,
+                                ease: [0.25, 0.46, 0.45, 0.94]
+                            }}
+                            className="h-full flex justify-center"
                         >
-                            <SpotlightCard
-                                className="h-full bg-white border-transparent text-(--ngo-dark) shadow-lg card-hover p-5 sm:p-6"
-                                spotlightColor="rgba(255, 138, 76, 0.2)"
-                            >
-                                <div
-                                    className="w-14 h-14 sm:w-16 sm:h-16 rounded-xl sm:rounded-2xl mb-4 sm:mb-6 flex items-center justify-center"
-                                    style={{ backgroundColor: `${program.color}15` }}
-                                >
-                                    <program.icon
-                                        className="w-7 h-7 sm:w-9 sm:h-9 md:w-10 md:h-10"
-                                        style={{ color: program.color }}
-                                    />
-                                </div>
-                                <h3
-                                    className="text-lg sm:text-xl font-bold text-(--ngo-dark) mb-2 sm:mb-3"
-                                    style={{ fontFamily: "'Playfair Display', serif" }}
-                                >
-                                    {program.title}
-                                </h3>
-                                <p className="text-(--ngo-gray) leading-relaxed text-sm sm:text-base mb-3 sm:mb-4">
-                                    {program.description}
-                                </p>
-                                <Link
-                                    href={`/programs#${program.title.toLowerCase().replace(/ /g, "-")}`}
-                                    className="inline-flex items-center gap-2 mt-2 text-(--ngo-orange) font-semibold hover:gap-3 transition-all text-sm sm:text-base"
-                                >
-                                    Learn More <ArrowRight className="w-3 h-3 sm:w-4 sm:h-4" />
-                                </Link>
-                            </SpotlightCard>
+                            <Program
+                                href={`/our-work#${program.title.toLowerCase().replace(/ /g, "-")}`}
+                                info={program.description}
+                                heading={program.title}
+                                svg={<program.icon />}
+                                color={program.color}
+                                gradient={program.gradient}
+                            />
                         </motion.div>
                     ))}
                 </div>
+                
+                {/* Bottom CTA */}
+                <motion.div 
+                    className="text-center mt-12 sm:mt-16"
+                    initial={{ opacity: 0 }}
+                    whileInView={{ opacity: 1 }}
+                    viewport={{ once: true }}
+                    transition={{ delay: 0.5 }}
+                >
+                    <Link
+                        href="/our-work"
+                        className="group inline-flex items-center gap-2 text-(--ngo-orange) font-semibold hover:gap-3 transition-all"
+                    >
+                        Explore All Programs
+                        <span className="w-8 h-8 rounded-full bg-(--ngo-orange)/10 flex items-center justify-center group-hover:bg-(--ngo-orange) group-hover:text-white transition-all duration-300">
+                            <ArrowRight className="w-4 h-4" />
+                        </span>
+                    </Link>
+                </motion.div>
             </div>
         </section>
     );
@@ -372,244 +445,280 @@ function ProgramsSection() {
 
 function ImpactSection() {
     const stats = [
-        { value: 5000, suffix: "+", label: "Children Educated", icon: BookOpen },
-        { value: 30, suffix: "+", label: "Active Volunteers", icon: Users },
-        { value: 100, suffix: "+", label: "Events Conducted", icon: Calendar },
-        { value: 21, suffix: "+", label: "Years of Impact", icon: Heart },
+        { value: 5000, suffix: "+", label: "Children Educated", icon: BookOpen, color: "--ngo-orange" },
+        { value: 30, suffix: "+", label: "Active Volunteers", icon: Users, color: "--ngo-green" },
+        { value: 100, suffix: "+", label: "Events Conducted", icon: Calendar, color: "--ngo-yellow" },
+        { value: 21, suffix: "+", label: "Years of Impact", icon: Heart, color: "--ngo-orange" },
     ];
 
     return (
-        <section className="bg-(--ngo-dark) relative overflow-hidden py-12 sm:py-16 md:py-20">
-            <div className="absolute inset-0 opacity-10">
-                <div className="absolute top-0 left-0 w-64 h-64 sm:w-96 sm:h-96 bg-(--ngo-orange) rounded-full blur-3xl -translate-x-1/2 -translate-y-1/2" />
-                <div className="absolute bottom-0 right-0 w-64 h-64 sm:w-96 sm:h-96 bg-(--ngo-green) rounded-full blur-3xl translate-x-1/2 translate-y-1/2" />
-            </div>
+        <section className="relative overflow-hidden py-16 sm:py-20 md:py-24 bg-white">
+            {/* Subtle background decoration */}
+            <div className="absolute top-0 right-0 w-96 h-96 bg-(--ngo-orange)/5 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2" />
+            <div className="absolute bottom-0 left-0 w-80 h-80 bg-(--ngo-green)/5 rounded-full blur-3xl translate-y-1/2 -translate-x-1/2" />
+            
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+                {/* Header */}
                 <motion.div
                     initial={{ opacity: 0, y: 30 }}
                     whileInView={{ opacity: 1, y: 0 }}
                     viewport={{ once: true }}
                     transition={{ duration: 0.8 }}
-                    className="text-center mb-10 sm:mb-12 md:mb-16"
+                    className="text-center mb-12 sm:mb-16"
                 >
-                    <span className="text-(--ngo-orange) font-semibold uppercase tracking-wider text-xs sm:text-sm">
+                    <span className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-(--ngo-orange)/10 text-(--ngo-orange) text-sm font-semibold mb-4">
+                        <span className="w-1.5 h-1.5 rounded-full bg-(--ngo-orange) animate-pulse" />
                         Our Impact
                     </span>
+                    
                     <h2
-                        className="text-3xl sm:text-4xl md:text-5xl font-bold text-white mt-2 mb-3 sm:mb-4"
+                        className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-(--ngo-dark) mb-4 sm:mb-6"
                         style={{ fontFamily: "'Playfair Display', serif" }}
                     >
-                        Creating Lasting Change
+                        Creating{" "}
+                        <span className="relative inline-block">
+                            <span className="text-(--ngo-orange)">Lasting</span>
+                            <svg className="absolute -bottom-1 left-0 w-full" height="8" viewBox="0 0 100 8" preserveAspectRatio="none">
+                                <path d="M0 6 Q 25 0, 50 6 T 100 6" stroke="var(--ngo-green)" strokeWidth="3" fill="none" strokeLinecap="round" opacity="0.4"/>
+                            </svg>
+                        </span>{" "}
+                        Change
                     </h2>
-                    <p className="text-gray-400 text-sm sm:text-base md:text-lg max-w-2xl mx-auto px-4">
+                    <p className="text-(--ngo-gray) text-base sm:text-lg max-w-2xl mx-auto leading-relaxed">
                         Every number represents a story of hope, transformation, and a step
                         towards a brighter future
                     </p>
                 </motion.div>
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 lg:gap-8">
+                
+                {/* Stats Grid */}
+                <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 lg:gap-8">
                     {stats.map((stat, index) => (
                         <motion.div
                             key={stat.label}
-                            initial={{ opacity: 0, scale: 0.8 }}
-                            whileInView={{ opacity: 1, scale: 1 }}
+                            initial={{ opacity: 0, y: 40 }}
+                            whileInView={{ opacity: 1, y: 0 }}
                             viewport={{ once: true }}
-                            transition={{ duration: 0.5, delay: index * 0.1 }}
-                            className="h-full"
+                            transition={{ duration: 0.6, delay: index * 0.15, type: "spring" }}
+                            whileHover={{ y: -8 }}
+                            className="group"
                         >
-                            <SpotlightCard
-                                className="h-full text-center p-6 sm:p-8 rounded-xl sm:rounded-2xl bg-white/5 backdrop-blur-sm border border-white/10"
-                                spotlightColor="rgba(255, 255, 255, 0.25)"
-                            >
-                                <div className="w-12 h-12 sm:w-14 sm:h-14 md:w-16 md:h-16 rounded-full bg-(--ngo-orange)/20 flex items-center justify-center mx-auto mb-3 sm:mb-4">
-                                    <stat.icon className="w-6 h-6 sm:w-7 sm:h-7 md:w-8 md:h-8 text-(--ngo-orange)" />
+                            <div className="relative h-full bg-white rounded-2xl sm:rounded-3xl p-6 sm:p-8 text-center transition-all duration-300 hover:shadow-xl overflow-hidden shadow-lg">
+                                
+                                {/* Background decorative blob */}
+                                <div 
+                                    className="absolute top-0 right-0 w-40 h-40 rounded-full blur-3xl opacity-20 group-hover:opacity-30 transition-opacity duration-500"
+                                    style={{ backgroundColor: `var(${stat.color})` }}
+                                />
+                                <div 
+                                    className="absolute bottom-0 left-0 w-32 h-32 rounded-full blur-3xl opacity-15 group-hover:opacity-25 transition-opacity duration-500"
+                                    style={{ backgroundColor: `var(${stat.color})` }}
+                                />
+                                
+                                {/* Corner accent lines - top left */}
+                                <div 
+                                    className="absolute top-0 left-0 w-16 h-1 rounded-r-full transition-all duration-300 group-hover:w-20"
+                                    style={{ backgroundColor: `var(${stat.color})` }}
+                                />
+                                <div 
+                                    className="absolute top-0 left-0 w-1 h-16 rounded-b-full transition-all duration-300 group-hover:h-20"
+                                    style={{ backgroundColor: `var(${stat.color})` }}
+                                />
+                                
+                                {/* Icon container */}
+                                <div className="relative w-14 h-14 sm:w-16 sm:h-16 mx-auto mb-5">
+                                    <div
+                                        className="absolute inset-0 rounded-xl bg-white shadow-md flex items-center justify-center transition-transform duration-300 group-hover:scale-110 group-hover:rotate-3"
+                                        style={{ backgroundColor: `var(${stat.color})15` }}
+                                    >
+                                        <stat.icon 
+                                            className="w-6 h-6 sm:w-7 sm:h-7" 
+                                            style={{ color: `var(${stat.color})` }}
+                                        />
+                                    </div>
                                 </div>
-                                <div
-                                    className="text-3xl sm:text-4xl md:text-5xl font-bold text-white mb-2"
-                                    style={{ fontFamily: "'Playfair Display', serif" }}
-                                >
-                                    <Counter end={stat.value} suffix={stat.suffix} />
+                                
+                                {/* Number */}
+                                <div className="relative mb-2">
+                                    <span
+                                        className="text-4xl sm:text-5xl font-bold text-(--ngo-dark)"
+                                        style={{ fontFamily: "'Playfair Display', serif" }}
+                                    >
+                                        <Counter end={stat.value} suffix={stat.suffix} />
+                                    </span>
                                 </div>
-                                <p className="text-gray-400 font-medium text-sm sm:text-base">{stat.label}</p>
-                            </SpotlightCard>
+                                
+                                {/* Label */}
+                                <p className="text-(--ngo-gray) font-medium text-sm sm:text-base relative z-10">{stat.label}</p>
+                            </div>
                         </motion.div>
                     ))}
                 </div>
+                
+                {/* Bottom text */}
+                <motion.p 
+                    className="text-center mt-10 sm:mt-12 text-(--ngo-gray) text-sm sm:text-base"
+                    initial={{ opacity: 0 }}
+                    whileInView={{ opacity: 1 }}
+                    viewport={{ once: true }}
+                    transition={{ delay: 0.6 }}
+                >
+                    And counting, thanks to <span className="text-(--ngo-orange) font-medium">supporters like you</span> ✨
+                </motion.p>
             </div>
         </section>
     );
 }
 
+type EmpowermentItem = {
+    _id: string;
+    title: string;
+    shortDescription: string;
+    coverImageUrl?: string;
+    coverImageAlt?: string;
+    slug: string;
+    tags?: { _id: string; name: string; color?: string }[];
+};
+
 function TestimonialsSection() {
-    const testimonials = [
-        {
-            quote:
-                "Prayaas changed my life. The volunteers taught me not just academics but also how to dream big. I am now studying engineering because of their support.",
-            name: "Rahul Kumar",
-            role: "Former Student, Now Engineering Student",
-            image:
-                "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=200&q=80",
-        },
-        {
-            quote:
-                "Being a volunteer at Prayaas has been the most fulfilling experience of my college life. Seeing the children grow and learn is incredibly rewarding.",
-            name: "Priya Sharma",
-            role: "Volunteer, 3rd Year Student",
-            image:
-                "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=200&q=80",
-        },
-        {
-            quote:
-                "The dedication of Prayaas volunteers is remarkable. My daughter has shown tremendous improvement in her studies and confidence since joining their program.",
-            name: "Sunita Devi",
-            role: "Parent",
-            image:
-                "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=200&q=80",
-        },
-        {
-            quote:
-                "Prayaas empowered our community. With their guidance, my son returned to school and is now preparing for competitive exams with renewed confidence.",
-            name: "Ramesh Yadav",
-            role: "Parent",
-            image:
-                "https://images.unsplash.com/photo-1524504388940-b1c1722653e1?w=200&q=80",
-        },
-    ];
-    const [hovered, setHovered] = useState<number | null>(null);
-    const [columnCount, setColumnCount] = useState(4);
+    const [empowerments, setEmpowerments] = useState<EmpowermentItem[]>([]);
+    const [scrollProgress, setScrollProgress] = useState(0);
+    const scrollContainerRef = useRef<HTMLDivElement>(null);
 
+    // Fetch empowerments from MongoDB
     useEffect(() => {
-        const getColumns = () => {
-            if (typeof window === "undefined") return 4;
-            const width = window.innerWidth;
-            if (width < 640) return 1;
-            if (width < 1024) return 2;
-            return 4;
-        };
-
-        const handleResize = () => setColumnCount(getColumns());
-
-        handleResize();
-        window.addEventListener("resize", handleResize);
-        return () => window.removeEventListener("resize", handleResize);
+        async function load() {
+            try {
+                const res = await fetch('/api/empowerments?limit=12');
+                if (!res.ok) {
+                    console.warn('Failed to fetch empowerments:', res.status);
+                    return;
+                }
+                const data = await res.json();
+                if (data.items && data.items.length > 0) {
+                    setEmpowerments(data.items);
+                }
+            } catch (error) {
+                console.warn('Error fetching empowerments:', error);
+            }
+        }
+        load();
     }, []);
 
-    const hoverEnabled = columnCount === 4;
+    const items = empowerments;
 
-    const columnTemplate =
-        hoverEnabled && hovered !== null
-            ? testimonials
-                .map((_, i) => (hovered === i ? "1.6fr" : "0.8fr"))
-                .join(" ")
-            : `repeat(${columnCount}, minmax(0, 1fr))`;
+    // Handle scroll to update progress bar
+    useEffect(() => {
+        const container = scrollContainerRef.current;
+        if (!container) return;
+        
+        const onScroll = () => {
+            const { scrollLeft, scrollWidth, clientWidth } = container;
+            const maxScroll = scrollWidth - clientWidth;
+            const progress = maxScroll > 0 ? (scrollLeft / maxScroll) * 100 : 0;
+            setScrollProgress(progress);
+        };
+        
+        container.addEventListener('scroll', onScroll, { passive: true });
+        // Initial calculation
+        onScroll();
+        
+        return () => container.removeEventListener('scroll', onScroll);
+    }, [items.length]); // Re-attach when items change
+
+    // Don't render the section if no items
+    if (items.length === 0) {
+        return null;
+    }
 
     return (
-        <section className="py-12 sm:py-16 md:py-20 bg-white">
-            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <section className="py-8 sm:py-12 md:py-14 bg-white">
+            <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 <motion.div
                     initial={{ opacity: 0, y: 30 }}
                     whileInView={{ opacity: 1, y: 0 }}
                     viewport={{ once: true }}
                     transition={{ duration: 0.8 }}
-                    className="text-center mb-10 sm:mb-12 md:mb-16"
+                    className="text-center mb-5 sm:mb-4 md:mb-7"
                 >
-                    <span className="text-(--ngo-orange) font-semibold uppercase tracking-wider text-xs sm:text-sm">
+                    <span className="text-(--ngo-orange) font-semibold uppercase tracking-wider text-xs sm:text-sm inline-flex items-center gap-2 justify-center">
+                        <span className="w-8 h-0.5 bg-(--ngo-orange)" />
                         Real Stories
+                        <span className="w-8 h-0.5 bg-(--ngo-orange)" />
                     </span>
                     <h2
-                        className="text-3xl sm:text-4xl md:text-5xl font-bold text-(--ngo-dark) mt-2 mb-3 sm:mb-4"
+                        className="text-3xl sm:text-4xl md:text-5xl font-bold text-(--ngo-dark) mt-3 mb-1 sm:mb-2"
                         style={{ fontFamily: "'Playfair Display', serif" }}
                     >
-                        Stories of Hope
+                        Stories of Empowerment
                     </h2>
                     <p className="text-(--ngo-gray) text-sm sm:text-base md:text-lg max-w-2xl mx-auto px-4">
-                        Hover over the stories on desktop; tap to read on mobile
+                        Explore inspiring stories of transformation
                     </p>
                 </motion.div>
+            </div>
+
+            {/* Scrollable Carousel Container */}
+            <div className="relative">
+                {/* Gradient fade on edges */}
+                <div className="absolute left-0 top-0 bottom-4 w-8 sm:w-16 bg-gradient-to-r from-(--ngo-cream) to-transparent z-10 pointer-events-none" />
+                <div className="absolute right-0 top-0 bottom-4 w-8 sm:w-16 bg-gradient-to-l from-(--ngo-cream) to-transparent z-10 pointer-events-none" />
+                
                 <div
-                    className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-5 transition-all duration-300"
-                    style={{ gridTemplateColumns: columnTemplate }}
+                    ref={scrollContainerRef}
+                    className="flex gap-4 sm:gap-6 overflow-x-auto scroll-smooth px-4 sm:px-6 lg:px-8 pb-4 scrollbar-hide cursor-grab active:cursor-grabbing"
+                    style={{
+                        scrollbarWidth: 'none',
+                        msOverflowStyle: 'none',
+                        WebkitOverflowScrolling: 'touch',
+                    }}
                 >
-                    {testimonials.map((item, index) => (
+                    {/* Left spacer for centering on larger screens */}
+                    <div className="shrink-0 w-0 lg:w-[calc((100vw-1280px)/2)]" />
+                    
+                    {items.map((item, index) => (
                         <motion.div
-                            key={item.name}
+                            key={item._id}
                             initial={{ opacity: 0, y: 20 }}
                             whileInView={{ opacity: 1, y: 0 }}
-                            viewport={{ once: true }}
-                            transition={{ duration: 0.6, delay: index * 0.08, ease: "easeOut" }}
-                            animate={{
-                                scale: hoverEnabled
-                                    ? hovered === null
-                                        ? 1
-                                        : hovered === index
-                                            ? 1.05
-                                            : 0.92
-                                    : 1,
-                                zIndex: hoverEnabled && hovered === index ? 10 : 0,
-                            }}
-                            className="relative h-80 transition-transform duration-500 ease-out isolation-isolate"
-                            onMouseEnter={() => hoverEnabled && setHovered(index)}
-                            onMouseLeave={() => hoverEnabled && setHovered(null)}
-                            onClick={() =>
-                                !hoverEnabled && setHovered(hovered === index ? null : index)
-                            }
+                            viewport={{ once: true, margin: "-50px" }}
+                            transition={{ duration: 0.5, delay: index * 0.1 }}
+                            className="shrink-0 w-[280px] sm:w-[320px] md:w-[350px] lg:w-[380px] z-"
                         >
-                            <div className="absolute inset-0 rounded-2xl overflow-hidden shadow-lg">
-                                <Image
-                                    src={item.image}
-                                    alt={item.name}
-                                    fill
-                                    sizes="(max-width: 1024px) 100vw, 25vw"
-                                    className="object-cover"
-                                />
-                            </div>
-                            <motion.div
-                                className="absolute inset-0 rounded-2xl bg-black/70 pointer-events-none"
-                                style={{ transformOrigin: "center center" }}
-                                initial={{ scaleX: 0, opacity: 0 }}
-                                animate={{
-                                    scaleX: 1,
-                                    opacity: hoverEnabled ? (hovered === index ? 1 : 0) : 1,
-                                }}
-                                transition={{ duration: 0.55, ease: "easeInOut" }}
+                            <EmpCard
+                                tag={item.tags?.[0]?.name ?? "Impact Story"}
+                                tagBgColor={item.tags?.[0]?.color}
+                                headline={item.title}
+                                description={item.shortDescription}
+                                imageSrc={item.coverImageUrl}
+                                imageAlt={item.coverImageAlt || item.title}
+                                ctaText="Read More"
+                                ctaLink={`/empowerments/${item.slug}`}
                             />
-                            <motion.div
-                                className="absolute inset-0 p-6 md:p-7 flex flex-col justify-end gap-3 text-white"
-                                initial={{ opacity: 0, y: 10 }}
-                                animate={{
-                                    opacity: hoverEnabled ? (hovered === index ? 1 : 0) : 1,
-                                    y: hoverEnabled ? (hovered === index ? 0 : 10) : 0,
-                                }}
-                                transition={{ duration: 0.5, ease: "easeInOut" }}
-                            >
-                                <div className="flex items-center gap-3">
-                                    <div className="w-12 h-12 rounded-full overflow-hidden border-2 border-white/60 shadow-md">
-                                        <Image
-                                            src={item.image}
-                                            alt={item.name}
-                                            width={48}
-                                            height={48}
-                                            className="w-full h-full object-cover"
-                                        />
-                                    </div>
-                                    <div>
-                                        <h4 className="font-semibold text-lg">{item.name}</h4>
-                                        <p className="text-xs uppercase tracking-wide text-white/80">
-                                            {item.role}
-                                        </p>
-                                    </div>
-                                </div>
-                                <Quote className="w-6 h-6 sm:w-7 sm:h-7 md:w-8 md:h-8 text-(--ngo-orange)" />
-                                <p className="text-xs sm:text-sm md:text-base leading-relaxed">
-                                    &quot;{item.quote}&quot;
-                                </p>
-                            </motion.div>
                         </motion.div>
                     ))}
+                    
+                    {/* Right spacer for centering on larger screens */}
+                    <div className="shrink-0 w-0 lg:w-[calc((100vw-1280px)/2)]" />
+                </div>
+
+                {/* Scroll Progress Bar */}
+                <div className="flex flex-col items-center mt-6 px-4">
+                    <div className="relative w-32 sm:w-40 md:w-48 h-1.5 bg-(--ngo-gray)/10 rounded-full overflow-hidden shadow-inner">
+                        <div
+                            className="absolute top-0 left-0 h-full bg-linear-to-r from-(--ngo-orange) to-(--ngo-orange-light) rounded-full transition-all duration-150 ease-out shadow-[0_0_8px_var(--ngo-orange)]"
+                            style={{ width: `${Math.max(5, scrollProgress)}%` }}
+                        />
+                    </div>
+                    <p className="text-center text-xs text-(--ngo-gray) mt-3 flex items-center gap-1.5">
+                        <span className="inline-block w-4 h-4 animate-bounce-slow">👆</span>
+                        Swipe to explore more stories
+                    </p>
                 </div>
             </div>
         </section>
     );
 }
+
 
 function GallerySection({ images }: { images: PageImagesMap }) {
     // Get gallery images from database, fall back to local images
@@ -710,8 +819,12 @@ function GallerySection({ images }: { images: PageImagesMap }) {
         : localGalleryImages;
 
     return (
-        <section className="section-gradient py-12 sm:py-16">
-            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <section className="section-gradient py-8 sm:py-12 md:py-14 relative overflow-hidden">
+            {/* Decorative elements */}
+            <div className="absolute top-20 left-10 w-20 h-20 bg-[var(--ngo-orange)]/10 rounded-full blur-xl animate-float hidden lg:block" />
+            <div className="absolute bottom-20 right-10 w-32 h-32 bg-[var(--ngo-green)]/10 rounded-full blur-xl animate-float-slow hidden lg:block" />
+            
+            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative">
                 <motion.div
                     initial={{ opacity: 0, y: 30 }}
                     whileInView={{ opacity: 1, y: 0 }}
@@ -719,11 +832,13 @@ function GallerySection({ images }: { images: PageImagesMap }) {
                     transition={{ duration: 0.8 }}
                     className="text-center mb-6"
                 >
-                    <span className="text-(--ngo-orange) font-semibold uppercase tracking-wider text-xs sm:text-sm">
+                    <span className="text-(--ngo-orange) font-semibold uppercase tracking-wider text-xs sm:text-sm inline-flex items-center gap-2 justify-center">
+                        <span className="w-8 h-[2px] bg-(--ngo-orange)" />
                         Gallery
+                        <span className="w-8 h-[2px] bg-(--ngo-orange)" />
                     </span>
                     <h2
-                        className="text-3xl sm:text-4xl md:text-5xl font-bold text-(--ngo-dark) mt-2 mb-3 sm:mb-4"
+                        className="text-3xl sm:text-4xl md:text-5xl font-bold text-(--ngo-dark) mt-3 mb-3 sm:mb-4"
                         style={{ fontFamily: "'Playfair Display', serif" }}
                     >
                         Moments of Joy
@@ -737,9 +852,12 @@ function GallerySection({ images }: { images: PageImagesMap }) {
             <div className="text-center mt-6 sm:mt-10">
                 <Link
                     href="/gallery"
-                    className="inline-flex items-center gap-2 text-(--ngo-orange) font-semibold hover:gap-3 transition-all text-base sm:text-lg py-2 min-h-11"
+                    className="group inline-flex items-center gap-2 text-(--ngo-orange) font-semibold hover:gap-3 transition-all text-base sm:text-lg py-2 min-h-11"
                 >
-                    View Full Gallery <ArrowRight className="w-4 h-4 sm:w-5 sm:h-5" />
+                    View Full Gallery 
+                    <span className="w-8 h-8 rounded-full bg-[var(--ngo-orange)]/10 flex items-center justify-center group-hover:bg-[var(--ngo-orange)] group-hover:text-white transition-all duration-300">
+                        <ArrowRight className="w-4 h-4" />
+                    </span>
                 </Link>
             </div>
         </section>
@@ -751,47 +869,162 @@ function CTASection({ images }: { images: PageImagesMap }) {
     const ctaAlt = images["cta:background"]?.alt || FALLBACK_IMAGES.cta.alt;
 
     return (
-        <section className="py-8 sm:py-12 md:py-14 px-4 sm:px-6 lg:px-8">
-            <div className="relative overflow-hidden rounded-3xl sm:rounded-[40px] md:rounded-[50px] max-w-7xl mx-auto ">
-                <div className="absolute inset-0">
-                    <Image src={ctaSrc} alt={ctaAlt} fill className="object-cover" />
-                    <div className="hero-gradient absolute inset-0" />
-                    <div className="absolute inset-0 bg-linear-to-b from-black/70 via-black/45 to-black/30" />
-                </div>
-                <div className="relative z-10 max-w-4xl mx-auto px-6 sm:px-8 lg:px-12 py-12 sm:py-14 md:py-16 text-center">
-                    <motion.div
-                        initial={{ opacity: 0, y: 30 }}
-                        whileInView={{ opacity: 1, y: 0 }}
-                        viewport={{ once: true }}
-                        transition={{ duration: 0.8 }}
-                    >
-                        <h2
-                            className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-white mb-4 sm:mb-6"
-                            style={{ fontFamily: "'Playfair Display', serif" }}
-                        >
-                            Together, We Can Make a Difference
-                        </h2>
-                        <p className="text-white/90 text-sm sm:text-base md:text-lg mb-8 sm:mb-10 max-w-2xl mx-auto">
-                            Every child deserves the opportunity to learn, grow, and dream. Join
-                            Prayaas today and be part of this beautiful journey of transformation.
-                        </p>
-                        <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center items-center">
-                            <Link
-                                href="/get-involved#donate"
-                                className="btn-primary flex items-center justify-center gap-2 w-full sm:w-auto max-w-xs"
+        <section className="py-14 sm:py-18 md:py-24 px-4 sm:px-6 lg:px-8 bg-linear-to-br from-white via-(--ngo-cream)/50 to-white relative overflow-hidden">
+            {/* Subtle background decoration */}
+            <div className="absolute top-0 right-0 w-96 h-96 bg-(--ngo-orange)/5 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2" />
+            <div className="absolute bottom-0 left-0 w-80 h-80 bg-(--ngo-green)/5 rounded-full blur-3xl translate-y-1/2 -translate-x-1/2" />
+            
+            <div className="relative z-10 w-full max-w-6xl mx-auto">
+                <div className="flex flex-col lg:flex-row items-center gap-12 lg:gap-20">
+                    
+                    {/* Left side - Creative visual */}
+                    <div className="relative w-full lg:w-5/12 flex justify-center">
+                        <div className="relative w-[300px] sm:w-[340px] h-[280px] sm:h-[320px]">
+                            
+                            {/* Decorative dots */}
+                            <div className="absolute -top-4 -left-4 w-3 h-3 rounded-full bg-(--ngo-orange)/60" />
+                            <div className="absolute top-8 -left-8 w-2 h-2 rounded-full bg-(--ngo-green)/50" />
+                            <div className="absolute -top-2 right-16 w-2 h-2 rounded-full bg-(--ngo-yellow)/70" />
+                            <div className="absolute bottom-12 -right-6 w-3 h-3 rounded-full bg-(--ngo-orange)/40" />
+                            <div className="absolute -bottom-4 left-20 w-2 h-2 rounded-full bg-(--ngo-green)/60" />
+                            
+                            {/* Background gradient blob */}
+                            <div className="absolute -inset-4 bg-linear-to-br from-(--ngo-orange)/10 via-transparent to-(--ngo-green)/10 rounded-[60px] blur-xl" />
+                            
+                            {/* Main image card */}
+                            <motion.div 
+                                className="absolute inset-0 rounded-3xl overflow-hidden shadow-2xl"
+                                initial={{ opacity: 0, scale: 0.9 }}
+                                whileInView={{ opacity: 1, scale: 1 }}
+                                viewport={{ once: true }}
+                                transition={{ duration: 0.5 }}
                             >
-                                <Heart className="w-4 h-4 sm:w-5 sm:h-5" />
-                                Donate Now
-                            </Link>
-                            <Link
-                                href="/get-involved#volunteer"
-                                className="btn-outline flex items-center justify-center gap-2 w-full sm:w-auto max-w-xs"
+                                <Image 
+                                    src={ctaSrc} 
+                                    alt={ctaAlt} 
+                                    fill 
+                                    className="object-cover" 
+                                />
+                                <div className="absolute inset-0 bg-linear-to-t from-(--ngo-dark)/40 via-transparent to-transparent" />
+                                
+                                {/* Gradient border effect */}
+                                <div className="absolute inset-0 rounded-3xl ring-2 ring-white/50" />
+                            </motion.div>
+                            
+                            {/* Floating stat card - top right */}
+                            <motion.div 
+                                className="absolute -top-6 -right-4 sm:-right-8"
+                                initial={{ opacity: 0, y: 20 }}
+                                whileInView={{ opacity: 1, y: 0 }}
+                                viewport={{ once: true }}
+                                transition={{ delay: 0.3 }}
+                                animate={{ y: [0, -6, 0] }}
                             >
-                                <Phone className="w-4 h-4 sm:w-5 sm:h-5" />
-                                Contact Us
-                            </Link>
+                                <div className="bg-white rounded-2xl shadow-xl p-3 sm:p-4 border border-(--ngo-gray)/5">
+                                    <div className="flex items-center gap-3">
+                                        <div className="w-10 h-10 rounded-xl bg-linear-to-br from-(--ngo-green) to-emerald-500 flex items-center justify-center shadow-md">
+                                            <Users className="w-5 h-5 text-white" />
+                                        </div>
+                                        <div>
+                                            <p className="text-lg font-bold text-(--ngo-dark)">5000+</p>
+                                            <p className="text-xs text-(--ngo-gray)">Children Helped</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </motion.div>
+                            
+                            {/* Floating stat card - bottom left */}
+                            <motion.div 
+                                className="absolute -bottom-6 -left-4 sm:-left-8"
+                                initial={{ opacity: 0, y: -20 }}
+                                whileInView={{ opacity: 1, y: 0 }}
+                                viewport={{ once: true }}
+                                transition={{ delay: 0.4 }}
+                                animate={{ y: [0, 6, 0] }}
+                            >
+                                <div className="bg-white rounded-2xl shadow-xl p-3 sm:p-4 border border-(--ngo-gray)/5">
+                                    <div className="flex items-center gap-3">
+                                        <div className="w-10 h-10 rounded-xl bg-linear-to-br from-(--ngo-orange) to-(--ngo-orange-dark) flex items-center justify-center shadow-md">
+                                            <Heart className="w-5 h-5 text-white" fill="currentColor" />
+                                        </div>
+                                        <div>
+                                            <p className="text-lg font-bold text-(--ngo-dark)">21+ Years</p>
+                                            <p className="text-xs text-(--ngo-gray)">Of Service</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </motion.div>
+                            
+                            {/* Corner accent lines */}
+                            <div className="absolute -top-2 -left-2 w-8 h-8">
+                                <div className="absolute top-0 left-0 w-full h-0.5 bg-linear-to-r from-(--ngo-orange) to-transparent" />
+                                <div className="absolute top-0 left-0 w-0.5 h-full bg-linear-to-b from-(--ngo-orange) to-transparent" />
+                            </div>
+                            <div className="absolute -bottom-2 -right-2 w-8 h-8">
+                                <div className="absolute bottom-0 right-0 w-full h-0.5 bg-linear-to-l from-(--ngo-green) to-transparent" />
+                                <div className="absolute bottom-0 right-0 w-0.5 h-full bg-linear-to-t from-(--ngo-green) to-transparent" />
+                            </div>
                         </div>
-                    </motion.div>
+                    </div>
+                    
+                    {/* Right side - Content */}
+                    <div className="flex-1 text-center lg:text-left">
+                        <motion.div
+                            initial={{ opacity: 0, y: 20 }}
+                            whileInView={{ opacity: 1, y: 0 }}
+                            viewport={{ once: true }}
+                            transition={{ duration: 0.6 }}
+                        >
+                            <span className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-(--ngo-orange)/10 text-(--ngo-orange) text-sm font-semibold mb-5">
+                                <span className="w-1.5 h-1.5 rounded-full bg-(--ngo-orange) animate-pulse" />
+                                Make a Difference Today
+                            </span>
+                            
+                            <h2
+                                className="text-3xl sm:text-4xl lg:text-5xl font-bold text-(--ngo-dark) mb-5 leading-tight"
+                                style={{ fontFamily: "'Playfair Display', serif" }}
+                            >
+                                Your Support Can{" "}
+                                <span className="relative inline-block">
+                                    <span className="text-(--ngo-orange)">Transform</span>
+                                    <svg className="absolute -bottom-1 left-0 w-full" height="8" viewBox="0 0 100 8" preserveAspectRatio="none">
+                                        <path d="M0 6 Q 25 0, 50 6 T 100 6" stroke="var(--ngo-green)" strokeWidth="3" fill="none" strokeLinecap="round" opacity="0.4"/>
+                                    </svg>
+                                </span>{" "}
+                                Lives
+                            </h2>
+                            
+                            <p className="text-(--ngo-gray) text-base sm:text-lg mb-8 max-w-lg mx-auto lg:mx-0 leading-relaxed">
+                                Every contribution helps us provide education, mentorship, and hope 
+                                to children who need it most. Join our mission to build brighter futures.
+                            </p>
+
+                            {/* CTA Buttons */}
+                            <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
+                                <Link
+                                    href="/get-involved#donate"
+                                    className="group relative inline-flex items-center justify-center gap-2 px-7 py-3.5 rounded-full bg-linear-to-r from-(--ngo-orange) to-(--ngo-orange-dark) text-white font-semibold shadow-lg shadow-(--ngo-orange)/20 hover:shadow-xl hover:-translate-y-0.5 transition-all duration-300 overflow-hidden"
+                                >
+                                    <span className="absolute inset-0 bg-linear-to-r from-transparent via-white/20 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-500" />
+                                    <Heart className="w-5 h-5" fill="currentColor" />
+                                    <span className="relative">Donate Now</span>
+                                </Link>
+                                <Link
+                                    href="/get-involved#volunteer"
+                                    className="group inline-flex items-center justify-center gap-2 px-7 py-3.5 rounded-full bg-white border-2 border-(--ngo-gray)/10 text-(--ngo-dark) font-semibold hover:border-(--ngo-green) hover:text-(--ngo-green) transition-all duration-300 shadow-sm hover:shadow-md"
+                                >
+                                    <Users className="w-5 h-5" />
+                                    Volunteer With Us
+                                </Link>
+                            </div>
+                            
+                            {/* Simple trust line */}
+                            <p className="mt-6 text-sm text-(--ngo-gray) flex items-center justify-center lg:justify-start gap-2">
+                                <span className="text-(--ngo-yellow)">★★★★★</span>
+                                <span>Trusted by 500+ families since 2003</span>
+                            </p>
+                        </motion.div>
+                    </div>
                 </div>
             </div>
         </section>
@@ -807,7 +1040,7 @@ export default function HomePageClient({ images }: HomePageClientProps) {
         <>
             <HeroSection images={images} />
             <AboutSection images={images} />
-            <ProgramsSection />
+            <OurWorkSection />
             <ImpactSection />
             <TestimonialsSection />
             <GallerySection images={images} />
